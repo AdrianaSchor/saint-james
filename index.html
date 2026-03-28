@@ -6,2828 +6,1810 @@
   <title>Saint James - Household Management</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Georgia:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --cream: #F7F4EF;
-      --warm-white: #FDFBF8;
-      --charcoal: #2C2C2C;
-      --soft-gray: #8A8680;
-      --border: #E5E0D8;
-      --accent: #B5916C;
-      --accent-light: #F0E6DA;
-      --green: #6B8F71;
-      --green-light: #EAF0EB;
-      --red: #C0645A;
-      --red-light: #F5ECEA;
-      --blue: #5A7A9F;
-      --blue-light: #EAF0F7;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: Georgia, Cambria, 'Times New Roman', Times, serif;
-      background: var(--cream);
-      color: var(--charcoal);
-      min-height: 100vh;
-    }
-
-    /* Login Screen */
-    #login-screen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(135deg, var(--accent-light) 0%, var(--cream) 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-    }
-
-    #login-screen.hidden {
-      display: none;
-    }
-
-    .login-card {
-      background: var(--warm-white);
-      padding: 3rem;
-      border-radius: 12px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-      width: 90%;
-      max-width: 400px;
-      text-align: center;
-    }
-
-    .login-card h1 {
-      color: var(--accent);
-      margin-bottom: 2rem;
-      font-size: 2rem;
-    }
-
-    .user-buttons {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
-
-    .user-btn {
-      flex: 1;
-      padding: 1rem;
-      border: 2px solid var(--border);
-      background: var(--cream);
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      color: var(--charcoal);
-      transition: all 0.3s;
-    }
-
-    .user-btn.selected {
-      background: var(--accent);
-      color: white;
-      border-color: var(--accent);
-    }
-
-    .user-btn:hover {
-      border-color: var(--accent);
-    }
-
-    #pwd-input {
-      width: 100%;
-      padding: 0.75rem;
-      border: 2px solid var(--border);
-      border-radius: 8px;
-      margin-bottom: 1rem;
-      font-size: 1rem;
-      font-family: inherit;
-    }
-
-    #pwd-input:focus {
-      outline: none;
-      border-color: var(--accent);
-    }
-
-    #login-btn {
-      width: 100%;
-      padding: 0.75rem;
-      background: var(--accent);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: background 0.3s;
-    }
-
-    #login-btn:hover {
-      background: #9a7a5a;
-    }
-
-    #login-error {
-      color: var(--red);
-      margin-top: 1rem;
-      min-height: 1.5rem;
-    }
-
-    /* Main App */
-    #app {
-      display: none;
-    }
-
-    #app.visible {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-
-    /* Header */
-    header {
-      background: var(--warm-white);
-      border-bottom: 2px solid var(--border);
-      padding: 1rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .logo {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--accent);
-    }
-
-    .user-section {
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-    }
-
-    .user-badge {
-      background: var(--accent-light);
-      padding: 0.5rem 1rem;
-      border-radius: 20px;
-      font-weight: 600;
-      color: var(--accent);
-    }
-
-    #logout-btn {
-      padding: 0.5rem 1rem;
-      background: var(--red);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: background 0.3s;
-    }
-
-    #logout-btn:hover {
-      background: #a84d45;
-    }
-
-    /* Notice Board */
-    .notice-board {
-      background: var(--accent-light);
-      padding: 1.5rem 2rem;
-      border-bottom: 2px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    #notice-txt {
-      flex: 1;
-      font-style: italic;
-      color: var(--accent);
-      word-break: break-word;
-    }
-
-    #edit-notice-btn {
-      padding: 0.5rem 1rem;
-      background: var(--accent);
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-
-    #notice-edit-form {
-      display: none;
-      flex: 1;
-      gap: 0.5rem;
-    }
-
-    #notice-edit-form.shown {
-      display: flex;
-    }
-
-    #notice-input {
-      flex: 1;
-      padding: 0.5rem;
-      border: 2px solid var(--accent);
-      border-radius: 6px;
-      font-family: inherit;
-    }
-
-    .notice-btn {
-      padding: 0.5rem 1rem;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      white-space: nowrap;
-      font-weight: 600;
-    }
-
-    #notice-save-btn {
-      background: var(--green);
-      color: white;
-    }
-
-    #notice-cancel-btn {
-      background: var(--soft-gray);
-      color: white;
-    }
-
-    /* Main Content */
-    .main-content {
-      flex: 1;
-      display: flex;
-      overflow: hidden;
-    }
-
-    /* Tabs */
-    .tabs {
-      background: var(--warm-white);
-      border-right: 2px solid var(--border);
-      width: 200px;
-      padding: 1rem 0;
-      overflow-y: auto;
-    }
-
-    .tab-btn {
-      width: 100%;
-      padding: 1rem;
-      border: none;
-      background: transparent;
-      text-align: left;
-      cursor: pointer;
-      font-weight: 600;
-      color: var(--soft-gray);
-      border-left: 4px solid transparent;
-      transition: all 0.3s;
-    }
-
-    .tab-btn.active {
-      background: var(--accent-light);
-      color: var(--accent);
-      border-left-color: var(--accent);
-    }
-
-    .tab-btn:hover {
-      background: var(--cream);
-    }
-
-    /* Tab Content */
-    .tab-content {
-      flex: 1;
-      padding: 2rem;
-      overflow-y: auto;
-      background: var(--cream);
-    }
-
-    .tab-section {
-      display: none;
-    }
-
-    .tab-section.active {
-      display: block;
-    }
-
-    /* Forms */
-    .add-form {
-      background: var(--warm-white);
-      padding: 1.5rem;
-      border-radius: 8px;
-      margin-bottom: 2rem;
-      border: 2px solid var(--border);
-    }
-
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-      margin-bottom: 1rem;
-    }
-
-    .form-row.full {
-      grid-template-columns: 1fr;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .form-group label {
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      color: var(--charcoal);
-      font-size: 0.9rem;
-    }
-
-    input[type="text"],
-    input[type="date"],
-    input[type="time"],
-    input[type="number"],
-    select,
-    textarea {
-      padding: 0.75rem;
-      border: 2px solid var(--border);
-      border-radius: 6px;
-      font-family: inherit;
-      font-size: 0.95rem;
-      color: var(--charcoal);
-    }
-
-    input[type="text"]:focus,
-    input[type="date"]:focus,
-    input[type="time"]:focus,
-    input[type="number"]:focus,
-    select:focus,
-    textarea:focus {
-      outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-light);
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 80px;
-    }
-
-    .btn-group {
-      display: flex;
-      gap: 1rem;
-    }
-
-    button {
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-      border-radius: 6px;
-      border: none;
-      padding: 0.75rem 1.5rem;
-      font-size: 0.95rem;
-    }
-
-    .btn-primary {
-      background: var(--accent);
-      color: white;
-    }
-
-    .btn-primary:hover {
-      background: #9a7a5a;
-    }
-
-    .btn-secondary {
-      background: var(--soft-gray);
-      color: white;
-    }
-
-    .btn-secondary:hover {
-      background: #6f5f5a;
-    }
-
-    .btn-success {
-      background: var(--green);
-      color: white;
-    }
-
-    .btn-success:hover {
-      background: #5a7a61;
-    }
-
-    .btn-danger {
-      background: var(--red);
-      color: white;
-      padding: 0.5rem 1rem;
-      font-size: 0.85rem;
-    }
-
-    .btn-danger:hover {
-      background: #a84d45;
-    }
-
-    /* Lists */
-    .item-list {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .item {
-      background: var(--warm-white);
-      padding: 1.5rem;
-      border-radius: 8px;
-      border-left: 4px solid var(--border);
-      transition: all 0.3s;
-    }
-
-    .item:hover {
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-
-    .item-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: start;
-      margin-bottom: 1rem;
-    }
-
-    .item-title {
-      font-weight: 700;
-      font-size: 1.1rem;
-      color: var(--charcoal);
-    }
-
-    .item-meta {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      font-size: 0.85rem;
-      color: var(--soft-gray);
-      margin-bottom: 1rem;
-    }
-
-    .item-tag {
-      background: var(--accent-light);
-      padding: 0.25rem 0.75rem;
-      border-radius: 12px;
-      color: var(--accent);
-      font-weight: 500;
-    }
-
-    .item-tag.high {
-      background: var(--red-light);
-      color: var(--red);
-    }
-
-    .item-tag.medium {
-      background: var(--accent-light);
-      color: var(--accent);
-    }
-
-    .item-tag.low {
-      background: var(--green-light);
-      color: var(--green);
-    }
-
-    .item-actions {
-      display: flex;
-      gap: 0.5rem;
-      justify-content: flex-end;
-    }
-
-    .item.done {
-      opacity: 0.6;
-      border-left-color: var(--green);
-    }
-
-    .item.done .item-title {
-      text-decoration: line-through;
-    }
-
-    /* Filters */
-    .filters {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-      flex-wrap: wrap;
-    }
-
-    .filter-btn {
-      padding: 0.5rem 1rem;
-      border: 2px solid var(--border);
-      background: transparent;
-      color: var(--charcoal);
-      border-radius: 20px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-
-    .filter-btn.active {
-      background: var(--accent);
-      color: white;
-      border-color: var(--accent);
-    }
-
-    .filter-btn:hover {
-      border-color: var(--accent);
-    }
-
-    /* Messages */
-    #chat-msgs {
-      background: var(--warm-white);
-      border: 2px solid var(--border);
-      border-radius: 8px;
-      padding: 1rem;
-      height: 400px;
-      overflow-y: auto;
-      margin-bottom: 1rem;
-    }
-
-    .message {
-      margin-bottom: 1rem;
-      padding: 1rem;
-      background: var(--accent-light);
-      border-radius: 8px;
-      word-break: break-word;
-    }
-
-    .message.own {
-      background: var(--blue-light);
-      margin-left: 2rem;
-    }
-
-    .msg-who {
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-      color: var(--accent);
-    }
-
-    .message.own .msg-who {
-      color: var(--blue);
-    }
-
-    .msg-text {
-      color: var(--charcoal);
-    }
-
-    .msg-time {
-      font-size: 0.8rem;
-      color: var(--soft-gray);
-      margin-top: 0.5rem;
-    }
-
-    /* Calendar */
-    .calendar-container {
-      display: flex;
-      gap: 2rem;
-    }
-
-    .calendar-grid {
-      flex: 1;
-      background: var(--warm-white);
-      padding: 1.5rem;
-      border-radius: 8px;
-      border: 2px solid var(--border);
-    }
-
-    .calendar-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-    }
-
-    .cal-nav-btn {
-      background: var(--accent);
-      color: white;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    .calendar-title {
-      font-weight: 700;
-      font-size: 1.2rem;
-      color: var(--charcoal);
-    }
-
-    .weekdays {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 0.5rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .weekday {
-      text-align: center;
-      font-weight: 600;
-      color: var(--soft-gray);
-      padding: 0.5rem;
-      font-size: 0.85rem;
-    }
-
-    .days {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 0.5rem;
-    }
-
-    .day {
-      aspect-ratio: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 2px solid var(--border);
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 500;
-      background: var(--cream);
-      transition: all 0.3s;
-    }
-
-    .day:hover {
-      background: var(--accent-light);
-      border-color: var(--accent);
-    }
-
-    .day.other-month {
-      color: var(--border);
-    }
-
-    .day.today {
-      background: var(--accent);
-      color: white;
-      border-color: var(--accent);
-    }
-
-    .day.has-event {
-      background: var(--green-light);
-      border-color: var(--green);
-    }
-
-    .calendar-events {
-      flex: 1;
-      background: var(--warm-white);
-      padding: 1.5rem;
-      border-radius: 8px;
-      border: 2px solid var(--border);
-      max-height: 500px;
-      overflow-y: auto;
-    }
-
-    .calendar-events h3 {
-      margin-bottom: 1rem;
-      color: var(--charcoal);
-    }
-
-    /* Documents */
-    .doc-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 1rem;
-    }
-
-    .doc-card {
-      background: var(--warm-white);
-      padding: 1.5rem;
-      border-radius: 8px;
-      border: 2px solid var(--border);
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-
-    .doc-card:hover {
-      border-color: var(--accent);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-
-    .doc-icon {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-    }
-
-    .doc-name {
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-      word-break: break-word;
-    }
-
-    .doc-size {
-      font-size: 0.85rem;
-      color: var(--soft-gray);
-    }
-
-    /* Inventory */
-    .inventory-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 1rem;
-    }
-
-    .inv-item {
-      background: var(--warm-white);
-      padding: 1.5rem;
-      border-radius: 8px;
-      border: 2px solid var(--border);
-      border-left: 4px solid var(--accent);
-    }
-
-    .inv-name {
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
-
-    .inv-qty {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 1rem;
-      padding: 0.75rem;
-      background: var(--accent-light);
-      border-radius: 6px;
-    }
-
-    .inv-qty-label {
-      font-weight: 600;
-      color: var(--accent);
-    }
-
-    .inv-qty-value {
-      font-weight: 700;
-      color: var(--charcoal);
-    }
-
-    .inv-actions {
-      display: flex;
-      gap: 0.5rem;
-    }
-
-    .inv-btn {
-      flex: 1;
-      padding: 0.5rem;
-      background: var(--accent);
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 0.85rem;
-    }
-
-    .inv-btn:hover {
-      background: #9a7a5a;
-    }
-
-    /* Responsive */
-    @media (max-width: 1024px) {
-      .calendar-container {
-        flex-direction: column;
-      }
-
-      .main-content {
-        flex-direction: column;
-      }
-
-      .tabs {
-        width: 100%;
-        display: flex;
-        border-right: none;
-        border-bottom: 2px solid var(--border);
-        overflow-x: auto;
-        padding: 0;
-      }
-
-      .tab-btn {
-        border-left: none;
-        border-bottom: 4px solid transparent;
-        padding: 1rem;
-      }
-
-      .tab-btn.active {
-        border-left: none;
-        border-bottom-color: var(--accent);
-      }
-
-      .doc-grid {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      }
-    }
-
-    @media (max-width: 768px) {
-      header {
-        flex-direction: column;
-        gap: 1rem;
-      }
-
-      .tab-content {
-        padding: 1rem;
-      }
-
-      .form-row {
-        grid-template-columns: 1fr;
-      }
-
-      .notice-board {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .inventory-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  
-    /* Dashboard */
-    .dashboard-container {
-      padding: 2rem;
-    }
-
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 2rem;
-      margin-top: 2rem;
-    }
-
-    @media (max-width: 768px) {
-      .dashboard-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .dashboard-card {
-      background: var(--warm-white);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1.5rem;
-    }
-
-    .dashboard-welcome {
-      grid-column: 1 / -1;
-      background: linear-gradient(135deg, var(--accent-light), var(--warm-white));
-      padding: 2rem;
-    }
-
-    .dashboard-welcome h2 {
-      color: var(--accent);
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .dashboard-card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 1rem;
-    }
-
-    .dashboard-card h3 {
-      font-size: 1.1rem;
-      color: var(--charcoal);
-      margin: 0;
-    }
-
-    .dashboard-link {
-      color: var(--accent);
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.85rem;
-      transition: color 0.3s;
-    }
-
-    .dashboard-link:hover {
-      color: #9a7a5a;
-    }
-
-    .dashboard-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .dashboard-item {
-      padding: 0.75rem;
-      background: var(--cream);
-      border-left: 3px solid var(--accent);
-      border-radius: 4px;
-      font-size: 0.95rem;
-    }
-
-    .dashboard-item-title {
-      font-weight: 600;
-      color: var(--charcoal);
-    }
-
-    .dashboard-item-meta {
-      font-size: 0.85rem;
-      color: var(--soft-gray);
-      margin-top: 0.25rem;
-    }
-
-    .btn-icon {
-      padding: 0.5rem 0.75rem;
-      background: var(--accent);
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 1rem;
-      transition: background 0.3s;
-    }
-
-    .btn-icon:hover {
-      background: #9a7a5a;
-    }
-
-    .group-toggle-btn {
-      padding: 0.5rem 1rem;
-      background: var(--cream);
-      color: var(--charcoal);
-      border: 2px solid var(--border);
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.3s;
-    }
-
-    .group-toggle-btn.active {
-      background: var(--accent);
-      color: white;
-      border-color: var(--accent);
-    }
-
-    .group-toggle-btn:hover {
-      border-color: var(--accent);
-    }
-
+    :root{--cream:#F7F4EF;--warm-white:#FDFBF8;--charcoal:#2C2C2C;--soft-gray:#8A8680;--border:#E5E0D8;--accent:#B5916C;--accent-light:#F0E6DA;--green:#6B8F71;--green-light:#EAF0EB;--red:#C0645A;--red-light:#F5ECEA;--blue:#5A7A9F;--blue-light:#EAF0F7;}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--charcoal);min-height:100vh;}
+    #login-screen{position:fixed;inset:0;background:var(--charcoal);display:flex;align-items:center;justify-content:center;z-index:1000;transition:opacity 0.5s ease;}
+    .login-box{background:var(--warm-white);padding:50px 44px;width:min(420px,92vw);border-radius:4px;text-align:center;}
+    .lang-toggle{display:flex;gap:8px;justify-content:center;margin-bottom:30px;font-size:12px;}
+    .lang-btn{padding:6px 12px;border:1px solid var(--border);background:transparent;color:var(--soft-gray);border-radius:3px;cursor:pointer;transition:all 0.2s;font-family:'DM Sans',sans-serif;}
+    .lang-btn.active{background:var(--accent-light);color:var(--accent);border-color:var(--accent);}
+    .login-logo{font-family:'Playfair Display',serif;font-size:30px;letter-spacing:-0.5px;margin-bottom:4px;}
+    .login-logo span{color:var(--accent);font-style:italic;}
+    .login-sub{font-size:12px;color:var(--soft-gray);letter-spacing:1px;text-transform:uppercase;margin-bottom:34px;}
+    .login-label{display:block;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--soft-gray);margin-bottom:8px;text-align:left;}
+    .login-user-select{display:flex;gap:8px;margin-bottom:20px;}
+    .user-btn{flex:1;padding:10px;border:1.5px solid var(--border);border-radius:3px;background:var(--cream);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:all 0.2s;color:var(--charcoal);}
+    .user-btn.active,.user-btn:hover{border-color:var(--accent);background:var(--accent-light);}
+    .login-input{width:100%;padding:13px 15px;border:1.5px solid var(--border);border-radius:3px;font-family:'DM Sans',sans-serif;font-size:15px;background:var(--cream);color:var(--charcoal);margin-bottom:20px;outline:none;transition:border-color 0.2s;}
+    .login-input:focus{border-color:var(--accent);}
+    .login-btn{width:100%;padding:14px;background:var(--charcoal);color:white;border:none;border-radius:3px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;}
+    .login-btn:hover{background:#444;}
+    .login-error{color:var(--red);font-size:13px;margin-top:10px;min-height:18px;}
+    #app{display:none;}
+    .header{background:var(--charcoal);color:white;padding:0 20px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+    .header-logo{font-family:'Playfair Display',serif;font-size:19px;}
+    .header-logo span{color:var(--accent);font-style:italic;}
+    .header-right{display:flex;align-items:center;gap:12px;}
+    .user-badge{font-size:12px;color:rgba(255,255,255,0.6);}
+    .user-badge strong{color:white;}
+    .logout-btn{font-size:12px;color:rgba(255,255,255,0.5);background:none;border:1px solid rgba(255,255,255,0.2);border-radius:3px;padding:4px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;}
+    .logout-btn:hover{color:white;}
+    .header-lang-toggle{display:flex;gap:4px;border-left:1px solid rgba(255,255,255,0.2);padding-left:12px;margin-left:12px;}
+    .header-lang-btn{font-size:11px;color:rgba(255,255,255,0.5);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;}
+    .header-lang-btn.active{color:white;font-weight:500;}
+    .notice-board{background:var(--accent-light);padding:20px;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:center;justify-content:space-between;}
+    .notice-text{flex:1;font-style:italic;color:var(--accent);font-size:13px;}
+    .notice-input{flex:1;padding:10px 12px;border:1px solid var(--accent);border-radius:3px;font-family:'DM Sans',sans-serif;font-size:13px;}
+    .notice-buttons{display:flex;gap:8px;}
+    .notice-btn{padding:6px 12px;border:none;border-radius:3px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;}
+    .notice-save{background:var(--green);color:white;}
+    .notice-cancel{background:var(--soft-gray);color:white;}
+    .notice-edit{background:var(--accent);color:white;}
+    .main-container{display:flex;flex:1;overflow:hidden;}
+    .tabs{background:var(--warm-white);border-right:1px solid var(--border);width:180px;padding:12px 0;overflow-y:auto;flex-shrink:0;}
+    .tab-btn{width:100%;padding:12px 16px;border:none;background:transparent;text-align:left;cursor:pointer;font-size:13px;color:var(--soft-gray);border-left:3px solid transparent;transition:all 0.2s;font-family:'DM Sans',sans-serif;}
+    .tab-btn.active{background:var(--accent-light);color:var(--accent);border-left-color:var(--accent);}
+    .tab-btn:hover{background:var(--cream);}
+    .content{flex:1;padding:20px;overflow-y:auto;background:var(--cream);}
+    .tab-section{display:none;}
+    .tab-section.active{display:block;}
+    h2{font-family:'Playfair Display',serif;font-size:24px;margin-bottom:20px;color:var(--charcoal);}
+    h3{font-family:'Playfair Display',serif;font-size:18px;margin:16px 0 12px 0;}
+    .card{background:var(--warm-white);border:1px solid var(--border);border-radius:4px;padding:16px;margin-bottom:16px;}
+    .card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
+    .card-title{font-weight:500;font-size:14px;color:var(--charcoal);}
+    .card-meta{font-size:12px;color:var(--soft-gray);display:flex;gap:12px;margin:8px 0;}
+    .card-link{color:var(--accent);font-size:12px;cursor:pointer;text-decoration:none;}
+    .form-group{margin-bottom:16px;}
+    .form-label{display:block;font-size:12px;font-weight:500;color:var(--charcoal);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;}
+    .form-input,.form-select,.form-textarea{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:3px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--charcoal);background:var(--cream);}
+    .form-input:focus,.form-select:focus,.form-textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-light);}
+    .form-textarea{resize:vertical;min-height:80px;}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+    .form-row.full{grid-template-columns:1fr;}
+    .button-group{display:flex;gap:12px;margin-top:16px;}
+    .btn{padding:10px 16px;border:none;border-radius:3px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.2s;}
+    .btn-primary{background:var(--accent);color:white;}
+    .btn-primary:hover{background:#9a7a5a;}
+    .btn-secondary{background:var(--soft-gray);color:white;}
+    .btn-secondary:hover{background:#6f5f5a;}
+    .btn-success{background:var(--green);color:white;}
+    .btn-success:hover{background:#5a7a61;}
+    .btn-danger{background:var(--red);color:white;}
+    .btn-danger:hover{background:#a84d45;}
+    .btn-small{padding:6px 10px;font-size:11px;}
+    .item{background:var(--warm-white);border-left:3px solid var(--border);border-radius:3px;padding:16px;margin-bottom:12px;transition:all 0.2s;}
+    .item.high{border-left-color:var(--red);}
+    .item.medium{border-left-color:var(--accent);}
+    .item.low{border-left-color:var(--green);}
+    .item-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
+    .item-content{flex:1;}
+    .item-title{font-weight:500;font-size:14px;color:var(--charcoal);margin-bottom:6px;}
+    .item-text{font-size:13px;color:var(--charcoal);margin-bottom:8px;}
+    .item-meta{font-size:12px;color:var(--soft-gray);display:flex;gap:12px;flex-wrap:wrap;}
+    .item-actions{display:flex;gap:8px;}
+    .badge{display:inline-block;padding:4px 10px;border-radius:12px;font-size:11px;font-weight:500;}
+    .badge-status{background:var(--accent-light);color:var(--accent);}
+    .badge-priority{background:var(--red-light);color:var(--red);}
+    .badge-priority.medium{background:var(--accent-light);color:var(--accent);}
+    .badge-priority.low{background:var(--green-light);color:var(--green);}
+    .badge-category{background:var(--blue-light);color:var(--blue);}
+    .empty-state{text-align:center;padding:40px 20px;color:var(--soft-gray);}
+    .empty-state-icon{font-size:48px;margin-bottom:12px;}
+    .dashboard-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;}
+    @media (max-width:768px){.dashboard-grid{grid-template-columns:1fr;}}
+    .dashboard-card{background:var(--warm-white);border:1px solid var(--border);border-radius:4px;padding:16px;}
+    .dashboard-card h3{margin-top:0;font-size:16px;}
+    .dashboard-card-content{margin:12px 0;}
+    .dashboard-item{padding:10px 0;border-bottom:1px solid var(--accent-light);font-size:13px;}
+    .dashboard-item:last-child{border-bottom:none;}
+    .dashboard-item-title{font-weight:500;color:var(--charcoal);}
+    .dashboard-item-meta{font-size:12px;color:var(--soft-gray);margin-top:4px;}
+    .bulk-textarea{width:100%;padding:12px;border:1px solid var(--border);border-radius:3px;font-family:'DM Sans',sans-serif;font-size:13px;min-height:120px;resize:vertical;}
   </style>
-
-    /* Language Toggle */
-    .lang-toggle {
-      display: flex;
-      gap: 0.5rem;
-      align-items: center;
-      font-weight: 600;
-      font-size: 0.9rem;
-    }
-
-    .lang-btn {
-      padding: 0.4rem 0.8rem;
-      border: none;
-      background: transparent;
-      cursor: pointer;
-      color: var(--soft-gray);
-      transition: all 0.3s;
-      border-bottom: 2px solid transparent;
-    }
-
-    .lang-btn.active {
-      color: var(--accent);
-      border-bottom-color: var(--accent);
-    }
-
-    .lang-btn:hover {
-      color: var(--accent);
-    }
-
-  </head>
+</head>
 <body>
-  <!-- Login Screen -->
-  <div id="login-screen">
-    <div class="login-card">
-      <h1>Saint James</h1>
-      <div class="user-buttons">
-        <button class="user-btn selected" data-user="Adriana">Adriana</button>
-        <button class="user-btn" data-user="Veronica">Veronica</button>
-        <button class="user-btn" data-user="Mirella">Mirella</button>
+
+<!-- Login Screen -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="lang-toggle">
+      <button class="lang-btn active" data-lang="en">EN</button>
+      <span style="color:var(--soft-gray);font-size:11px;">|</span>
+      <button class="lang-btn" data-lang="fr">FR</button>
+    </div>
+    <div class="login-logo">Saint <span>James</span></div>
+    <div class="login-sub" id="login-sub">Household Management</div>
+    <div class="login-label" id="login-label-user">Who are you?</div>
+    <div class="login-user-select" id="login-users"></div>
+    <input type="password" class="login-input" id="login-pwd" placeholder="Password">
+    <button class="login-btn" id="login-submit">Enter</button>
+    <div class="login-error" id="login-error"></div>
+  </div>
+</div>
+
+<!-- Main App -->
+<div id="app">
+  <div class="header">
+    <div class="header-logo">Saint <span>James</span></div>
+    <div class="header-right">
+      <div class="user-badge"><strong id="header-user"></strong></div>
+      <div class="header-lang-toggle">
+        <button class="header-lang-btn active" data-lang="en" id="header-lang-en">EN</button>
+        <span style="color:rgba(255,255,255,0.2);font-size:10px;">|</span>
+        <button class="header-lang-btn" data-lang="fr" id="header-lang-fr">FR</button>
       </div>
-      <input type="password" id="pwd-input" placeholder="Password">
-      <button id="login-btn" class="btn-primary">Login</button>
-      <div id="login-error"></div>
+      <button class="logout-btn" id="header-logout">Logout</button>
     </div>
   </div>
 
-  <!-- Main App -->
-  <div id="app">
-    <!-- Header -->
-    <header>
-      <div class="logo">Saint James</div>
-      <div class="user-section">
-        <div class="user-badge" id="user-badge">Adriana</div>
-        <button id="logout-btn">Logout</button>
-      </div>
-    
-        <div class="lang-toggle">
-          <button class="lang-btn active" data-lang="fr">FR</button>
-          <span>|</span>
-          <button class="lang-btn" data-lang="en">EN</button>
-        </div>
-      
-    </header>
-
-    <!-- Notice Board -->
-    <div class="notice-board">
-      <div id="notice-txt">Bienvenue sur Saint James! / Welcome to Saint James!</div>
-      <button id="edit-notice-btn">Edit</button>
-      <form id="notice-edit-form">
-        <input type="text" id="notice-input" placeholder="Edit notice...">
-        <button type="button" id="notice-save-btn" class="notice-btn">Save</button>
-        <button type="button" id="notice-cancel-btn" class="notice-btn">Cancel</button>
-      </form>
+  <div class="notice-board">
+    <div class="notice-text" id="notice-text">Welcome to Saint James</div>
+    <div class="notice-input" style="display:none;" id="notice-input-container">
+      <input type="text" class="notice-input" id="notice-input" placeholder="Edit notice">
     </div>
-
-    <!-- Main Content -->
-    <div class="main-content">
-      <!-- Tabs -->
-      <div class="tabs">
-        <button class="tab-btn active" data-tab="dashboard">Tableau de bord / Dashboard</button>
-        <button class="tab-btn" data-tab="tasks">Tâches / Tasks</button>
-        <button class="tab-btn" data-tab="messages">Messages</button>
-        <button class="tab-btn" data-tab="orders">Commandes / Orders</button>
-        <button class="tab-btn" data-tab="documents">Documents</button>
-        <button class="tab-btn" data-tab="calendar">Calendrier / Calendar</button>
-        <button class="tab-btn" data-tab="inventory">Inventaire / Inventory</button>
-        <button class="tab-btn" data-tab="repairs">Travaux / Works</button>
-      </div>
-
-      <!-- Tab Content -->
-      <div class="tab-content">
-
-        <!-- Tasks Tab -->
-        <div id="tasks" class="tab-section active">
-          <h2>Tâches / Tasks</h2>
-
-          <div class="add-form">
-            <div class="form-row">
-              <div class="form-group">
-                <label>Title</label>
-                <input type="text" id="task-title" placeholder="Task title">
-              </div>
-              <div class="form-group">
-                <label>Category / Catégorie</label>
-                <select id="task-cat">
-                  <option value="Courses / Groceries">Courses / Groceries</option>
-                  <option value="Nettoyage / Cleaning">Nettoyage / Cleaning</option>
-                  <option value="Cuisine / Cooking">Cuisine / Cooking</option>
-                  <option value="Lessive / Laundry">Lessive / Laundry</option>
-                  <option value="Autre / Other">Autre / Other</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Assigned to / Assignée à</label>
-                <select id="task-who">
-                  <option value="Adriana">Adriana</option>
-                  <option value="Veronica">Veronica</option>
-                  <option value="Mirella">Mirella</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label>Priority / Priorité</label>
-                <select id="task-pri">
-                  <option value="low">Low / Basse</option>
-                  <option value="medium">Medium / Moyenne</option>
-                  <option value="high">High / Haute</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-row full">
-              <div class="form-group">
-                <label>Notes</label>
-                <textarea id="task-note" placeholder="Additional notes..."></textarea>
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Date Due / Date limite</label>
-                <input type="date" id="task-date">
-              </div>
-            </div>
-            <div class="btn-group">
-              <button id="add-task-btn" class="btn-primary">Add Task</button>
-            </div>
-          </div>
-
-          <div class="filters">
-            <button class="filter-btn active" data-filter="all" data-type="task">All</button>
-            <button class="filter-btn" data-filter="Courses / Groceries" data-type="task">Courses</button>
-            <button class="filter-btn" data-filter="Nettoyage / Cleaning" data-type="task">Cleaning</button>
-            <button class="filter-btn" data-filter="Cuisine / Cooking" data-type="task">Cooking</button>
-            <button class="filter-btn" data-filter="Lessive / Laundry" data-type="task">Laundry</button>
-            <button class="filter-btn" data-filter="Autre / Other" data-type="task">Other</button>
-          </div>
-
-          <div id="tasks-list" class="item-list"></div>
-        </div>
-
-        <!-- Messages Tab -->
-        <div id="messages" class="tab-section">
-          <h2>Messages</h2>
-
-          <div id="chat-msgs"></div>
-
-          <div class="add-form">
-            <div class="form-group full">
-              <label>Your Message</label>
-              <textarea id="msg-input" placeholder="Type a message..."></textarea>
-            </div>
-            <div class="btn-group">
-              <button id="send-msg-btn" class="btn-primary">Send</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Orders Tab -->
-        <div id="orders" class="tab-section">
-          <h2>Commandes / Orders</h2>
-
-          <div class="add-form">
-            <div class="form-row">
-              <div class="form-group">
-                <label>Item</label>
-                <input type="text" id="order-item" placeholder="Item to order">
-              </div>
-              <div class="form-group">
-                <label>Quantity / Quantité</label>
-                <input type="number" id="order-qty" min="1" value="1">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Ordered by / Commandé par</label>
-                <select id="order-who">
-                  <option value="Adriana">Adriana</option>
-                  <option value="Veronica">Veronica</option>
-                  <option value="Mirella">Mirella</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label>Status</label>
-                <select id="order-status">
-                  <option value="pending">Pending / En attente</option>
-                  <option value="ordered">Ordered / Commandé</option>
-                  <option value="received">Received / Reçu</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-row full">
-              <div class="form-group">
-                <label>Notes</label>
-                <textarea id="order-note" placeholder="Additional notes..."></textarea>
-              </div>
-            </div>
-            <div class="btn-group">
-              <button id="add-order-btn" class="btn-primary">Add Order</button>
-            </div>
-          </div>
-
-          <div class="filters">
-            <button class="filter-btn active" data-filter="all" data-type="document">All</button>
-            <button class="filter-btn" data-filter="pending" data-type="document">Pending</button>
-            <button class="filter-btn" data-filter="ordered" data-type="document">Ordered</button>
-            <button class="filter-btn" data-filter="received" data-type="document">Received</button>
-          </div>
-
-          <div id="orders-list" class="item-list"></div>
-        </div>
-
-        <!-- Documents Tab -->
-        <div id="documents" class="tab-section">
-          <h2>Documents</h2>
-
-          <div class="add-form">
-            <div class="form-row">
-              <div class="form-group">
-                <label>Document Name / Nom du document</label>
-                <input type="text" id="doc-name" placeholder="Document name">
-              </div>
-              <div class="form-group">
-                <label>Category / Catégorie</label>
-                <select id="doc-cat">
-                  <option value="Financial / Financier">Financial / Financier</option>
-                  <option value="Legal / Légal">Legal / Légal</option>
-                  <option value="Medical / Médical">Medical / Médical</option>
-                  <option value="Insurance / Assurance">Insurance / Assurance</option>
-                  <option value="Property / Propriété">Property / Propriété</option>
-                  <option value="Other / Autre">Other / Autre</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-row full">
-              <div class="form-group">
-                <label>Notes</label>
-                <textarea id="doc-note" placeholder="Document details..."></textarea>
-              </div>
-            </div>
-            <div class="btn-group">
-              <button id="add-doc-btn" class="btn-primary">Add Document</button>
-            </div>
-          </div>
-
-          <div class="filters">
-            <button class="filter-btn active" data-filter="all" data-type="doc">All</button>
-            <button class="filter-btn" data-filter="Financial / Financier" data-type="doc">Financial</button>
-            <button class="filter-btn" data-filter="Legal / Légal" data-type="doc">Legal</button>
-            <button class="filter-btn" data-filter="Medical / Médical" data-type="doc">Medical</button>
-            <button class="filter-btn" data-filter="Insurance / Assurance" data-type="doc">Insurance</button>
-            <button class="filter-btn" data-filter="Property / Propriété" data-type="doc">Property</button>
-            <button class="filter-btn" data-filter="Other / Autre" data-type="doc">Other</button>
-          </div>
-
-          <div id="docs-list" class="doc-grid"></div>
-        </div>
-
-        <!-- Calendar Tab -->
-        <div id="calendar" class="tab-section">
-          <h2>Calendrier / Calendar</h2>
-
-          <div class="add-form">
-            <div class="form-row">
-              <div class="form-group">
-                <label>Event Title / Titre de l'événement</label>
-                <input type="text" id="cal-title" placeholder="Event name">
-              </div>
-              <div class="form-group">
-                <label>Date</label>
-                <input type="date" id="cal-date">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Time / Heure</label>
-                <input type="time" id="cal-time">
-              </div>
-              <div class="form-group">
-                <label>Category / Catégorie</label>
-                <select id="cal-cat">
-                  <option value="Family / Famille">Family / Famille</option>
-                  <option value="Personal / Personnel">Personal / Personnel</option>
-                  <option value="Work / Travail">Work / Travail</option>
-                  <option value="Birthday / Anniversaire">Birthday / Anniversaire</option>
-                  <option value="Holiday / Vacances">Holiday / Vacances</option>
-                  <option value="Other / Autre">Other / Autre</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-row full">
-              <div class="form-group">
-                <label>Description</label>
-                <textarea id="cal-desc" placeholder="Event details..."></textarea>
-              </div>
-            </div>
-            <div class="btn-group">
-              <button id="add-cal-btn" class="btn-primary">Add Event</button>
-            </div>
-          </div>
-
-          <div class="calendar-container">
-            <div class="calendar-grid">
-              <div class="calendar-header">
-                <button class="cal-nav-btn" id="cal-prev">← Prev</button>
-                <div class="calendar-title" id="cal-title-display">January 2026</div>
-                <button class="cal-nav-btn" id="cal-next">Next →</button>
-              </div>
-              <div class="weekdays">
-                <div class="weekday">Sun</div>
-                <div class="weekday">Mon</div>
-                <div class="weekday">Tue</div>
-                <div class="weekday">Wed</div>
-                <div class="weekday">Thu</div>
-                <div class="weekday">Fri</div>
-                <div class="weekday">Sat</div>
-              </div>
-              <div class="days" id="cal-days"></div>
-            </div>
-            <div class="calendar-events" id="cal-events">
-              <h3>Events</h3>
-              <div id="cal-events-list"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Inventory Tab -->
-        <div id="inventory" class="tab-section">
-          <h2>Inventaire / Inventory</h2>
-
-          <div class="add-form">
-            <div class="form-row">
-              <div class="form-group">
-                <label>Item / Article</label>
-                <input type="text" id="inv-name" placeholder="Item name">
-              </div>
-              <div class="form-group">
-                <label>Location / Localisation</label>
-                <input type="text" id="inv-loc" placeholder="Where is it stored?">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Quantity / Quantité</label>
-                <input type="number" id="inv-qty" min="0" value="1">
-              </div>
-              <div class="form-group">
-                <label>Category / Catégorie</label>
-                <select id="inv-cat">
-                  <option value="Food / Nourriture">Food / Nourriture</option>
-                  <option value="Cleaning / Nettoyage">Cleaning / Nettoyage</option>
-                  <option value="Tools / Outils">Tools / Outils</option>
-                  <option value="Bedding / Literie">Bedding / Literie</option>
-                  <option value="Kitchen / Cuisine">Kitchen / Cuisine</option>
-                  <option value="Other / Autre">Other / Autre</option>
-                </select>
-              </div>
-            </div>
-            <div class="btn-group">
-              <button id="add-inv-btn" class="btn-primary">Add Item</button>
-            </div>
-          </div>
-
-          <div class="filters">
-            <button class="filter-btn active" data-filter="all" data-type="inv">All</button>
-            <button class="filter-btn" data-filter="Food / Nourriture" data-type="inv">Food</button>
-            <button class="filter-btn" data-filter="Cleaning / Nettoyage" data-type="inv">Cleaning</button>
-            <button class="filter-btn" data-filter="Tools / Outils" data-type="inv">Tools</button>
-            <button class="filter-btn" data-filter="Bedding / Literie" data-type="inv">Bedding</button>
-            <button class="filter-btn" data-filter="Kitchen / Cuisine" data-type="inv">Kitchen</button>
-            <button class="filter-btn" data-filter="Other / Autre" data-type="inv">Other</button>
-          </div>
-
-          <div id="inv-list" class="inventory-grid"></div>
-        </div>
-
-        <!-- Repairs Tab -->
-        <div id="repairs" class="tab-section">
-          <h2>Travaux / Works</h2>
-
-          <div class="add-form">
-            <div class="form-row">
-              <div class="form-group">
-                <label>Description</label>
-                <input type="text" id="rep-desc" placeholder="What needs to be fixed?">
-              </div>
-              <div class="form-group">
-                <label>Area / Zone</label>
-                <select id="rep-area">
-                  <option value="Kitchen / Cuisine">Kitchen / Cuisine</option>
-                  <option value="Bedroom / Chambre">Bedroom / Chambre</option>
-                  <option value="Bathroom / Salle de bain">Bathroom / Salle de bain</option>
-                  <option value="Living Room / Salon">Living Room / Salon</option>
-                  <option value="Exterior / Extérieur">Exterior / Extérieur</option>
-                  <option value="Other / Autre">Other / Autre</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Priority / Priorité</label>
-                <select id="rep-pri">
-                  <option value="low">Low / Basse</option>
-                  <option value="medium">Medium / Moyenne</option>
-                  <option value="high">High / Haute</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label>Status</label>
-                <select id="rep-status">
-                  <option value="pending">Pending / En attente</option>
-                  <option value="in-progress">In Progress / En cours</option>
-                  <option value="completed">Completed / Terminé</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-row full">
-              <div class="form-group">
-                <label>Notes</label>
-                <textarea id="rep-note" placeholder="Additional details..."></textarea>
-              </div>
-            </div>
-            <div class="btn-group">
-              <button id="add-rep-btn" class="btn-primary">Add Work Item</button>
-            </div>
-          </div>
-
-          <div class="filters">
-            <button class="filter-btn active" data-filter="all" data-type="rep">All</button>
-            <button class="filter-btn" data-filter="pending" data-type="rep">Pending</button>
-            <button class="filter-btn" data-filter="in-progress" data-type="rep">In Progress</button>
-            <button class="filter-btn" data-filter="completed" data-type="rep">Completed</button>
-          </div>
-
-          <div id="repairs-list" class="item-list"></div>
-        </div>
-
-      </div>
+    <div class="notice-buttons">
+      <button class="notice-btn notice-edit" id="notice-edit-btn">Edit</button>
+      <button class="notice-btn notice-save" id="notice-save-btn" style="display:none;">Save</button>
+      <button class="notice-btn notice-cancel" id="notice-cancel-btn" style="display:none;">Cancel</button>
     </div>
   </div>
 
-  <!-- Supabase Client -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <div class="main-container">
+    <div class="tabs" id="tabs"></div>
+    <div class="content" id="content"></div>
+  </div>
+</div>
 
-  <script>
-  // Translations object
-  const translations = {
-    fr: {
-      dashboard: 'Tableau de bord',
-      tasks: 'Tâches',
-      messages: 'Messages',
-      orders: 'Commandes',
-      documents: 'Documents',
-      calendar: 'Calendrier',
-      inventory: 'Inventaire',
-      repairs: 'Travaux',
-      
-      // Dashboard
-      'welcome-heading': 'Bienvenue',
-      'dashboard-deliveries-title': 'Livraisons à venir',
-      'dashboard-shopping-title': "Liste d'achat",
-      'dashboard-events-title': 'Événements à venir',
-      'dashboard-urgent-title': 'Tâches urgentes',
-      'dashboard-tobuy-title': 'Articles à acheter',
-      'dashboard-repairs-title': 'Réparations en cours',
-      
-      // Common buttons
-      add: 'Ajouter',
-      save: 'Sauvegarder',
-      cancel: 'Annuler',
-      delete: 'Supprimer',
-      edit: 'Modifier',
-      close: 'Fermer',
-      logout: 'Déconnexion',
-      
-      // Orders
-      'add-order': 'Ajouter une commande',
-      'toggle-bulk-orders': 'Ajouter une liste',
-      'add-all-orders': 'Ajouter tout',
-      'cancel-bulk-orders': 'Annuler',
-      'order-status-pending': 'En attente',
-      'order-status-ordered': 'Commandé',
-      'order-status-received': 'Reçu',
-      
-      // Inventory
-      location: 'Lieu',
-      category: 'Catégorie',
-      cleaning: 'Ménage',
-      kitchen: 'Cuisine',
-      bathroom: 'Salle de bain',
-      garden: 'Jardin',
-      office: 'Bureau',
-      general: 'Général',
-      quantity: 'Quantité',
-      status: 'Statut',
-      
-      // Status values
-      'status-need': 'À acheter',
-      'status-have': 'En stock',
-      'status-todo': 'À faire',
-      'status-progress': 'En cours',
-      'status-done': 'Terminé',
-      
-      // Priority
-      high: 'Haute',
-      medium: 'Moyenne',
-      low: 'Basse',
-      
-      // Forms
-      'placeholder-name': 'Nom',
-      'placeholder-notes': 'Notes',
-      'placeholder-search': 'Rechercher...',
-      'no-items': 'Aucun article',
-    },
-    en: {
-      dashboard: 'Dashboard',
-      tasks: 'Tasks',
-      messages: 'Messages',
-      orders: 'Orders',
-      documents: 'Documents',
-      calendar: 'Calendar',
-      inventory: 'Inventory',
-      repairs: 'Works',
-      
-      // Dashboard
-      'welcome-heading': 'Welcome',
-      'dashboard-deliveries-title': 'Upcoming Deliveries',
-      'dashboard-shopping-title': 'Shopping List',
-      'dashboard-events-title': 'Upcoming Events',
-      'dashboard-urgent-title': 'Urgent Tasks',
-      'dashboard-tobuy-title': 'Items to Buy',
-      'dashboard-repairs-title': 'Active Repairs',
-      
-      // Common buttons
-      add: 'Add',
-      save: 'Save',
-      cancel: 'Cancel',
-      delete: 'Delete',
-      edit: 'Edit',
-      close: 'Close',
-      logout: 'Logout',
-      
-      // Orders
-      'add-order': 'Add Order',
-      'toggle-bulk-orders': 'Add List',
-      'add-all-orders': 'Add All',
-      'cancel-bulk-orders': 'Cancel',
-      'order-status-pending': 'Pending',
-      'order-status-ordered': 'Ordered',
-      'order-status-received': 'Received',
-      
-      // Inventory
-      location: 'Location',
-      category: 'Category',
-      cleaning: 'Cleaning',
-      kitchen: 'Kitchen',
-      bathroom: 'Bathroom',
-      garden: 'Garden',
-      office: 'Office',
-      general: 'General',
-      quantity: 'Quantity',
-      status: 'Status',
-      
-      // Status values
-      'status-need': 'Need',
-      'status-have': 'Have',
-      'status-todo': 'Todo',
-      'status-progress': 'Progress',
-      'status-done': 'Done',
-      
-      // Priority
-      high: 'High',
-      medium: 'Medium',
-      low: 'Low',
-      
-      // Forms
-      'placeholder-name': 'Name',
-      'placeholder-notes': 'Notes',
-      'placeholder-search': 'Search...',
-      'no-items': 'No items',
-    }
-  };
-
-  // Current language state
-  let currentLanguage = localStorage.getItem('appLanguage') || 'fr';
-
-  // Function to translate text
-  function t(key) {
-    return translations[currentLanguage][key] || translations.en[key] || key;
+<script>
+// ===== TRANSLATIONS =====
+const T = {
+  en: {
+    // Login
+    'login.subtitle': 'Household Management',
+    'login.who': 'Who are you?',
+    'login.password': 'Password',
+    'login.enter': 'Enter',
+    'login.error': 'Invalid credentials',
+    // Tabs
+    'tab.dashboard': 'Dashboard',
+    'tab.tasks': 'Tasks',
+    'tab.messages': 'Messages',
+    'tab.orders': 'Orders',
+    'tab.documents': 'Documents',
+    'tab.calendar': 'Calendar',
+    'tab.inventory': 'Inventory',
+    'tab.works': 'Works',
+    // Dashboard
+    'dashboard.upcoming_deliveries': 'Upcoming Deliveries',
+    'dashboard.shopping_list': 'Shopping List',
+    'dashboard.upcoming_events': 'Upcoming Events',
+    'dashboard.urgent_tasks': 'Urgent Tasks',
+    'dashboard.items_to_buy': 'Items to Buy',
+    'dashboard.active_repairs': 'Active Repairs',
+    'dashboard.see_all': 'See all →',
+    'dashboard.empty': 'No items',
+    'dashboard.welcome': 'Welcome back',
+    // Tasks
+    'tasks.title': 'Tasks',
+    'tasks.add_task': 'Add Task',
+    'tasks.name': 'Task Name',
+    'tasks.room': 'Room',
+    'tasks.priority': 'Priority',
+    'tasks.assigned': 'Assigned To',
+    'tasks.status': 'Status',
+    'tasks.high': 'High',
+    'tasks.medium': 'Medium',
+    'tasks.low': 'Low',
+    'tasks.todo': 'To Do',
+    'tasks.done': 'Done',
+    'tasks.add': 'Add Task',
+    'tasks.delete': 'Delete',
+    'tasks.mark_done': 'Done',
+    'tasks.mark_todo': 'To Do',
+    'tasks.empty': 'No tasks',
+    // Messages
+    'messages.title': 'Messages',
+    'messages.add_message': 'Add Message',
+    'messages.author': 'From',
+    'messages.content': 'Message',
+    'messages.add': 'Post',
+    'messages.delete': 'Delete',
+    'messages.empty': 'No messages',
+    // Orders
+    'orders.title': 'Orders',
+    'orders.add_order': 'Add Order',
+    'orders.add_list': 'Add List',
+    'orders.bulk_add': 'Bulk Add Orders',
+    'orders.item': 'Item',
+    'orders.notes': 'Notes',
+    'orders.status': 'Status',
+    'orders.pending': 'Pending',
+    'orders.ordered': 'Ordered',
+    'orders.delivered': 'Delivered',
+    'orders.add': 'Add Order',
+    'orders.add_all': 'Add All',
+    'orders.format': 'One item per line. Format: "item name" or "item name - notes"',
+    'orders.delete': 'Delete',
+    'orders.mark_status': 'Mark as',
+    'orders.empty': 'No orders',
+    // Documents
+    'documents.title': 'Documents',
+    'documents.add_doc': 'Add Document',
+    'documents.title_label': 'Title',
+    'documents.category': 'Category',
+    'documents.content': 'Content',
+    'documents.add': 'Save',
+    'documents.delete': 'Delete',
+    'documents.empty': 'No documents',
+    // Calendar
+    'calendar.title': 'Calendar',
+    'calendar.add_event': 'Add Event',
+    'calendar.event': 'Event',
+    'calendar.date': 'Date',
+    'calendar.time': 'Time',
+    'calendar.category': 'Category',
+    'calendar.add': 'Add Event',
+    'calendar.delete': 'Delete',
+    'calendar.empty': 'No events',
+    // Inventory
+    'inventory.title': 'Inventory',
+    'inventory.add_item': 'Add Item',
+    'inventory.name': 'Item Name',
+    'inventory.location': 'Location',
+    'inventory.category': 'Category',
+    'inventory.quantity': 'Quantity',
+    'inventory.add_location': '+',
+    'inventory.add_category': '+',
+    'inventory.status': 'Status',
+    'inventory.have': 'Have',
+    'inventory.need': 'Need',
+    'inventory.add': 'Add Item',
+    'inventory.delete': 'Delete',
+    'inventory.empty': 'No items',
+    'inventory.group_location': 'Group by Location',
+    'inventory.group_category': 'Group by Category',
+    // Repairs
+    'repairs.title': 'Works',
+    'repairs.add_work': 'Add Work',
+    'repairs.name': 'Work Description',
+    'repairs.location': 'Location',
+    'repairs.notes': 'Notes',
+    'repairs.status': 'Status',
+    'repairs.todo': 'To Do',
+    'repairs.progress': 'In Progress',
+    'repairs.done': 'Done',
+    'repairs.add': 'Add Work',
+    'repairs.delete': 'Delete',
+    'repairs.mark_status': 'Mark as',
+    'repairs.empty': 'No work items',
+    // General
+    'general.logout': 'Logout',
+    'general.edit': 'Edit',
+    'general.cancel': 'Cancel',
+    'general.save': 'Save',
+    'general.close': 'Close',
+  },
+  fr: {
+    'login.subtitle': 'Gestion de Ménage',
+    'login.who': 'Qui êtes-vous?',
+    'login.password': 'Mot de passe',
+    'login.enter': 'Entrer',
+    'login.error': 'Identifiants invalides',
+    'tab.dashboard': 'Tableau de bord',
+    'tab.tasks': 'Tâches',
+    'tab.messages': 'Messages',
+    'tab.orders': 'Commandes',
+    'tab.documents': 'Documents',
+    'tab.calendar': 'Calendrier',
+    'tab.inventory': 'Inventaire',
+    'tab.works': 'Travaux',
+    'dashboard.upcoming_deliveries': 'Livraisons à venir',
+    'dashboard.shopping_list': 'Liste d\'achat',
+    'dashboard.upcoming_events': 'Événements à venir',
+    'dashboard.urgent_tasks': 'Tâches urgentes',
+    'dashboard.items_to_buy': 'Articles à acheter',
+    'dashboard.active_repairs': 'Travaux en cours',
+    'dashboard.see_all': 'Voir plus →',
+    'dashboard.empty': 'Aucun élément',
+    'dashboard.welcome': 'Bienvenue',
+    'tasks.title': 'Tâches',
+    'tasks.add_task': 'Ajouter une tâche',
+    'tasks.name': 'Nom de la tâche',
+    'tasks.room': 'Pièce',
+    'tasks.priority': 'Priorité',
+    'tasks.assigned': 'Assigné à',
+    'tasks.status': 'Statut',
+    'tasks.high': 'Élevée',
+    'tasks.medium': 'Moyenne',
+    'tasks.low': 'Basse',
+    'tasks.todo': 'À faire',
+    'tasks.done': 'Fait',
+    'tasks.add': 'Ajouter une tâche',
+    'tasks.delete': 'Supprimer',
+    'tasks.mark_done': 'Fait',
+    'tasks.mark_todo': 'À faire',
+    'tasks.empty': 'Aucune tâche',
+    'messages.title': 'Messages',
+    'messages.add_message': 'Ajouter un message',
+    'messages.author': 'De',
+    'messages.content': 'Message',
+    'messages.add': 'Publier',
+    'messages.delete': 'Supprimer',
+    'messages.empty': 'Aucun message',
+    'orders.title': 'Commandes',
+    'orders.add_order': 'Ajouter une commande',
+    'orders.add_list': 'Ajouter une liste',
+    'orders.bulk_add': 'Ajouter en masse',
+    'orders.item': 'Article',
+    'orders.notes': 'Notes',
+    'orders.status': 'Statut',
+    'orders.pending': 'En attente',
+    'orders.ordered': 'Commandé',
+    'orders.delivered': 'Livré',
+    'orders.add': 'Ajouter une commande',
+    'orders.add_all': 'Ajouter tous',
+    'orders.format': 'Un article par ligne. Format: "nom de l\'article" ou "nom de l\'article - notes"',
+    'orders.delete': 'Supprimer',
+    'orders.mark_status': 'Marquer comme',
+    'orders.empty': 'Aucune commande',
+    'documents.title': 'Documents',
+    'documents.add_doc': 'Ajouter un document',
+    'documents.title_label': 'Titre',
+    'documents.category': 'Catégorie',
+    'documents.content': 'Contenu',
+    'documents.add': 'Enregistrer',
+    'documents.delete': 'Supprimer',
+    'documents.empty': 'Aucun document',
+    'calendar.title': 'Calendrier',
+    'calendar.add_event': 'Ajouter un événement',
+    'calendar.event': 'Événement',
+    'calendar.date': 'Date',
+    'calendar.time': 'Heure',
+    'calendar.category': 'Catégorie',
+    'calendar.add': 'Ajouter un événement',
+    'calendar.delete': 'Supprimer',
+    'calendar.empty': 'Aucun événement',
+    'inventory.title': 'Inventaire',
+    'inventory.add_item': 'Ajouter un article',
+    'inventory.name': 'Nom de l\'article',
+    'inventory.location': 'Emplacement',
+    'inventory.category': 'Catégorie',
+    'inventory.quantity': 'Quantité',
+    'inventory.add_location': '+',
+    'inventory.add_category': '+',
+    'inventory.status': 'Statut',
+    'inventory.have': 'Avoir',
+    'inventory.need': 'Besoin',
+    'inventory.add': 'Ajouter un article',
+    'inventory.delete': 'Supprimer',
+    'inventory.empty': 'Aucun article',
+    'inventory.group_location': 'Grouper par emplacement',
+    'inventory.group_category': 'Grouper par catégorie',
+    'repairs.title': 'Travaux',
+    'repairs.add_work': 'Ajouter un travail',
+    'repairs.name': 'Description du travail',
+    'repairs.location': 'Emplacement',
+    'repairs.notes': 'Notes',
+    'repairs.status': 'Statut',
+    'repairs.todo': 'À faire',
+    'repairs.progress': 'En cours',
+    'repairs.done': 'Fait',
+    'repairs.add': 'Ajouter un travail',
+    'repairs.delete': 'Supprimer',
+    'repairs.mark_status': 'Marquer comme',
+    'repairs.empty': 'Aucun travail',
+    'general.logout': 'Déconnexion',
+    'general.edit': 'Éditer',
+    'general.cancel': 'Annuler',
+    'general.save': 'Enregistrer',
+    'general.close': 'Fermer',
   }
-
-  // Function to set language and update UI
-  function setLanguage(lang) {
-    currentLanguage = lang;
-    localStorage.setItem('appLanguage', lang);
-    
-    // Update language toggle buttons
-    document.querySelectorAll('.lang-btn').forEach(btn => {
-      btn.classList.remove('active');
-      if (btn.getAttribute('data-lang') === lang) {
-        btn.classList.add('active');
-      }
-    });
-    
-    // Update all translatable elements
-    updateUITranslations();
-  }
-
-  // Function to update UI with translations
-  function updateUITranslations() {
-    // Update tab labels
-    const tabLabels = {
-      'dashboard': currentLanguage === 'fr' ? 'Tableau de bord' : 'Dashboard',
-      'tasks': currentLanguage === 'fr' ? 'Tâches' : 'Tasks',
-      'messages': 'Messages',
-      'orders': currentLanguage === 'fr' ? 'Commandes' : 'Orders',
-      'documents': 'Documents',
-      'calendar': currentLanguage === 'fr' ? 'Calendrier' : 'Calendar',
-      'inventory': currentLanguage === 'fr' ? 'Inventaire' : 'Inventory',
-      'repairs': currentLanguage === 'fr' ? 'Travaux' : 'Works'
-    };
-
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-      const tabName = btn.getAttribute('data-tab');
-      if (tabLabels[tabName]) {
-        btn.textContent = tabLabels[tabName];
-      }
-    });
-
-    // Update dashboard headings
-    const welcomeHeading = document.getElementById('welcome-heading');
-    if (welcomeHeading) {
-      welcomeHeading.textContent = t('welcome-heading');
-    }
-
-    // Update dashboard card titles
-    document.getElementById('dashboard-deliveries-title').textContent = t('dashboard-deliveries-title');
-    document.getElementById('dashboard-shopping-title').textContent = t('dashboard-shopping-title');
-    document.getElementById('dashboard-events-title').textContent = t('dashboard-events-title');
-    document.getElementById('dashboard-urgent-title').textContent = t('dashboard-urgent-title');
-    document.getElementById('dashboard-tobuy-title').textContent = t('dashboard-tobuy-title');
-    document.getElementById('dashboard-repairs-title').textContent = t('dashboard-repairs-title');
-  }
-
-    // ====== SUPABASE SETUP ======
-    const SUPABASE_URL = 'https://iviwnjtbpsdnjxjjqeyq.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml2aXduanRicHNkbmp4ampxZXlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NDI0MzIsImV4cCI6MjA5MDIxODQzMn0.8tE3Y6swCr7HglMUJCooY6oQd-591NERhKUs89vqPrQ';
-    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-    // ====== STATE ======
-    const PW = {
-      Adriana: 'Adriana2026',
-      Veronica: 'Veronica2026',
-      Mirella: 'Mirella2026'
-    };
-
-    let CU = 'Adriana'; // Current user
-    let SU = 'Adriana'; // Selected user for login
-    let selFile = null;
-    let calY = new Date().getFullYear();
-    let calM = new Date().getMonth();
-    let tFlt = 'all';
-    let dFlt = 'all';
-    let iFlt = 'all';
-    let rFlt = 'all';
-
-    // Data arrays
-    let tasks = [];
-    let msgs = [];
-    let orders = [];
-    let docs = [];
-    let calEvs = [];
-    let inv = [];
-    let repairs = [];
-    let notice = 'Bienvenue sur Saint James! / Welcome to Saint James!';
-
-    // Row IDs for each table (to know whether to INSERT or UPDATE)
-    let rowIds = {
-      tasks: null,
-      messages: null,
-      orders: null,
-      documents: null,
-      calendar_events: null,
-      inventory: null,
-      repairs: null
-    };
-
-    // ====== DEFAULT DATA ======
-    const defaultTasks = [
-      {id: 1, title: 'Faire les courses / Grocery shopping', cat: 'Courses / Groceries', who: 'Veronica', pri: 'high', note: 'Légumes, fruits, lait', done: false, date: tod()},
-      {id: 2, title: 'Nettoyer la cuisine / Clean kitchen', cat: 'Nettoyage / Cleaning', who: 'Adriana', pri: 'medium', note: 'Plans de travail et sol', done: false, date: tod()},
-      {id: 3, title: 'Faire la lessive / Do laundry', cat: 'Lessive / Laundry', who: 'Mirella', pri: 'medium', note: 'Linge blanc et coloré', done: false, date: tod()},
-      {id: 4, title: 'Préparer le dîner / Prepare dinner', cat: 'Cuisine / Cooking', who: 'Veronica', pri: 'high', note: 'Menu français', done: false, date: tod()}
-    ];
-
-    const defaultMsgs = [
-      {id: 1, who: 'Adriana', txt: 'Bonjour! / Hello!', time: '09:00'},
-      {id: 2, who: 'Veronica', txt: 'Hi there! Comment ça va? / How are you?', time: '09:15'},
-      {id: 3, who: 'Mirella', txt: 'Tout va bien! / All is well!', time: '09:30'}
-    ];
-
-    const defaultOrders = [
-      {id: 1, item: 'Café / Coffee', qty: 2, who: 'Adriana', status: 'pending', note: 'Grains entiers / Whole beans'},
-      {id: 2, item: 'Papier toilette / Toilet paper', qty: 1, who: 'Veronica', status: 'ordered', note: ' '},
-      {id: 3, item: 'Savon de lessive / Laundry soap', qty: 1, who: 'Mirella', status: 'received', note: 'Livré / Delivered'}
-    ];
-
-    const defaultDocs = [
-      {id: 1, name: 'Contrats de location / Lease agreements', cat: 'Legal / Légal', note: 'Documents importants'},
-      {id: 2, name: 'Factures de services / Utility bills', cat: 'Financial / Financier', note: 'Électricité, eau, gaz'},
-      {id: 3, name: 'Polices d\'assurance / Insurance policies', cat: 'Insurance / Assurance', note: 'Habitation et responsabilité civile'},
-      {id: 4, name: 'Carnets de santé / Health records', cat: 'Medical / Médical', note: 'Vaccinations et visites médicales'}
-    ];
-
-    const defaultCalEvs = [
-      {id: 1, title: 'Anniversaire de Mirella / Mirella\'s birthday', date: '2026-04-15', time: '19:00', cat: 'Birthday / Anniversaire', desc: 'Célébration spéciale / Special celebration'},
-      {id: 2, title: 'Visite médicale / Doctor\'s appointment', date: '2026-04-01', time: '14:00', cat: 'Medical / Médical', desc: 'Checkup annuel / Annual checkup'},
-      {id: 3, title: 'Vacances en famille / Family vacation', date: '2026-07-01', time: '08:00', cat: 'Holiday / Vacances', desc: 'Une semaine en Provence / One week in Provence'}
-    ];
-
-    const defaultInv = [
-      {id: 1, name: 'Riz / Rice', loc: 'Garde-manger / Pantry', qty: 5, cat: 'Food / Nourriture'},
-      {id: 2, name: 'Produit nettoyant / Cleaning product', loc: 'Armoire de rangement / Storage', qty: 3, cat: 'Cleaning / Nettoyage'},
-      {id: 3, name: 'Draps / Bedsheets', loc: 'Armoire de chambre / Bedroom closet', qty: 8, cat: 'Bedding / Literie'},
-      {id: 4, name: 'Ustensiles de cuisine / Kitchen utensils', loc: 'Cuisine / Kitchen', qty: 12, cat: 'Kitchen / Cuisine'}
-    ];
-
-    const defaultRepairs = [
-      {id: 1, desc: 'Réparer la serrure / Fix the lock', area: 'Exterior / Extérieur', pri: 'high', status: 'pending', note: 'Porte d\'entrée / Front door'},
-      {id: 2, desc: 'Réparer le robinet / Fix the faucet', area: 'Bathroom / Salle de bain', pri: 'medium', status: 'in-progress', note: 'Fuite d\'eau / Water leak'},
-      {id: 3, desc: 'Peindre le salon / Paint living room', area: 'Living Room / Salon', pri: 'low', status: 'pending', note: 'Couleur: bleu pale / Color: pale blue'}
-    ];
-
-    // ====== HELPER FUNCTIONS ======
-    function tod() {
-      const d = new Date();
-      const y = d.getFullYear();
-      const m = String(d.getMonth() + 1).padStart(2, '0');
-      const da = String(d.getDate()).padStart(2, '0');
-      return `${y}-${m}-${da}`;
-    }
-
-    function fmt(d) {
-      if (!d) return '';
-      const parts = d.split('-');
-      if (parts.length !== 3) return d;
-      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      return `${months[parseInt(parts[1]) - 1]} ${parseInt(parts[2])}, ${parts[0]}`;
-    }
-
-    function getNextId(arr) {
-      if (arr.length === 0) return 1;
-      return Math.max(...arr.map(item => item.id)) + 1;
-    }
-
-    // ====== SUPABASE HELPERS ======
-    async function loadTable(table) {
-      try {
-        const { data, error } = await sb.from(table).select('*').limit(1);
-        if (error) {
-          console.error('Load error:', table, error);
-          return null;
-        }
-        if (data && data.length > 0) {
-          rowIds[table] = data[0].id;
-          return JSON.parse(data[0].data);
-        }
-        return null;
-      } catch (e) {
-        console.error('Exception in loadTable:', table, e);
-        return null;
-      }
-    }
-
-    async function saveTable(table, payload) {
-      try {
-        const jsonStr = JSON.stringify(payload);
-        if (rowIds[table]) {
-          await sb.from(table).update({data: jsonStr}).eq('id', rowIds[table]);
-        } else {
-          const {data, error} = await sb.from(table).insert({data: jsonStr}).select();
-          if (!error && data && data.length > 0) {
-            rowIds[table] = data[0].id;
-          }
-        }
-      } catch (e) {
-        console.error('Exception in saveTable:', table, e);
-      }
-    }
-
-    // ====== INITIALIZE DATA FROM SUPABASE ======
-    async function initData() {
-      // Load tasks (includes notice)
-      const tData = await loadTable('tasks');
-      if (tData) {
-        tasks = tData.items || [];
-        notice = tData.notice || notice;
-      } else {
-        tasks = JSON.parse(JSON.stringify(defaultTasks));
-        await saveTable('tasks', {items: tasks, notice});
-      }
-
-      // Load messages
-      const mData = await loadTable('messages');
-      if (mData) {
-        msgs = mData.items || [];
-      } else {
-        msgs = JSON.parse(JSON.stringify(defaultMsgs));
-        await saveTable('messages', {items: msgs});
-      }
-
-      // Load orders
-      const oData = await loadTable('orders');
-      if (oData) {
-        orders = oData.items || [];
-      } else {
-        orders = JSON.parse(JSON.stringify(defaultOrders));
-        await saveTable('orders', {items: orders});
-      }
-
-      // Load documents
-      const dData = await loadTable('documents');
-      if (dData) {
-        docs = dData.items || [];
-      } else {
-        docs = JSON.parse(JSON.stringify(defaultDocs));
-        await saveTable('documents', {items: docs});
-      }
-
-      // Load calendar events
-      const cData = await loadTable('calendar_events');
-      if (cData) {
-        calEvs = cData.items || [];
-      } else {
-        calEvs = JSON.parse(JSON.stringify(defaultCalEvs));
-        await saveTable('calendar_events', {items: calEvs});
-      }
-
-      // Load inventory
-      const iData = await loadTable('inventory');
-      if (iData) {
-        inv = iData.items || [];
-      } else {
-        inv = JSON.parse(JSON.stringify(defaultInv));
-        await saveTable('inventory', {items: inv});
-      }
-
-      // Load repairs
-      const rData = await loadTable('repairs');
-      if (rData) {
-        repairs = rData.items || [];
-      } else {
-        repairs = JSON.parse(JSON.stringify(defaultRepairs));
-        await saveTable('repairs', {items: repairs});
-      }
-
-      // Update UI
-      document.getElementById('notice-txt').textContent = notice;
-      renderAll();
-
-      // Subscribe to realtime
-      subscribeAll();
-    }
-
-    // ====== REAL-TIME SUBSCRIPTIONS ======
-    function subscribeAll() {
-      const tables = ['tasks', 'messages', 'orders', 'documents', 'calendar_events', 'inventory', 'repairs'];
-
-      tables.forEach(table => {
-        sb.channel(table + '-changes')
-          .on('postgres_changes', {event: '*', schema: 'public', table}, async (payload) => {
-            const d = await loadTable(table);
-            if (d) {
-              if (table === 'tasks') {
-                tasks = d.items || [];
-                notice = d.notice || notice;
-                document.getElementById('notice-txt').textContent = notice;
-                renderTasks();
-              } else if (table === 'messages') {
-                msgs = d.items || [];
-                renderMsgs();
-                const c = document.getElementById('chat-msgs');
-                if (c) c.scrollTop = c.scrollHeight;
-              } else if (table === 'orders') {
-                orders = d.items || [];
-                renderOrders();
-              } else if (table === 'documents') {
-                docs = d.items || [];
-                renderDocs();
-              } else if (table === 'calendar_events') {
-                calEvs = d.items || [];
-                renderCal();
-              } else if (table === 'inventory') {
-                inv = d.items || [];
-                renderInv();
-              } else if (table === 'repairs') {
-                repairs = d.items || [];
-                renderRep();
-              }
-            }
-          })
-          .subscribe();
-      });
-    }
-
-    // ====== SAVE HELPERS ======
-    async function saveTasks() {
-      await saveTable('tasks', {items: tasks, notice});
-    }
-
-    async function saveMsgs() {
-      await saveTable('messages', {items: msgs});
-    }
-
-    async function saveOrders() {
-      await saveTable('orders', {items: orders});
-    }
-
-    async function saveDocs() {
-      await saveTable('documents', {items: docs});
-    }
-
-    async function saveCalEvs() {
-      await saveTable('calendar_events', {items: calEvs});
-    }
-
-    async function saveInv() {
-      await saveTable('inventory', {items: inv});
-    }
-
-    async function saveRepairs() {
-      await saveTable('repairs', {items: repairs});
-    }
-
-    // ====== RENDER FUNCTIONS ======
-    function renderAll() {
-      renderTasks();
-      renderMsgs();
-      renderOrders();
-      renderDocs();
-      renderCal();
-      renderInv();
-      renderRep();
-    }
-
-    function renderTasks() {
-      const list = document.getElementById('tasks-list');
-      list.innerHTML = '';
-
-      let filtered = tasks;
-      if (tFlt !== 'all') {
-        filtered = tasks.filter(t => t.cat === tFlt);
-      }
-
-      filtered.forEach(task => {
-        const div = document.createElement('div');
-        div.className = `item ${task.done ? 'done' : ''}`;
-        div.innerHTML = `
-          <div class="item-header">
-            <div>
-              <div class="item-title">${task.title}</div>
-              <div class="item-meta">
-                <span class="item-tag">${task.cat}</span>
-                <span class="item-tag">${task.who}</span>
-                <span class="item-tag ${task.pri}">${task.pri}</span>
-                <span>${fmt(task.date)}</span>
-              </div>
-              ${task.note ? `<div style="color: var(--soft-gray); margin-top: 0.5rem;">${task.note}</div>` : ''}
-            </div>
-            <div class="item-actions">
-              <button class="btn-success" onclick="togTask(${task.id})">✓</button>
-              <button class="btn-danger" onclick="delTask(${task.id})">×</button>
-            </div>
-          </div>
-        `;
-        list.appendChild(div);
-      });
-    }
-
-    function renderMsgs() {
-      const chat = document.getElementById('chat-msgs');
-      chat.innerHTML = '';
-
-      msgs.forEach(msg => {
-        const div = document.createElement('div');
-        div.className = `message ${msg.who === CU ? 'own' : ''}`;
-        div.innerHTML = `
-          <div class="msg-who">${msg.who}</div>
-          <div class="msg-text">${msg.txt}</div>
-          <div class="msg-time">${msg.time}</div>
-        `;
-        chat.appendChild(div);
-      });
-
-      chat.scrollTop = chat.scrollHeight;
-    }
-
-    function renderOrders() {
-      const list = document.getElementById('orders-list');
-      list.innerHTML = '';
-
-      let filtered = orders;
-      if (dFlt !== 'all') {
-        filtered = orders.filter(o => o.status === dFlt);
-      }
-
-      filtered.forEach(order => {
-        const div = document.createElement('div');
-        div.className = 'item';
-        div.innerHTML = `
-          <div class="item-header">
-            <div>
-              <div class="item-title">${order.item}</div>
-              <div class="item-meta">
-                <span class="item-tag">${order.qty}x</span>
-                <span class="item-tag">${order.who}</span>
-                <span class="item-tag">${order.status}</span>
-              </div>
-              ${order.note ? `<div style="color: var(--soft-gray); margin-top: 0.5rem;">${order.note}</div>` : ''}
-            </div>
-            <div class="item-actions">
-              <button class="btn-danger" onclick="delOrder(${order.id})">×</button>
-            </div>
-          </div>
-        `;
-        list.appendChild(div);
-      });
-    }
-
-    function renderDocs() {
-      const grid = document.getElementById('docs-list');
-      grid.innerHTML = '';
-
-      let filtered = docs;
-      if (dFlt !== 'all') {
-        filtered = docs.filter(d => d.cat === dFlt);
-      }
-
-      filtered.forEach(doc => {
-        const card = document.createElement('div');
-        card.className = 'doc-card';
-        card.innerHTML = `
-          <div class="doc-icon">📄</div>
-          <div class="doc-name">${doc.name}</div>
-          <div class="doc-size">${doc.cat}</div>
-          ${doc.note ? `<div style="font-size: 0.75rem; color: var(--soft-gray); margin-top: 0.5rem;">${doc.note}</div>` : ''}
-          <button class="btn-danger" onclick="delDoc(${doc.id})" style="margin-top: 0.75rem; width: 100%;">Delete</button>
-        `;
-        grid.appendChild(card);
-      });
-    }
-
-    function renderCal() {
-      renderCalGrid();
-      renderCalEvents();
-    }
-
-    function renderCalGrid() {
-      const daysDiv = document.getElementById('cal-days');
-      daysDiv.innerHTML = '';
-
-      const firstDay = new Date(calY, calM, 1).getDay();
-      const daysInMonth = new Date(calY, calM + 1, 0).getDate();
-      const daysInPrevMonth = new Date(calY, calM, 0).getDate();
-
-      const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-      document.getElementById('cal-title-display').textContent = `${monthNames[calM]} ${calY}`;
-
-      // Previous month days
-      for (let i = firstDay - 1; i >= 0; i--) {
-        const day = document.createElement('div');
-        day.className = 'day other-month';
-        day.textContent = daysInPrevMonth - i;
-        daysDiv.appendChild(day);
-      }
-
-      const today = new Date();
-      const isToday = (d) => d === today.getDate() && calM === today.getMonth() && calY === today.getFullYear();
-
-      // Current month days
-      for (let d = 1; d <= daysInMonth; d++) {
-        const day = document.createElement('div');
-        const dateStr = `${calY}-${String(calM + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-        const hasEvent = calEvs.some(ev => ev.date === dateStr);
-
-        day.className = `day ${isToday(d) ? 'today' : ''} ${hasEvent ? 'has-event' : ''}`;
-        day.textContent = d;
-        daysDiv.appendChild(day);
-      }
-
-      // Next month days
-      const totalCells = daysDiv.children.length;
-      const remainingCells = 42 - totalCells;
-      for (let i = 1; i <= remainingCells; i++) {
-        const day = document.createElement('div');
-        day.className = 'day other-month';
-        day.textContent = i;
-        daysDiv.appendChild(day);
-      }
-    }
-
-    function renderCalEvents() {
-      const evList = document.getElementById('cal-events-list');
-      evList.innerHTML = '';
-
-      const filtered = calEvs.filter(ev => {
-        const evDate = new Date(ev.date);
-        return evDate.getMonth() === calM && evDate.getFullYear() === calY;
-      });
-
-      filtered.forEach(ev => {
-        const div = document.createElement('div');
-        div.className = 'item';
-        div.style.marginBottom = '0.75rem';
-        div.innerHTML = `
-          <div style="font-weight: 700;">${ev.title}</div>
-          <div style="font-size: 0.9rem; color: var(--soft-gray);">${fmt(ev.date)} at ${ev.time}</div>
-          <div style="font-size: 0.85rem; margin-top: 0.5rem;">${ev.cat}</div>
-          ${ev.desc ? `<div style="font-size: 0.85rem; color: var(--soft-gray); margin-top: 0.5rem;">${ev.desc}</div>` : ''}
-          <button class="btn-danger" onclick="delCalEv(${ev.id})" style="margin-top: 0.5rem; width: 100%;">Delete</button>
-        `;
-        evList.appendChild(div);
-      });
-    }
-
-    function renderInv() {
-      const grid = document.getElementById('inv-list');
-      grid.innerHTML = '';
-
-      let filtered = inv;
-      if (iFlt !== 'all') {
-        filtered = inv.filter(i => i.cat === iFlt);
-      }
-
-      filtered.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'inv-item';
-        card.innerHTML = `
-          <div class="inv-name">${item.name}</div>
-          <div style="font-size: 0.85rem; color: var(--soft-gray); margin-bottom: 0.75rem;">${item.loc}</div>
-          <div class="inv-qty">
-            <span class="inv-qty-label">Qty:</span>
-            <span class="inv-qty-value">${item.qty}</span>
-          </div>
-          <div class="inv-actions">
-            <button class="inv-btn" onclick="incInv(${item.id})">+</button>
-            <button class="inv-btn" onclick="decInv(${item.id})">-</button>
-            <button class="inv-btn" onclick="delInv(${item.id})" style="background: var(--red);">×</button>
-          </div>
-        `;
-        grid.appendChild(card);
-      });
-    }
-
-    function renderRep() {
-      const list = document.getElementById('repairs-list');
-      list.innerHTML = '';
-
-      let filtered = repairs;
-      if (rFlt !== 'all') {
-        filtered = repairs.filter(r => r.status === rFlt);
-      }
-
-      filtered.forEach(rep => {
-        const div = document.createElement('div');
-        div.className = `item ${rep.status === 'completed' ? 'done' : ''}`;
-        div.innerHTML = `
-          <div class="item-header">
-            <div>
-              <div class="item-title">${rep.desc}</div>
-              <div class="item-meta">
-                <span class="item-tag">${rep.area}</span>
-                <span class="item-tag ${rep.pri}">${rep.pri}</span>
-                <span class="item-tag">${rep.status}</span>
-              </div>
-              ${rep.note ? `<div style="color: var(--soft-gray); margin-top: 0.5rem;">${rep.note}</div>` : ''}
-            </div>
-            <div class="item-actions">
-              <button class="btn-success" onclick="togRep(${rep.id})">✓</button>
-              <button class="btn-danger" onclick="delRep(${rep.id})">×</button>
-            </div>
-          </div>
-        `;
-        list.appendChild(div);
-      });
-    }
-
-    // ====== TASK FUNCTIONS ======
-    async function addTask() {
-      const title = document.getElementById('task-title').value.trim();
-      const cat = document.getElementById('task-cat').value;
-      const who = document.getElementById('task-who').value;
-      const pri = document.getElementById('task-pri').value;
-      const note = document.getElementById('task-note').value.trim();
-      const date = document.getElementById('task-date').value || tod();
-
-      if (!title) {
-        alert('Please enter a task title');
-        return;
-      }
-
-      tasks.push({
-        id: getNextId(tasks),
-        title,
-        cat,
-        who,
-        pri,
-        note,
-        done: false,
-        date
-      });
-
-      await saveTasks();
-      renderTasks();
-
-      document.getElementById('task-title').value = '';
-      document.getElementById('task-cat').value = 'Courses / Groceries';
-      document.getElementById('task-who').value = 'Adriana';
-      document.getElementById('task-pri').value = 'low';
-      document.getElementById('task-note').value = '';
-      document.getElementById('task-date').value = '';
-    }
-
-    async function togTask(id) {
-      const task = tasks.find(t => t.id === id);
-      if (task) {
-        task.done = !task.done;
-        await saveTasks();
-        renderTasks();
-      }
-    }
-
-    async function delTask(id) {
-      tasks = tasks.filter(t => t.id !== id);
-      await saveTasks();
-      renderTasks();
-    }
-
-    // ====== MESSAGE FUNCTIONS ======
-    async function sendMsg() {
-      const txt = document.getElementById('msg-input').value.trim();
-      if (!txt) {
-        alert('Please enter a message');
-        return;
-      }
-
-      const now = new Date();
-      const time = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
-
-      msgs.push({
-        id: getNextId(msgs),
-        who: CU,
-        txt,
-        time
-      });
-
-      await saveMsgs();
-      renderMsgs();
-      document.getElementById('msg-input').value = '';
-    }
-
-    // ====== ORDER FUNCTIONS ======
-    async function addOrder() {
-      const item = document.getElementById('order-item').value.trim();
-      const qty = parseInt(document.getElementById('order-qty').value) || 1;
-      const who = document.getElementById('order-who').value;
-      const status = document.getElementById('order-status').value;
-      const note = document.getElementById('order-note').value.trim();
-
-      if (!item) {
-        alert('Please enter an item');
-        return;
-      }
-
-      orders.push({
-        id: getNextId(orders),
-        item,
-        qty,
-        who,
-        status,
-        note
-      });
-
-      await saveOrders();
-      renderOrders();
-
-      document.getElementById('order-item').value = '';
-      document.getElementById('order-qty').value = '1';
-      document.getElementById('order-who').value = 'Adriana';
-      document.getElementById('order-status').value = 'pending';
-      document.getElementById('order-note').value = '';
-    }
-
-    async function delOrder(id) {
-      orders = orders.filter(o => o.id !== id);
-      await saveOrders();
-      renderOrders();
-    }
-
-    // ====== DOCUMENT FUNCTIONS ======
-    async function addDoc() {
-      const name = document.getElementById('doc-name').value.trim();
-      const cat = document.getElementById('doc-cat').value;
-      const note = document.getElementById('doc-note').value.trim();
-
-      if (!name) {
-        alert('Please enter a document name');
-        return;
-      }
-
-      docs.push({
-        id: getNextId(docs),
-        name,
-        cat,
-        note
-      });
-
-      await saveDocs();
-      renderDocs();
-
-      document.getElementById('doc-name').value = '';
-      document.getElementById('doc-cat').value = 'Financial / Financier';
-      document.getElementById('doc-note').value = '';
-    }
-
-    async function delDoc(id) {
-      docs = docs.filter(d => d.id !== id);
-      await saveDocs();
-      renderDocs();
-    }
-
-    // ====== CALENDAR FUNCTIONS ======
-    async function addCal() {
-      const title = document.getElementById('cal-title').value.trim();
-      const date = document.getElementById('cal-date').value;
-      const time = document.getElementById('cal-time').value || '12:00';
-      const cat = document.getElementById('cal-cat').value;
-      const desc = document.getElementById('cal-desc').value.trim();
-
-      if (!title || !date) {
-        alert('Please enter event title and date');
-        return;
-      }
-
-      calEvs.push({
-        id: getNextId(calEvs),
-        title,
-        date,
-        time,
-        cat,
-        desc
-      });
-
-      await saveCalEvs();
-      renderCal();
-
-      document.getElementById('cal-title').value = '';
-      document.getElementById('cal-date').value = '';
-      document.getElementById('cal-time').value = '';
-      document.getElementById('cal-cat').value = 'Family / Famille';
-      document.getElementById('cal-desc').value = '';
-    }
-
-    async function delCalEv(id) {
-      calEvs = calEvs.filter(ev => ev.id !== id);
-      await saveCalEvs();
-      renderCal();
-    }
-
-    function prevMonth() {
-      if (calM === 0) {
-        calM = 11;
-        calY--;
-      } else {
-        calM--;
-      }
-      renderCal();
-    }
-
-    function nextMonth() {
-      if (calM === 11) {
-        calM = 0;
-        calY++;
-      } else {
-        calM++;
-      }
-      renderCal();
-    }
-
-    // ====== INVENTORY FUNCTIONS ======
-    async function addInv() {
-      const name = document.getElementById('inv-name').value.trim();
-      const loc = document.getElementById('inv-loc').value.trim();
-      const qty = parseInt(document.getElementById('inv-qty').value) || 1;
-      const cat = document.getElementById('inv-cat').value;
-
-      if (!name || !loc) {
-        alert('Please enter item name and location');
-        return;
-      }
-
-      inv.push({
-        id: getNextId(inv),
-        name,
-        loc,
-        qty,
-        cat
-      });
-
-      await saveInv();
-      renderInv();
-
-      document.getElementById('inv-name').value = '';
-      document.getElementById('inv-loc').value = '';
-      document.getElementById('inv-qty').value = '1';
-      document.getElementById('inv-cat').value = 'Food / Nourriture';
-    }
-
-    async function incInv(id) {
-      const item = inv.find(i => i.id === id);
-      if (item) {
-        item.qty++;
-        await saveInv();
-        renderInv();
-      }
-    }
-
-    async function decInv(id) {
-      const item = inv.find(i => i.id === id);
-      if (item && item.qty > 0) {
-        item.qty--;
-        await saveInv();
-        renderInv();
-      }
-    }
-
-    async function delInv(id) {
-      inv = inv.filter(i => i.id !== id);
-      await saveInv();
-      renderInv();
-    }
-
-    // ====== REPAIR FUNCTIONS ======
-    async function addRep() {
-      const desc = document.getElementById('rep-desc').value.trim();
-      const area = document.getElementById('rep-area').value;
-      const pri = document.getElementById('rep-pri').value;
-      const status = document.getElementById('rep-status').value;
-      const note = document.getElementById('rep-note').value.trim();
-
-      if (!desc) {
-        alert('Please enter a description');
-        return;
-      }
-
-      repairs.push({
-        id: getNextId(repairs),
-        desc,
-        area,
-        pri,
-        status,
-        note
-      });
-
-      await saveRepairs();
-      renderRep();
-
-      document.getElementById('rep-desc').value = '';
-      document.getElementById('rep-area').value = 'Kitchen / Cuisine';
-      document.getElementById('rep-pri').value = 'low';
-      document.getElementById('rep-status').value = 'pending';
-      document.getElementById('rep-note').value = '';
-    }
-
-    async function togRep(id) {
-      const rep = repairs.find(r => r.id === id);
-      if (rep) {
-        rep.status = rep.status === 'completed' ? 'pending' : 'completed';
-        await saveRepairs();
-        renderRep();
-      }
-    }
-
-    async function delRep(id) {
-      repairs = repairs.filter(r => r.id !== id);
-      await saveRepairs();
-      renderRep();
-    }
-
-    // ====== NOTICE BOARD FUNCTIONS ======
-    function editNotice() {
-      document.getElementById('notice-txt').style.display = 'none';
-      document.getElementById('edit-notice-btn').style.display = 'none';
-      document.getElementById('notice-edit-form').classList.add('shown');
-      document.getElementById('notice-input').value = notice;
-      document.getElementById('notice-input').focus();
-    }
-
-    async function saveNotice() {
-      notice = document.getElementById('notice-input').value.trim() || notice;
-      document.getElementById('notice-txt').textContent = notice;
-      cancelNoticeEdit();
-      await saveTasks();
-    }
-
-    function cancelNoticeEdit() {
-      document.getElementById('notice-txt').style.display = 'block';
-      document.getElementById('edit-notice-btn').style.display = 'block';
-      document.getElementById('notice-edit-form').classList.remove('shown');
-    }
-
-    // ====== LOGIN FUNCTIONS ======
-    async function doLogin() {
-      const pw = document.getElementById('pwd-input').value;
-      if (PW[SU] === pw) {
-        CU = SU;
-        document.getElementById('login-screen').classList.add('hidden');
-        document.getElementById('app').classList.add('visible');
-        document.getElementById('user-badge').textContent = CU;
-
-        await initData();
-      } else {
-        document.getElementById('login-error').textContent = 'Incorrect password';
-      }
-    }
-
-    function doLogout() {
-      document.getElementById('app').classList.remove('visible');
-      document.getElementById('login-screen').classList.remove('hidden');
-      document.getElementById('pwd-input').value = '';
-      document.getElementById('login-error').textContent = '';
-      SU = 'Adriana';
-      updateUserBtns();
-    }
-
-    function updateUserBtns() {
-      document.querySelectorAll('.user-btn').forEach(btn => {
-        btn.classList.remove('selected');
-        if (btn.dataset.user === SU) {
-          btn.classList.add('selected');
-        }
-      });
-    }
-
-    // ====== EVENT LISTENERS ======
-    document.addEventListener('DOMContentLoaded', () => {
-      // Login
-      document.querySelectorAll('.user-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          SU = btn.dataset.user;
-          updateUserBtns();
-        });
-      });
-
-      document.getElementById('login-btn').addEventListener('click', doLogin);
-      document.getElementById('pwd-input').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') doLogin();
-      });
-
-      document.getElementById('logout-btn').addEventListener('click', doLogout);
-
-      // Tabs
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-          document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
-          btn.classList.add('active');
-          document.getElementById(btn.dataset.tab).classList.add('active');
-        });
-      });
-
-      // Notice
-      document.getElementById('edit-notice-btn').addEventListener('click', editNotice);
-      document.getElementById('notice-save-btn').addEventListener('click', saveNotice);
-      document.getElementById('notice-cancel-btn').addEventListener('click', cancelNoticeEdit);
-
-      // Tasks
-      document.getElementById('add-task-btn').addEventListener('click', addTask);
-      document.getElementById('task-title').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') addTask();
-      });
-
-      document.querySelectorAll('[data-filter][data-type="task"]').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('[data-type="task"]').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          tFlt = btn.dataset.filter;
-          renderTasks();
-        });
-      });
-
-      // Messages
-      document.getElementById('send-msg-btn').addEventListener('click', sendMsg);
-      document.getElementById('msg-input').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-          e.preventDefault();
-          sendMsg();
-        }
-      });
-
-      // Orders
-      document.getElementById('add-order-btn').addEventListener('click', addOrder);
-      document.getElementById('order-item').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') addOrder();
-      });
-
-      document.querySelectorAll('[data-filter][data-type="document"]').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('[data-type="document"]').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          dFlt = btn.dataset.filter;
-          renderOrders();
-        });
-      });
-
-      // Documents
-      document.getElementById('add-doc-btn').addEventListener('click', addDoc);
-      document.getElementById('doc-name').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') addDoc();
-      });
-
-      document.querySelectorAll('[data-filter][data-type="doc"]').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('[data-type="doc"]').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          dFlt = btn.dataset.filter;
-          renderDocs();
-        });
-      });
-
-      // Calendar
-      document.getElementById('add-cal-btn').addEventListener('click', addCal);
-      document.getElementById('cal-title').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') addCal();
-      });
-
-      document.getElementById('cal-prev').addEventListener('click', prevMonth);
-      document.getElementById('cal-next').addEventListener('click', nextMonth);
-
-      // Inventory
-      document.getElementById('add-inv-btn').addEventListener('click', addInv);
-      document.getElementById('inv-name').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') addInv();
-      });
-
-      document.querySelectorAll('[data-filter][data-type="inv"]').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('[data-type="inv"]').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          iFlt = btn.dataset.filter;
-          renderInv();
-        });
-      });
-
-      // Repairs
-      document.getElementById('add-rep-btn').addEventListener('click', addRep);
-      document.getElementById('rep-desc').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') addRep();
-      });
-
-      document.querySelectorAll('[data-filter][data-type="rep"]').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('[data-type="rep"]').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          rFlt = btn.dataset.filter;
-          renderRep();
-        });
-      });
-    
-
-  // Language toggle listeners
-  document.querySelectorAll('.lang-btn').forEach(btn => {
+};
+
+// ===== STATE & CONFIG =====
+const SUPABASE_URL = 'https://iviwnjtbpsdnjxjjqeyq.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml2aXduanRicHNkbmp4ampxZXlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NDI0MzIsImV4cCI6MjA5MDIxODQzMn0.8tE3Y6swCr7HglMUJCooY6oQd-591NERhKUs89vqPrQ';
+
+const USERS = {
+  'Adriana': 'Adriana2026',
+  'Veronica': 'Veronica2026',
+  'Mirella': 'Mirella2026'
+};
+
+const HOUSE_ROOMS = ['Kitchen', 'Living Room', 'Bedroom', 'Bathroom', 'Garden'];
+const DEFAULT_CATEGORIES_INVENTORY = ['Cleaning', 'Kitchen', 'Bathroom', 'Garden', 'Office', 'General'];
+
+let state = {
+  user: null,
+  lang: localStorage.getItem('sj-lang') || 'en',
+  tasks: [],
+  messages: [],
+  orders: [],
+  documents: [],
+  calendar: [],
+  inventory: [],
+  repairs: [],
+  notice: 'Welcome to Saint James',
+  customLocations: JSON.parse(localStorage.getItem('sj-custom-locations') || '[]'),
+  customCategories: JSON.parse(localStorage.getItem('sj-custom-categories') || '[]'),
+};
+
+function t(key) {
+  return T[state.lang][key] || key;
+}
+
+// ===== INITIALIZATION =====
+async function initApp() {
+  setupLoginScreen();
+  setupHeaderLangToggle();
+  setupNoticeBoard();
+  loadDefaultData();
+}
+
+function setupLoginScreen() {
+  const langBtns = document.querySelectorAll('.lang-toggle .lang-btn');
+  langBtns.forEach(btn => {
     btn.addEventListener('click', (e) => {
-      const lang = e.target.getAttribute('data-lang');
-      setLanguage(lang);
-    });
-  })
-
-  // Bulk orders functionality
-  const toggleBulkBtn = document.getElementById('toggle-bulk-orders');
-  const bulkOrdersForm = document.getElementById('bulk-orders-form');
-  const bulkOrdersInput = document.getElementById('bulk-orders-input');
-  const addAllOrdersBtn = document.getElementById('add-all-orders');
-  const cancelBulkOrdersBtn = document.getElementById('cancel-bulk-orders');
-
-  if (toggleBulkBtn) {
-    toggleBulkBtn.addEventListener('click', () => {
-      bulkOrdersForm.style.display = bulkOrdersForm.style.display === 'none' ? 'block' : 'none';
-    });
-
-    cancelBulkOrdersBtn.addEventListener('click', () => {
-      bulkOrdersForm.style.display = 'none';
-      bulkOrdersInput.value = '';
-    });
-
-    addAllOrdersBtn.addEventListener('click', async () => {
-      const items = bulkOrdersInput.value.trim().split('\n').filter(line => line.trim());
-      if (items.length === 0) return;
-
-      for (const item of items) {
-        const [name, notes = ''] = item.split('-').map(s => s.trim());
-        const order = {
-          id: Date.now().toString() + Math.random(),
-          name: name,
-          notes: notes,
-          status: 'pending',
-          date: new Date().toISOString().split('T')[0],
-          user: currentUser
-        };
-        
-        orders.push(order);
-        await saveOrders();
-      }
-
-      bulkOrdersForm.style.display = 'none';
-      bulkOrdersInput.value = '';
-      renderOrders();
-    });
-  }
-
-  // Dashboard update function
-  function updateDashboard() {
-    const now = new Date();
-    const userName = currentUser || 'User';
-
-    // Welcome message with date
-    const welcomeDate = document.getElementById('welcome-date');
-    if (welcomeDate) {
-      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      welcomeDate.textContent = now.toLocaleDateString(currentLanguage === 'fr' ? 'fr-FR' : 'en-US', options);
-    }
-
-    // Upcoming deliveries (orders with status "ordered")
-    const upcomingDeliveries = orders.filter(o => o.status === 'ordered').slice(0, 5);
-    const deliveriesHtml = upcomingDeliveries.length > 0
-      ? upcomingDeliveries.map(o => `<div class="dashboard-item"><div class="dashboard-item-title">${o.name}</div><div class="dashboard-item-meta">${o.notes || ''}</div></div>`).join('')
-      : `<p style="color: var(--soft-gray);">${t('no-items')}</p>`;
-    document.getElementById('dashboard-deliveries').innerHTML = deliveriesHtml;
-
-    // Shopping list (orders with status "pending")
-    const shoppingItems = orders.filter(o => o.status === 'pending').length;
-    const shoppingHtml = shoppingItems > 0
-      ? `<div class="dashboard-item"><div class="dashboard-item-title">${shoppingItems} ${currentLanguage === 'fr' ? 'articles en attente' : 'items pending'}</div></div>`
-      : `<p style="color: var(--soft-gray);">${t('no-items')}</p>`;
-    document.getElementById('dashboard-shopping').innerHTML = shoppingHtml;
-
-    // Upcoming events (next 5)
-    const upcomingEvents = events.filter(e => new Date(e.date) >= now).sort((a, b) => new Date(a.date) - new Date(b.date)).slice(0, 5);
-    const eventsHtml = upcomingEvents.length > 0
-      ? upcomingEvents.map(e => `<div class="dashboard-item"><div class="dashboard-item-title">${e.title}</div><div class="dashboard-item-meta">${e.date} ${e.time || ''}</div></div>`).join('')
-      : `<p style="color: var(--soft-gray);">${t('no-items')}</p>`;
-    document.getElementById('dashboard-events').innerHTML = eventsHtml;
-
-    // Urgent tasks (high priority, not done)
-    const urgentTasks = tasks.filter(t => t.priority === 'high' && t.status !== 'done').slice(0, 5);
-    const urgentHtml = urgentTasks.length > 0
-      ? urgentTasks.map(t => `<div class="dashboard-item"><div class="dashboard-item-title">${t.title}</div><div class="dashboard-item-meta">${t.assignedTo || 'Unassigned'}</div></div>`).join('')
-      : `<p style="color: var(--soft-gray);">${t('no-items')}</p>`;
-    document.getElementById('dashboard-urgent').innerHTML = urgentHtml;
-
-    // Items to buy (inventory with status "need")
-    const itemsToBuy = inventory.filter(i => i.status === 'need').slice(0, 5);
-    const tobuyHtml = itemsToBuy.length > 0
-      ? itemsToBuy.map(i => `<div class="dashboard-item"><div class="dashboard-item-title">${i.name}</div><div class="dashboard-item-meta">${i.location || i.room || ''}</div></div>`).join('')
-      : `<p style="color: var(--soft-gray);">${t('no-items')}</p>`;
-    document.getElementById('dashboard-tobuy').innerHTML = tobuyHtml;
-
-    // Active repairs (status todo or progress)
-    const activeRepairs = repairs.filter(r => r.status === 'todo' || r.status === 'progress').slice(0, 5);
-    const repairsHtml = activeRepairs.length > 0
-      ? activeRepairs.map(r => `<div class="dashboard-item"><div class="dashboard-item-title">${r.title}</div><div class="dashboard-item-meta">${r.room || ''}</div></div>`).join('')
-      : `<p style="color: var(--soft-gray);">${t('no-items')}</p>`;
-    document.getElementById('dashboard-repairs').innerHTML = repairsHtml;
-  }
-;
-
-  // Set initial language
-  setLanguage(currentLanguage);
-
-  // Inventory location and category management
-  const addLocationBtn = document.getElementById('add-location-btn');
-  const addCategoryBtn = document.getElementById('add-category-btn');
-  const locationSelect = document.getElementById('inventory-room');
-  const categorySelect = document.getElementById('inventory-category');
-
-  if (addLocationBtn && locationSelect) {
-    addLocationBtn.addEventListener('click', async () => {
-      const newLocation = prompt(currentLanguage === 'fr' ? 'Nouveau lieu:' : 'New location:');
-      if (newLocation && newLocation.trim()) {
-        const option = document.createElement('option');
-        option.value = newLocation.toLowerCase().replace(/\s+/g, '-');
-        option.textContent = newLocation;
-        locationSelect.appendChild(option);
-        locationSelect.value = option.value;
-        
-        // Store in localStorage as custom locations
-        let customLocations = JSON.parse(localStorage.getItem('customLocations') || '[]');
-        if (!customLocations.includes(newLocation)) {
-          customLocations.push(newLocation);
-          localStorage.setItem('customLocations', JSON.stringify(customLocations));
-        }
-      }
-    });
-  }
-
-  if (addCategoryBtn && categorySelect) {
-    addCategoryBtn.addEventListener('click', async () => {
-      const newCategory = prompt(currentLanguage === 'fr' ? 'Nouvelle catégorie:' : 'New category:');
-      if (newCategory && newCategory.trim()) {
-        const option = document.createElement('option');
-        option.value = newCategory.toLowerCase().replace(/\s+/g, '-');
-        option.textContent = newCategory;
-        categorySelect.appendChild(option);
-        categorySelect.value = option.value;
-        
-        // Store in localStorage as custom categories
-        let customCategories = JSON.parse(localStorage.getItem('customCategories') || '[]');
-        if (!customCategories.includes(newCategory)) {
-          customCategories.push(newCategory);
-          localStorage.setItem('customCategories', JSON.stringify(customCategories));
-        }
-      }
-    });
-  }
-
-  // Group by toggle functionality
-  let groupByMode = 'location';
-  const groupToggleBtns = document.querySelectorAll('.group-toggle-btn');
-  groupToggleBtns.forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      groupToggleBtns.forEach(b => b.classList.remove('active'));
+      state.lang = e.target.dataset.lang;
+      localStorage.setItem('sj-lang', state.lang);
+      updateLoginScreenText();
+      langBtns.forEach(b => b.classList.remove('active'));
       e.target.classList.add('active');
-      groupByMode = e.target.getAttribute('data-group');
-      renderInventory();
     });
   });
 
-  
+  const userContainer = document.getElementById('login-users');
+  Object.keys(USERS).forEach(username => {
+    const btn = document.createElement('button');
+    btn.className = 'user-btn';
+    btn.textContent = username;
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.user-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.user = username;
+    });
+    userContainer.appendChild(btn);
   });
-  </script>
+
+  document.getElementById('login-submit').addEventListener('click', handleLogin);
+  document.getElementById('login-pwd').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') handleLogin();
+  });
+
+  // Set initial lang
+  const activeLang = state.lang;
+  langBtns.forEach(btn => {
+    if (btn.dataset.lang === activeLang) btn.classList.add('active');
+  });
+  updateLoginScreenText();
+}
+
+function updateLoginScreenText() {
+  document.getElementById('login-sub').textContent = t('login.subtitle');
+  document.getElementById('login-label-user').textContent = t('login.who');
+  document.getElementById('login-pwd').placeholder = t('login.password');
+  document.getElementById('login-submit').textContent = t('login.enter');
+}
+
+function handleLogin() {
+  const pwd = document.getElementById('login-pwd').value;
+  const error = document.getElementById('login-error');
+
+  if (!state.user) {
+    error.textContent = t('login.error');
+    return;
+  }
+
+  if (USERS[state.user] !== pwd) {
+    error.textContent = t('login.error');
+    return;
+  }
+
+  error.textContent = '';
+  loginUser();
+}
+
+function loginUser() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  document.getElementById('header-user').textContent = state.user;
+  renderApp();
+}
+
+function setupHeaderLangToggle() {
+  document.getElementById('header-lang-en').addEventListener('click', () => {
+    state.lang = 'en';
+    localStorage.setItem('sj-lang', state.lang);
+    updateHeaderLangButtons();
+    renderApp();
+  });
+  document.getElementById('header-lang-fr').addEventListener('click', () => {
+    state.lang = 'fr';
+    localStorage.setItem('sj-lang', state.lang);
+    updateHeaderLangButtons();
+    renderApp();
+  });
+
+  document.getElementById('header-logout').addEventListener('click', () => {
+    state.user = null;
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('login-pwd').value = '';
+    document.getElementById('login-error').textContent = '';
+    document.querySelectorAll('.user-btn').forEach(b => b.classList.remove('active'));
+  });
+}
+
+function updateHeaderLangButtons() {
+  document.getElementById('header-lang-en').classList.toggle('active', state.lang === 'en');
+  document.getElementById('header-lang-fr').classList.toggle('active', state.lang === 'fr');
+}
+
+function setupNoticeBoard() {
+  const editBtn = document.getElementById('notice-edit-btn');
+  const saveBtn = document.getElementById('notice-save-btn');
+  const cancelBtn = document.getElementById('notice-cancel-btn');
+  const textDiv = document.getElementById('notice-text');
+  const inputContainer = document.getElementById('notice-input-container');
+  const input = document.getElementById('notice-input');
+
+  editBtn.addEventListener('click', () => {
+    textDiv.style.display = 'none';
+    inputContainer.style.display = 'block';
+    input.value = state.notice;
+    editBtn.style.display = 'none';
+    saveBtn.style.display = 'inline-block';
+    cancelBtn.style.display = 'inline-block';
+    input.focus();
+  });
+
+  saveBtn.addEventListener('click', () => {
+    state.notice = input.value;
+    saveNotice();
+  });
+
+  cancelBtn.addEventListener('click', () => {
+    textDiv.style.display = 'block';
+    inputContainer.style.display = 'none';
+    editBtn.style.display = 'inline-block';
+    saveBtn.style.display = 'none';
+    cancelBtn.style.display = 'none';
+  });
+}
+
+function saveNotice() {
+  document.getElementById('notice-text').textContent = state.notice;
+  document.getElementById('notice-text').style.display = 'block';
+  document.getElementById('notice-input-container').style.display = 'none';
+  document.getElementById('notice-edit-btn').style.display = 'inline-block';
+  document.getElementById('notice-save-btn').style.display = 'none';
+  document.getElementById('notice-cancel-btn').style.display = 'none';
+}
+
+// ===== APP RENDERING =====
+function renderApp() {
+  renderTabs();
+  renderContent();
+}
+
+function renderTabs() {
+  const tabsContainer = document.getElementById('tabs');
+  tabsContainer.innerHTML = '';
+
+  const tabs = ['dashboard', 'tasks', 'messages', 'orders', 'documents', 'calendar', 'inventory', 'works'];
+  tabs.forEach((tab, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'tab-btn' + (idx === 0 ? ' active' : '');
+    btn.textContent = t(`tab.${tab}`);
+    btn.addEventListener('click', () => switchTab(tab));
+    tabsContainer.appendChild(btn);
+  });
+}
+
+function switchTab(tabName) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+
+  event.target.classList.add('active');
+  document.getElementById(`tab-${tabName}`).classList.add('active');
+}
+
+function renderContent() {
+  const content = document.getElementById('content');
+  content.innerHTML = '';
+
+  // Dashboard
+  content.appendChild(renderDashboard());
+
+  // Tasks
+  content.appendChild(createTabSection('tasks', renderTasks()));
+
+  // Messages
+  content.appendChild(createTabSection('messages', renderMessages()));
+
+  // Orders
+  content.appendChild(createTabSection('orders', renderOrders()));
+
+  // Documents
+  content.appendChild(createTabSection('documents', renderDocuments()));
+
+  // Calendar
+  content.appendChild(createTabSection('calendar', renderCalendar()));
+
+  // Inventory
+  content.appendChild(createTabSection('inventory', renderInventory()));
+
+  // Works/Repairs
+  content.appendChild(createTabSection('works', renderWorks()));
+
+  // Activate first tab
+  switchTab('dashboard');
+}
+
+function createTabSection(name, content) {
+  const section = document.createElement('div');
+  section.className = 'tab-section';
+  section.id = `tab-${name}`;
+  if (name === 'dashboard') section.classList.add('active');
+  section.appendChild(content);
+  return section;
+}
+
+// ===== DASHBOARD =====
+function renderDashboard() {
+  const div = document.createElement('div');
+
+  const title = document.createElement('h2');
+  title.textContent = t('tab.dashboard');
+  div.appendChild(title);
+
+  const grid = document.createElement('div');
+  grid.className = 'dashboard-grid';
+
+  // Upcoming Deliveries (ordered status)
+  const deliveries = document.createElement('div');
+  deliveries.className = 'dashboard-card';
+  deliveries.innerHTML = `<h3>${t('dashboard.upcoming_deliveries')}</h3>`;
+  const delivItems = state.orders.filter(o => o.status === 'ordered').slice(0, 3);
+  if (delivItems.length) {
+    const itemsDiv = document.createElement('div');
+    itemsDiv.className = 'dashboard-card-content';
+    delivItems.forEach(item => {
+      const p = document.createElement('div');
+      p.className = 'dashboard-item';
+      p.innerHTML = `<div class="dashboard-item-title">${item.item}</div>`;
+      itemsDiv.appendChild(p);
+    });
+    deliveries.appendChild(itemsDiv);
+  } else {
+    deliveries.appendChild(createEmptyState());
+  }
+  const link = document.createElement('a');
+  link.className = 'card-link';
+  link.textContent = t('dashboard.see_all');
+  link.style.cursor = 'pointer';
+  link.addEventListener('click', () => switchTab('orders'));
+  deliveries.appendChild(link);
+  grid.appendChild(deliveries);
+
+  // Shopping List (pending status)
+  const shopping = document.createElement('div');
+  shopping.className = 'dashboard-card';
+  shopping.innerHTML = `<h3>${t('dashboard.shopping_list')}</h3>`;
+  const shopItems = state.orders.filter(o => o.status === 'pending').slice(0, 3);
+  if (shopItems.length) {
+    const itemsDiv = document.createElement('div');
+    itemsDiv.className = 'dashboard-card-content';
+    shopItems.forEach(item => {
+      const p = document.createElement('div');
+      p.className = 'dashboard-item';
+      p.innerHTML = `<div class="dashboard-item-title">${item.item}</div>`;
+      itemsDiv.appendChild(p);
+    });
+    shopping.appendChild(itemsDiv);
+  } else {
+    shopping.appendChild(createEmptyState());
+  }
+  const shopLink = document.createElement('a');
+  shopLink.className = 'card-link';
+  shopLink.textContent = t('dashboard.see_all');
+  shopLink.style.cursor = 'pointer';
+  shopLink.addEventListener('click', () => switchTab('orders'));
+  shopping.appendChild(shopLink);
+  grid.appendChild(shopping);
+
+  // Upcoming Events
+  const events = document.createElement('div');
+  events.className = 'dashboard-card';
+  events.innerHTML = `<h3>${t('dashboard.upcoming_events')}</h3>`;
+  const upcomingEvents = state.calendar.slice(0, 5);
+  if (upcomingEvents.length) {
+    const itemsDiv = document.createElement('div');
+    itemsDiv.className = 'dashboard-card-content';
+    upcomingEvents.forEach(evt => {
+      const p = document.createElement('div');
+      p.className = 'dashboard-item';
+      p.innerHTML = `<div class="dashboard-item-title">${evt.event}</div><div class="dashboard-item-meta">${evt.date}</div>`;
+      itemsDiv.appendChild(p);
+    });
+    events.appendChild(itemsDiv);
+  } else {
+    events.appendChild(createEmptyState());
+  }
+  const evtLink = document.createElement('a');
+  evtLink.className = 'card-link';
+  evtLink.textContent = t('dashboard.see_all');
+  evtLink.style.cursor = 'pointer';
+  evtLink.addEventListener('click', () => switchTab('calendar'));
+  events.appendChild(evtLink);
+  grid.appendChild(events);
+
+  // Urgent Tasks (high priority, not done)
+  const urgent = document.createElement('div');
+  urgent.className = 'dashboard-card';
+  urgent.innerHTML = `<h3>${t('dashboard.urgent_tasks')}</h3>`;
+  const urgentItems = state.tasks.filter(t => t.priority === 'high' && t.status !== 'done').slice(0, 3);
+  if (urgentItems.length) {
+    const itemsDiv = document.createElement('div');
+    itemsDiv.className = 'dashboard-card-content';
+    urgentItems.forEach(task => {
+      const p = document.createElement('div');
+      p.className = 'dashboard-item';
+      p.innerHTML = `<div class="dashboard-item-title">${task.name}</div>`;
+      itemsDiv.appendChild(p);
+    });
+    urgent.appendChild(itemsDiv);
+  } else {
+    urgent.appendChild(createEmptyState());
+  }
+  const urgLink = document.createElement('a');
+  urgLink.className = 'card-link';
+  urgLink.textContent = t('dashboard.see_all');
+  urgLink.style.cursor = 'pointer';
+  urgLink.addEventListener('click', () => switchTab('tasks'));
+  urgent.appendChild(urgLink);
+  grid.appendChild(urgent);
+
+  // Items to Buy (need status)
+  const buy = document.createElement('div');
+  buy.className = 'dashboard-card';
+  buy.innerHTML = `<h3>${t('dashboard.items_to_buy')}</h3>`;
+  const buyItems = state.inventory.filter(i => i.status === 'need').slice(0, 3);
+  if (buyItems.length) {
+    const itemsDiv = document.createElement('div');
+    itemsDiv.className = 'dashboard-card-content';
+    buyItems.forEach(item => {
+      const p = document.createElement('div');
+      p.className = 'dashboard-item';
+      p.innerHTML = `<div class="dashboard-item-title">${item.name}</div><div class="dashboard-item-meta">${item.location}</div>`;
+      itemsDiv.appendChild(p);
+    });
+    buy.appendChild(itemsDiv);
+  } else {
+    buy.appendChild(createEmptyState());
+  }
+  const buyLink = document.createElement('a');
+  buyLink.className = 'card-link';
+  buyLink.textContent = t('dashboard.see_all');
+  buyLink.style.cursor = 'pointer';
+  buyLink.addEventListener('click', () => switchTab('inventory'));
+  buy.appendChild(buyLink);
+  grid.appendChild(buy);
+
+  // Active Repairs (todo or progress)
+  const repairs = document.createElement('div');
+  repairs.className = 'dashboard-card';
+  repairs.innerHTML = `<h3>${t('dashboard.active_repairs')}</h3>`;
+  const activeRepairs = state.repairs.filter(r => r.status === 'todo' || r.status === 'progress').slice(0, 3);
+  if (activeRepairs.length) {
+    const itemsDiv = document.createElement('div');
+    itemsDiv.className = 'dashboard-card-content';
+    activeRepairs.forEach(repair => {
+      const p = document.createElement('div');
+      p.className = 'dashboard-item';
+      p.innerHTML = `<div class="dashboard-item-title">${repair.name}</div>`;
+      itemsDiv.appendChild(p);
+    });
+    repairs.appendChild(itemsDiv);
+  } else {
+    repairs.appendChild(createEmptyState());
+  }
+  const repLink = document.createElement('a');
+  repLink.className = 'card-link';
+  repLink.textContent = t('dashboard.see_all');
+  repLink.style.cursor = 'pointer';
+  repLink.addEventListener('click', () => switchTab('works'));
+  repairs.appendChild(repLink);
+  grid.appendChild(repairs);
+
+  div.appendChild(grid);
+  return div;
+}
+
+function createEmptyState() {
+  const div = document.createElement('div');
+  div.className = 'empty-state';
+  div.innerHTML = `<div class="empty-state-icon">-</div><p>${t('dashboard.empty')}</p>`;
+  return div;
+}
+
+// ===== TASKS =====
+function renderTasks() {
+  const div = document.createElement('div');
+
+  const title = document.createElement('h2');
+  title.textContent = t('tasks.title');
+  div.appendChild(title);
+
+  const form = document.createElement('form');
+  form.className = 'card';
+  form.style.marginBottom = '20px';
+
+  const nameGrp = document.createElement('div');
+  nameGrp.className = 'form-group';
+  const nameLabel = document.createElement('label');
+  nameLabel.className = 'form-label';
+  nameLabel.textContent = t('tasks.name');
+  const nameInput = document.createElement('input');
+  nameInput.type = 'text';
+  nameInput.className = 'form-input';
+  nameGrp.appendChild(nameLabel);
+  nameGrp.appendChild(nameInput);
+  form.appendChild(nameGrp);
+
+  const row = document.createElement('div');
+  row.className = 'form-row';
+
+  const roomGrp = document.createElement('div');
+  roomGrp.className = 'form-group';
+  const roomLabel = document.createElement('label');
+  roomLabel.className = 'form-label';
+  roomLabel.textContent = t('tasks.room');
+  const roomSel = document.createElement('select');
+  roomSel.className = 'form-select';
+  HOUSE_ROOMS.forEach(room => {
+    const opt = document.createElement('option');
+    opt.value = room;
+    opt.textContent = room;
+    roomSel.appendChild(opt);
+  });
+  roomGrp.appendChild(roomLabel);
+  roomGrp.appendChild(roomSel);
+  row.appendChild(roomGrp);
+
+  const priorityGrp = document.createElement('div');
+  priorityGrp.className = 'form-group';
+  const priorityLabel = document.createElement('label');
+  priorityLabel.className = 'form-label';
+  priorityLabel.textContent = t('tasks.priority');
+  const prioritySel = document.createElement('select');
+  prioritySel.className = 'form-select';
+  ['high', 'medium', 'low'].forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p;
+    opt.textContent = t(`tasks.${p}`);
+    prioritySel.appendChild(opt);
+  });
+  priorityGrp.appendChild(priorityLabel);
+  priorityGrp.appendChild(prioritySel);
+  row.appendChild(priorityGrp);
+  form.appendChild(row);
+
+  const assignGrp = document.createElement('div');
+  assignGrp.className = 'form-group';
+  const assignLabel = document.createElement('label');
+  assignLabel.className = 'form-label';
+  assignLabel.textContent = t('tasks.assigned');
+  const assignSel = document.createElement('select');
+  assignSel.className = 'form-select';
+  Object.keys(USERS).forEach(user => {
+    const opt = document.createElement('option');
+    opt.value = user;
+    opt.textContent = user;
+    assignSel.appendChild(opt);
+  });
+  assignGrp.appendChild(assignLabel);
+  assignGrp.appendChild(assignSel);
+  form.appendChild(assignGrp);
+
+  const btnGrp = document.createElement('div');
+  btnGrp.className = 'button-group';
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'btn btn-primary';
+  btn.textContent = t('tasks.add');
+  btn.addEventListener('click', (e) => {
+    e.preventDefault();
+    const newTask = {
+      id: Date.now(),
+      name: nameInput.value,
+      room: roomSel.value,
+      priority: prioritySel.value,
+      assigned: assignSel.value,
+      status: 'todo'
+    };
+    if (newTask.name) {
+      state.tasks.push(newTask);
+      nameInput.value = '';
+      renderContent();
+    }
+  });
+  btnGrp.appendChild(btn);
+  form.appendChild(btnGrp);
+  div.appendChild(form);
+
+  const list = document.createElement('div');
+  list.className = 'item-list';
+  if (state.tasks.length === 0) {
+    list.appendChild(createEmptyState());
+  } else {
+    state.tasks.forEach(task => {
+      const item = document.createElement('div');
+      item.className = `item ${task.priority}`;
+      item.innerHTML = `
+        <div class="item-row">
+          <div class="item-content">
+            <div class="item-title">${task.name}</div>
+            <div class="item-meta">
+              <span>${task.room}</span>
+              <span class="badge badge-priority ${task.priority}">${t(`tasks.${task.priority}`)}</span>
+              <span>${task.assigned}</span>
+              <span class="badge badge-status">${t(`tasks.${task.status}`)}</span>
+            </div>
+          </div>
+          <div class="item-actions">
+            <button class="btn btn-small btn-secondary">✓</button>
+            <button class="btn btn-small btn-danger">✕</button>
+          </div>
+        </div>
+      `;
+      const buttons = item.querySelectorAll('button');
+      buttons[0].addEventListener('click', () => {
+        task.status = task.status === 'done' ? 'todo' : 'done';
+        renderContent();
+      });
+      buttons[1].addEventListener('click', () => {
+        state.tasks = state.tasks.filter(t => t.id !== task.id);
+        renderContent();
+      });
+      list.appendChild(item);
+    });
+  }
+  div.appendChild(list);
+  return div;
+}
+
+// ===== MESSAGES =====
+function renderMessages() {
+  const div = document.createElement('div');
+
+  const title = document.createElement('h2');
+  title.textContent = t('messages.title');
+  div.appendChild(title);
+
+  const form = document.createElement('form');
+  form.className = 'card';
+  form.style.marginBottom = '20px';
+
+  const authorGrp = document.createElement('div');
+  authorGrp.className = 'form-group';
+  const authorLabel = document.createElement('label');
+  authorLabel.className = 'form-label';
+  authorLabel.textContent = t('messages.author');
+  const authorSel = document.createElement('select');
+  authorSel.className = 'form-select';
+  Object.keys(USERS).forEach(user => {
+    const opt = document.createElement('option');
+    opt.value = user;
+    opt.textContent = user;
+    authorSel.appendChild(opt);
+  });
+  authorGrp.appendChild(authorLabel);
+  authorGrp.appendChild(authorSel);
+  form.appendChild(authorGrp);
+
+  const contentGrp = document.createElement('div');
+  contentGrp.className = 'form-group';
+  const contentLabel = document.createElement('label');
+  contentLabel.className = 'form-label';
+  contentLabel.textContent = t('messages.content');
+  const contentInput = document.createElement('textarea');
+  contentInput.className = 'form-textarea';
+  contentGrp.appendChild(contentLabel);
+  contentGrp.appendChild(contentInput);
+  form.appendChild(contentGrp);
+
+  const btnGrp = document.createElement('div');
+  btnGrp.className = 'button-group';
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'btn btn-primary';
+  btn.textContent = t('messages.add');
+  btn.addEventListener('click', (e) => {
+    e.preventDefault();
+    const newMsg = {
+      id: Date.now(),
+      author: authorSel.value,
+      content: contentInput.value,
+      date: new Date().toLocaleDateString()
+    };
+    if (newMsg.content) {
+      state.messages.push(newMsg);
+      contentInput.value = '';
+      renderContent();
+    }
+  });
+  btnGrp.appendChild(btn);
+  form.appendChild(btnGrp);
+  div.appendChild(form);
+
+  const list = document.createElement('div');
+  list.className = 'item-list';
+  if (state.messages.length === 0) {
+    list.appendChild(createEmptyState());
+  } else {
+    state.messages.forEach(msg => {
+      const item = document.createElement('div');
+      item.className = 'item';
+      item.innerHTML = `
+        <div class="item-row">
+          <div class="item-content">
+            <div class="item-meta">
+              <strong>${msg.author}</strong> • ${msg.date}
+            </div>
+            <div class="item-text">${msg.content}</div>
+          </div>
+          <div class="item-actions">
+            <button class="btn btn-small btn-danger">✕</button>
+          </div>
+        </div>
+      `;
+      item.querySelector('button').addEventListener('click', () => {
+        state.messages = state.messages.filter(m => m.id !== msg.id);
+        renderContent();
+      });
+      list.appendChild(item);
+    });
+  }
+  div.appendChild(list);
+  return div;
+}
+
+// ===== ORDERS =====
+function renderOrders() {
+  const div = document.createElement('div');
+
+  const title = document.createElement('h2');
+  title.textContent = t('orders.title');
+  div.appendChild(title);
+
+  const form = document.createElement('form');
+  form.className = 'card';
+  form.style.marginBottom = '20px';
+
+  const itemGrp = document.createElement('div');
+  itemGrp.className = 'form-group';
+  const itemLabel = document.createElement('label');
+  itemLabel.className = 'form-label';
+  itemLabel.textContent = t('orders.item');
+  const itemInput = document.createElement('input');
+  itemInput.type = 'text';
+  itemInput.className = 'form-input';
+  itemGrp.appendChild(itemLabel);
+  itemGrp.appendChild(itemInput);
+  form.appendChild(itemGrp);
+
+  const notesGrp = document.createElement('div');
+  notesGrp.className = 'form-group';
+  const notesLabel = document.createElement('label');
+  notesLabel.className = 'form-label';
+  notesLabel.textContent = t('orders.notes');
+  const notesInput = document.createElement('input');
+  notesInput.type = 'text';
+  notesInput.className = 'form-input';
+  notesGrp.appendChild(notesLabel);
+  notesGrp.appendChild(notesInput);
+  form.appendChild(notesGrp);
+
+  const btnGrp = document.createElement('div');
+  btnGrp.className = 'button-group';
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'btn btn-primary';
+  btn.textContent = t('orders.add');
+  btn.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (itemInput.value) {
+      state.orders.push({
+        id: Date.now(),
+        item: itemInput.value,
+        notes: notesInput.value,
+        status: 'pending'
+      });
+      itemInput.value = '';
+      notesInput.value = '';
+      renderContent();
+    }
+  });
+  btnGrp.appendChild(btn);
+
+  const bulkBtn = document.createElement('button');
+  bulkBtn.type = 'button';
+  bulkBtn.className = 'btn btn-secondary';
+  bulkBtn.textContent = t('orders.add_list');
+  bulkBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    const text = prompt(t('orders.format'));
+    if (text) {
+      const lines = text.split('\n');
+      lines.forEach(line => {
+        const trimmed = line.trim();
+        if (trimmed) {
+          const parts = trimmed.split(' - ');
+          const item = parts[0].trim();
+          const notes = parts[1] ? parts[1].trim() : '';
+          state.orders.push({
+            id: Date.now() + Math.random(),
+            item: item,
+            notes: notes,
+            status: 'pending'
+          });
+        }
+      });
+      renderContent();
+    }
+  });
+  btnGrp.appendChild(bulkBtn);
+  form.appendChild(btnGrp);
+  div.appendChild(form);
+
+  const list = document.createElement('div');
+  list.className = 'item-list';
+  if (state.orders.length === 0) {
+    list.appendChild(createEmptyState());
+  } else {
+    state.orders.forEach(order => {
+      const item = document.createElement('div');
+      item.className = 'item';
+      const statusColors = {
+        pending: 'accent',
+        ordered: 'blue',
+        delivered: 'green'
+      };
+      item.innerHTML = `
+        <div class="item-row">
+          <div class="item-content">
+            <div class="item-title">${order.item}</div>
+            <div class="item-meta">
+              ${order.notes ? `<span>${order.notes}</span>` : ''}
+              <span class="badge badge-status">${t(`orders.${order.status}`)}</span>
+            </div>
+          </div>
+          <div class="item-actions">
+            <button class="btn btn-small btn-secondary">→</button>
+            <button class="btn btn-small btn-danger">✕</button>
+          </div>
+        </div>
+      `;
+      const buttons = item.querySelectorAll('button');
+      buttons[0].addEventListener('click', () => {
+        const statuses = ['pending', 'ordered', 'delivered'];
+        const idx = statuses.indexOf(order.status);
+        order.status = statuses[(idx + 1) % statuses.length];
+        renderContent();
+      });
+      buttons[1].addEventListener('click', () => {
+        state.orders = state.orders.filter(o => o.id !== order.id);
+        renderContent();
+      });
+      list.appendChild(item);
+    });
+  }
+  div.appendChild(list);
+  return div;
+}
+
+// ===== DOCUMENTS =====
+function renderDocuments() {
+  const div = document.createElement('div');
+
+  const title = document.createElement('h2');
+  title.textContent = t('documents.title');
+  div.appendChild(title);
+
+  const form = document.createElement('form');
+  form.className = 'card';
+  form.style.marginBottom = '20px';
+
+  const titleGrp = document.createElement('div');
+  titleGrp.className = 'form-group';
+  const titleLabel = document.createElement('label');
+  titleLabel.className = 'form-label';
+  titleLabel.textContent = t('documents.title_label');
+  const titleInput = document.createElement('input');
+  titleInput.type = 'text';
+  titleInput.className = 'form-input';
+  titleGrp.appendChild(titleLabel);
+  titleGrp.appendChild(titleInput);
+  form.appendChild(titleGrp);
+
+  const catGrp = document.createElement('div');
+  catGrp.className = 'form-group';
+  const catLabel = document.createElement('label');
+  catLabel.className = 'form-label';
+  catLabel.textContent = t('documents.category');
+  const catSel = document.createElement('select');
+  catSel.className = 'form-select';
+  const docCats = ['Medical', 'Financial', 'Property', 'Legal', 'Other'];
+  docCats.forEach(cat => {
+    const opt = document.createElement('option');
+    opt.value = cat;
+    opt.textContent = cat;
+    catSel.appendChild(opt);
+  });
+  catGrp.appendChild(catLabel);
+  catGrp.appendChild(catSel);
+  form.appendChild(catGrp);
+
+  const contentGrp = document.createElement('div');
+  contentGrp.className = 'form-group';
+  const contentLabel = document.createElement('label');
+  contentLabel.className = 'form-label';
+  contentLabel.textContent = t('documents.content');
+  const contentInput = document.createElement('textarea');
+  contentInput.className = 'form-textarea';
+  contentGrp.appendChild(contentLabel);
+  contentGrp.appendChild(contentInput);
+  form.appendChild(contentGrp);
+
+  const btnGrp = document.createElement('div');
+  btnGrp.className = 'button-group';
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'btn btn-primary';
+  btn.textContent = t('documents.add');
+  btn.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (titleInput.value) {
+      state.documents.push({
+        id: Date.now(),
+        title: titleInput.value,
+        category: catSel.value,
+        content: contentInput.value,
+        date: new Date().toLocaleDateString()
+      });
+      titleInput.value = '';
+      contentInput.value = '';
+      renderContent();
+    }
+  });
+  btnGrp.appendChild(btn);
+  form.appendChild(btnGrp);
+  div.appendChild(form);
+
+  const list = document.createElement('div');
+  list.className = 'item-list';
+  if (state.documents.length === 0) {
+    list.appendChild(createEmptyState());
+  } else {
+    state.documents.forEach(doc => {
+      const item = document.createElement('div');
+      item.className = 'item';
+      item.innerHTML = `
+        <div class="item-row">
+          <div class="item-content">
+            <div class="item-title">${doc.title}</div>
+            <div class="item-meta">
+              <span class="badge badge-category">${doc.category}</span>
+              <span>${doc.date}</span>
+            </div>
+            <div class="item-text">${doc.content.substring(0, 100)}${doc.content.length > 100 ? '...' : ''}</div>
+          </div>
+          <div class="item-actions">
+            <button class="btn btn-small btn-danger">✕</button>
+          </div>
+        </div>
+      `;
+      item.querySelector('button').addEventListener('click', () => {
+        state.documents = state.documents.filter(d => d.id !== doc.id);
+        renderContent();
+      });
+      list.appendChild(item);
+    });
+  }
+  div.appendChild(list);
+  return div;
+}
+
+// ===== CALENDAR =====
+function renderCalendar() {
+  const div = document.createElement('div');
+
+  const title = document.createElement('h2');
+  title.textContent = t('calendar.title');
+  div.appendChild(title);
+
+  const form = document.createElement('form');
+  form.className = 'card';
+  form.style.marginBottom = '20px';
+
+  const eventGrp = document.createElement('div');
+  eventGrp.className = 'form-group';
+  const eventLabel = document.createElement('label');
+  eventLabel.className = 'form-label';
+  eventLabel.textContent = t('calendar.event');
+  const eventInput = document.createElement('input');
+  eventInput.type = 'text';
+  eventInput.className = 'form-input';
+  eventGrp.appendChild(eventLabel);
+  eventGrp.appendChild(eventInput);
+  form.appendChild(eventGrp);
+
+  const row = document.createElement('div');
+  row.className = 'form-row';
+
+  const dateGrp = document.createElement('div');
+  dateGrp.className = 'form-group';
+  const dateLabel = document.createElement('label');
+  dateLabel.className = 'form-label';
+  dateLabel.textContent = t('calendar.date');
+  const dateInput = document.createElement('input');
+  dateInput.type = 'date';
+  dateInput.className = 'form-input';
+  dateGrp.appendChild(dateLabel);
+  dateGrp.appendChild(dateInput);
+  row.appendChild(dateGrp);
+
+  const timeGrp = document.createElement('div');
+  timeGrp.className = 'form-group';
+  const timeLabel = document.createElement('label');
+  timeLabel.className = 'form-label';
+  timeLabel.textContent = t('calendar.time');
+  const timeInput = document.createElement('input');
+  timeInput.type = 'time';
+  timeInput.className = 'form-input';
+  timeGrp.appendChild(timeLabel);
+  timeGrp.appendChild(timeInput);
+  row.appendChild(timeGrp);
+  form.appendChild(row);
+
+  const catGrp = document.createElement('div');
+  catGrp.className = 'form-group';
+  const catLabel = document.createElement('label');
+  catLabel.className = 'form-label';
+  catLabel.textContent = t('calendar.category');
+  const catSel = document.createElement('select');
+  catSel.className = 'form-select';
+  const calCats = ['Maintenance', 'Family', 'Work', 'Social', 'Other'];
+  calCats.forEach(cat => {
+    const opt = document.createElement('option');
+    opt.value = cat;
+    opt.textContent = cat;
+    catSel.appendChild(opt);
+  });
+  catGrp.appendChild(catLabel);
+  catGrp.appendChild(catSel);
+  form.appendChild(catGrp);
+
+  const btnGrp = document.createElement('div');
+  btnGrp.className = 'button-group';
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'btn btn-primary';
+  btn.textContent = t('calendar.add');
+  btn.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (eventInput.value && dateInput.value) {
+      state.calendar.push({
+        id: Date.now(),
+        event: eventInput.value,
+        date: dateInput.value,
+        time: timeInput.value,
+        category: catSel.value
+      });
+      eventInput.value = '';
+      dateInput.value = '';
+      timeInput.value = '';
+      renderContent();
+    }
+  });
+  btnGrp.appendChild(btn);
+  form.appendChild(btnGrp);
+  div.appendChild(form);
+
+  const list = document.createElement('div');
+  list.className = 'item-list';
+  if (state.calendar.length === 0) {
+    list.appendChild(createEmptyState());
+  } else {
+    state.calendar.forEach(evt => {
+      const item = document.createElement('div');
+      item.className = 'item';
+      item.innerHTML = `
+        <div class="item-row">
+          <div class="item-content">
+            <div class="item-title">${evt.event}</div>
+            <div class="item-meta">
+              <span>${evt.date}</span>
+              ${evt.time ? `<span>${evt.time}</span>` : ''}
+              <span class="badge badge-category">${evt.category}</span>
+            </div>
+          </div>
+          <div class="item-actions">
+            <button class="btn btn-small btn-danger">✕</button>
+          </div>
+        </div>
+      `;
+      item.querySelector('button').addEventListener('click', () => {
+        state.calendar = state.calendar.filter(c => c.id !== evt.id);
+        renderContent();
+      });
+      list.appendChild(item);
+    });
+  }
+  div.appendChild(list);
+  return div;
+}
+
+// ===== INVENTORY =====
+function renderInventory() {
+  const div = document.createElement('div');
+
+  const title = document.createElement('h2');
+  title.textContent = t('inventory.title');
+  div.appendChild(title);
+
+  const form = document.createElement('form');
+  form.className = 'card';
+  form.style.marginBottom = '20px';
+
+  const nameGrp = document.createElement('div');
+  nameGrp.className = 'form-group';
+  const nameLabel = document.createElement('label');
+  nameLabel.className = 'form-label';
+  nameLabel.textContent = t('inventory.name');
+  const nameInput = document.createElement('input');
+  nameInput.type = 'text';
+  nameInput.className = 'form-input';
+  nameGrp.appendChild(nameLabel);
+  nameGrp.appendChild(nameInput);
+  form.appendChild(nameGrp);
+
+  const locRow = document.createElement('div');
+  locRow.className = 'form-row';
+
+  const locGrp = document.createElement('div');
+  locGrp.className = 'form-group';
+  const locLabel = document.createElement('label');
+  locLabel.className = 'form-label';
+  locLabel.textContent = t('inventory.location');
+  const locSel = document.createElement('select');
+  locSel.className = 'form-select';
+  const allLocs = [...HOUSE_ROOMS, ...state.customLocations];
+  allLocs.forEach(loc => {
+    const opt = document.createElement('option');
+    opt.value = loc;
+    opt.textContent = loc;
+    locSel.appendChild(opt);
+  });
+  locGrp.appendChild(locLabel);
+  locGrp.appendChild(locSel);
+
+  const locBtnContainer = document.createElement('div');
+  locBtnContainer.style.alignSelf = 'flex-end';
+  const addLocBtn = document.createElement('button');
+  addLocBtn.type = 'button';
+  addLocBtn.className = 'btn btn-small btn-secondary';
+  addLocBtn.textContent = t('inventory.add_location');
+  addLocBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    const loc = prompt('Enter location name:');
+    if (loc && !allLocs.includes(loc)) {
+      state.customLocations.push(loc);
+      localStorage.setItem('sj-custom-locations', JSON.stringify(state.customLocations));
+      renderContent();
+    }
+  });
+  locBtnContainer.appendChild(addLocBtn);
+
+  locGrp.appendChild(locBtnContainer);
+  locRow.appendChild(locGrp);
+
+  const catGrp = document.createElement('div');
+  catGrp.className = 'form-group';
+  const catLabel = document.createElement('label');
+  catLabel.className = 'form-label';
+  catLabel.textContent = t('inventory.category');
+  const catSel = document.createElement('select');
+  catSel.className = 'form-select';
+  const allCats = [...DEFAULT_CATEGORIES_INVENTORY, ...state.customCategories];
+  allCats.forEach(cat => {
+    const opt = document.createElement('option');
+    opt.value = cat;
+    opt.textContent = cat;
+    catSel.appendChild(opt);
+  });
+  catGrp.appendChild(catLabel);
+  catGrp.appendChild(catSel);
+
+  const catBtnContainer = document.createElement('div');
+  catBtnContainer.style.alignSelf = 'flex-end';
+  const addCatBtn = document.createElement('button');
+  addCatBtn.type = 'button';
+  addCatBtn.className = 'btn btn-small btn-secondary';
+  addCatBtn.textContent = t('inventory.add_category');
+  addCatBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    const cat = prompt('Enter category name:');
+    if (cat && !allCats.includes(cat)) {
+      state.customCategories.push(cat);
+      localStorage.setItem('sj-custom-categories', JSON.stringify(state.customCategories));
+      renderContent();
+    }
+  });
+  catBtnContainer.appendChild(addCatBtn);
+
+  catGrp.appendChild(catBtnContainer);
+  locRow.appendChild(catGrp);
+  form.appendChild(locRow);
+
+  const qtyGrp = document.createElement('div');
+  qtyGrp.className = 'form-group';
+  const qtyLabel = document.createElement('label');
+  qtyLabel.className = 'form-label';
+  qtyLabel.textContent = t('inventory.quantity');
+  const qtyInput = document.createElement('input');
+  qtyInput.type = 'number';
+  qtyInput.className = 'form-input';
+  qtyInput.value = '1';
+  qtyGrp.appendChild(qtyLabel);
+  qtyGrp.appendChild(qtyInput);
+  form.appendChild(qtyGrp);
+
+  const btnGrp = document.createElement('div');
+  btnGrp.className = 'button-group';
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'btn btn-primary';
+  btn.textContent = t('inventory.add');
+  btn.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (nameInput.value) {
+      state.inventory.push({
+        id: Date.now(),
+        name: nameInput.value,
+        location: locSel.value,
+        category: catSel.value,
+        quantity: parseInt(qtyInput.value) || 1,
+        status: 'have'
+      });
+      nameInput.value = '';
+      qtyInput.value = '1';
+      renderContent();
+    }
+  });
+  btnGrp.appendChild(btn);
+  form.appendChild(btnGrp);
+  div.appendChild(form);
+
+  const list = document.createElement('div');
+  list.className = 'item-list';
+  if (state.inventory.length === 0) {
+    list.appendChild(createEmptyState());
+  } else {
+    state.inventory.forEach(item => {
+      const elem = document.createElement('div');
+      elem.className = 'item';
+      elem.innerHTML = `
+        <div class="item-row">
+          <div class="item-content">
+            <div class="item-title">${item.name}</div>
+            <div class="item-meta">
+              <span>${item.location}</span>
+              <span class="badge badge-category">${item.category}</span>
+              <span>Qty: ${item.quantity}</span>
+              <span class="badge ${item.status === 'need' ? 'badge-priority' : 'badge-status'}">${t(`inventory.${item.status}`)}</span>
+            </div>
+          </div>
+          <div class="item-actions">
+            <button class="btn btn-small btn-secondary">→</button>
+            <button class="btn btn-small btn-danger">✕</button>
+          </div>
+        </div>
+      `;
+      const buttons = elem.querySelectorAll('button');
+      buttons[0].addEventListener('click', () => {
+        item.status = item.status === 'need' ? 'have' : 'need';
+        renderContent();
+      });
+      buttons[1].addEventListener('click', () => {
+        state.inventory = state.inventory.filter(i => i.id !== item.id);
+        renderContent();
+      });
+      list.appendChild(elem);
+    });
+  }
+  div.appendChild(list);
+  return div;
+}
+
+// ===== WORKS/REPAIRS =====
+function renderWorks() {
+  const div = document.createElement('div');
+
+  const title = document.createElement('h2');
+  title.textContent = t('repairs.title');
+  div.appendChild(title);
+
+  const form = document.createElement('form');
+  form.className = 'card';
+  form.style.marginBottom = '20px';
+
+  const nameGrp = document.createElement('div');
+  nameGrp.className = 'form-group';
+  const nameLabel = document.createElement('label');
+  nameLabel.className = 'form-label';
+  nameLabel.textContent = t('repairs.name');
+  const nameInput = document.createElement('input');
+  nameInput.type = 'text';
+  nameInput.className = 'form-input';
+  nameGrp.appendChild(nameLabel);
+  nameGrp.appendChild(nameInput);
+  form.appendChild(nameGrp);
+
+  const locGrp = document.createElement('div');
+  locGrp.className = 'form-group';
+  const locLabel = document.createElement('label');
+  locLabel.className = 'form-label';
+  locLabel.textContent = t('repairs.location');
+  const locSel = document.createElement('select');
+  locSel.className = 'form-select';
+  HOUSE_ROOMS.forEach(room => {
+    const opt = document.createElement('option');
+    opt.value = room;
+    opt.textContent = room;
+    locSel.appendChild(opt);
+  });
+  locGrp.appendChild(locLabel);
+  locGrp.appendChild(locSel);
+  form.appendChild(locGrp);
+
+  const notesGrp = document.createElement('div');
+  notesGrp.className = 'form-group';
+  const notesLabel = document.createElement('label');
+  notesLabel.className = 'form-label';
+  notesLabel.textContent = t('repairs.notes');
+  const notesInput = document.createElement('textarea');
+  notesInput.className = 'form-textarea';
+  notesGrp.appendChild(notesLabel);
+  notesGrp.appendChild(notesInput);
+  form.appendChild(notesGrp);
+
+  const btnGrp = document.createElement('div');
+  btnGrp.className = 'button-group';
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'btn btn-primary';
+  btn.textContent = t('repairs.add');
+  btn.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (nameInput.value) {
+      state.repairs.push({
+        id: Date.now(),
+        name: nameInput.value,
+        location: locSel.value,
+        notes: notesInput.value,
+        status: 'todo'
+      });
+      nameInput.value = '';
+      notesInput.value = '';
+      renderContent();
+    }
+  });
+  btnGrp.appendChild(btn);
+  form.appendChild(btnGrp);
+  div.appendChild(form);
+
+  const list = document.createElement('div');
+  list.className = 'item-list';
+  if (state.repairs.length === 0) {
+    list.appendChild(createEmptyState());
+  } else {
+    state.repairs.forEach(repair => {
+      const item = document.createElement('div');
+      item.className = `item ${repair.status === 'todo' ? 'high' : repair.status === 'progress' ? 'medium' : 'low'}`;
+      item.innerHTML = `
+        <div class="item-row">
+          <div class="item-content">
+            <div class="item-title">${repair.name}</div>
+            <div class="item-meta">
+              <span>${repair.location}</span>
+              <span class="badge badge-status">${t(`repairs.${repair.status}`)}</span>
+            </div>
+            ${repair.notes ? `<div class="item-text">${repair.notes}</div>` : ''}
+          </div>
+          <div class="item-actions">
+            <button class="btn btn-small btn-secondary">→</button>
+            <button class="btn btn-small btn-danger">✕</button>
+          </div>
+        </div>
+      `;
+      const buttons = item.querySelectorAll('button');
+      buttons[0].addEventListener('click', () => {
+        const statuses = ['todo', 'progress', 'done'];
+        const idx = statuses.indexOf(repair.status);
+        repair.status = statuses[(idx + 1) % statuses.length];
+        renderContent();
+      });
+      buttons[1].addEventListener('click', () => {
+        state.repairs = state.repairs.filter(r => r.id !== repair.id);
+        renderContent();
+      });
+      list.appendChild(item);
+    });
+  }
+  div.appendChild(list);
+  return div;
+}
+
+// ===== LOAD DEFAULT DATA =====
+function loadDefaultData() {
+  if (state.tasks.length === 0) {
+    state.tasks = [
+      { id: 1, name: 'Clean kitchen', room: 'Kitchen', priority: 'high', assigned: 'Adriana', status: 'todo' },
+      { id: 2, name: 'Organize bedroom', room: 'Bedroom', priority: 'medium', assigned: 'Veronica', status: 'todo' },
+      { id: 3, name: 'Water plants', room: 'Garden', priority: 'low', assigned: 'Mirella', status: 'done' }
+    ];
+  }
+  if (state.messages.length === 0) {
+    state.messages = [
+      { id: 1, author: 'Adriana', content: 'The groceries have arrived', date: '2026-03-28' },
+      { id: 2, author: 'Veronica', content: 'Plumber coming on Friday', date: '2026-03-27' }
+    ];
+  }
+  if (state.orders.length === 0) {
+    state.orders = [
+      { id: 1, item: 'Cleaning supplies', notes: 'Eco-friendly', status: 'pending' },
+      { id: 2, item: 'Kitchen utensils', notes: '', status: 'ordered' },
+      { id: 3, item: 'Garden tools', notes: 'Pruning shears', status: 'delivered' }
+    ];
+  }
+  if (state.documents.length === 0) {
+    state.documents = [
+      { id: 1, title: 'Mortgage deed', category: 'Property', content: 'Main property documents...', date: '2026-03-25' },
+      { id: 2, title: 'Insurance policy', category: 'Legal', content: 'Home insurance details...', date: '2026-03-20' }
+    ];
+  }
+  if (state.calendar.length === 0) {
+    state.calendar = [
+      { id: 1, event: 'Plumber visit', date: '2026-04-02', time: '10:00', category: 'Maintenance' },
+      { id: 2, event: 'Family dinner', date: '2026-04-05', time: '19:00', category: 'Family' },
+      { id: 3, event: 'Gardener scheduled', date: '2026-04-08', time: '09:00', category: 'Maintenance' }
+    ];
+  }
+  if (state.inventory.length === 0) {
+    state.inventory = [
+      { id: 1, name: 'Dish soap', location: 'Kitchen', category: 'Cleaning', quantity: 3, status: 'have' },
+      { id: 2, name: 'Light bulbs', location: 'Living Room', category: 'General', quantity: 2, status: 'need' },
+      { id: 3, name: 'Garden soil', location: 'Garden', category: 'Garden', quantity: 1, status: 'need' }
+    ];
+  }
+  if (state.repairs.length === 0) {
+    state.repairs = [
+      { id: 1, name: 'Fix leaky tap', location: 'Bathroom', notes: 'Master bathroom sink', status: 'todo' },
+      { id: 2, name: 'Paint hallway', location: 'Living Room', notes: 'Light gray color', status: 'progress' },
+      { id: 3, name: 'Replace door handle', location: 'Kitchen', notes: 'Front door', status: 'done' }
+    ];
+  }
+}
+
+// ===== INITIALIZE =====
+document.addEventListener('DOMContentLoaded', initApp);
+</script>
+
 </body>
 </html>
