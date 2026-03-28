@@ -111,6 +111,12 @@
     .dashboard-item-title{font-weight:500;color:var(--charcoal);}
     .dashboard-item-meta{font-size:12px;color:var(--soft-gray);margin-top:4px;}
     .bulk-textarea{width:100%;padding:12px;border:1px solid var(--border);border-radius:3px;font-family:'DM Sans',sans-serif;font-size:13px;min-height:120px;resize:vertical;}
+    .edit-form{background:var(--accent-light);border:1px solid var(--accent);border-radius:3px;padding:12px;margin-top:8px;}
+    .edit-form .form-group{margin-bottom:8px;}
+    .edit-form .form-label{margin-bottom:4px;}
+    .edit-form button{font-size:11px;padding:6px 10px;}
+    .btn-success{background:var(--green);color:white;}
+    .btn-success:hover{background:#5a7a61;}
   </style>
 </head>
 <body>
@@ -591,6 +597,84 @@ function saveNotice() {
 }
 
 // ===== APP RENDERING =====
+let currentTab = 'dashboard';
+
+// ===== EDIT MODE HELPER FUNCTIONS =====
+function toggleEditMode(itemId, itemData, renderFn) {
+  const itemElem = document.querySelector(`[data-item-id="${itemId}"]`);
+  if (!itemElem) return;
+  
+  const editForm = itemElem.querySelector('.edit-form');
+  if (editForm && editForm.style.display !== 'none') {
+    // Already in edit mode, cancel
+    editForm.style.display = 'none';
+    itemElem.querySelector('.item-content').style.display = '';
+    itemElem.querySelector('.item-actions').style.display = '';
+  } else if (editForm) {
+    // Enter edit mode
+    itemElem.querySelector('.item-content').style.display = 'none';
+    itemElem.querySelector('.item-actions').style.display = 'none';
+    editForm.style.display = 'block';
+  }
+}
+
+function createEditForm(fields) {
+  const form = document.createElement('div');
+  form.className = 'edit-form';
+  form.style.display = 'none';
+  
+  fields.forEach(field => {
+    const grp = document.createElement('div');
+    grp.className = 'form-group';
+    grp.style.marginBottom = '8px';
+    
+    const label = document.createElement('label');
+    label.className = 'form-label';
+    label.textContent = field.label;
+    label.style.marginBottom = '4px';
+    grp.appendChild(label);
+    
+    let input;
+    if (field.type === 'textarea') {
+      input = document.createElement('textarea');
+      input.className = 'form-textarea';
+      input.value = field.value || '';
+    } else if (field.type === 'select') {
+      input = document.createElement('select');
+      input.className = 'form-select';
+      (field.options || []).forEach(opt => {
+        const o = document.createElement('option');
+        o.value = opt;
+        o.textContent = opt;
+        input.appendChild(o);
+      });
+      input.value = field.value || '';
+    } else if (field.type === 'date') {
+      input = document.createElement('input');
+      input.type = 'date';
+      input.className = 'form-input';
+      input.value = field.value || '';
+    } else if (field.type === 'time') {
+      input = document.createElement('input');
+      input.type = 'time';
+      input.className = 'form-input';
+      input.value = field.value || '';
+    } else {
+      input = document.createElement('input');
+      input.type = field.type || 'text';
+      input.className = 'form-input';
+      input.value = field.value || '';
+    }
+    
+    input.dataset.fieldName = field.name;
+    grp.appendChild(input);
+    form.appendChild(grp);
+  });
+  
+  return form;
+}
+
+
 function renderApp() {
   renderTabs();
   renderContent();
@@ -601,9 +685,9 @@ function renderTabs() {
   tabsContainer.innerHTML = '';
 
   const tabs = ['dashboard', 'tasks', 'messages', 'orders', 'documents', 'calendar', 'inventory', 'works'];
-  tabs.forEach((tab, idx) => {
+  tabs.forEach((tab) => {
     const btn = document.createElement('button');
-    btn.className = 'tab-btn' + (idx === 0 ? ' active' : '');
+    btn.className = 'tab-btn' + (tab === currentTab ? ' active' : '');
     btn.textContent = t(`tab.${tab}`);
     btn.addEventListener('click', () => switchTab(tab));
     tabsContainer.appendChild(btn);
@@ -611,6 +695,7 @@ function renderTabs() {
 }
 
 function switchTab(tabName) {
+  currentTab = tabName;
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
 
@@ -653,8 +738,11 @@ function renderContent() {
   // Works/Repairs
   content.appendChild(createTabSection('works', renderWorks()));
 
-  // Activate first tab
-  switchTab('dashboard');
+  // Restore current tab - ensure the correct tab is displayed
+  const savedTab = currentTab;
+  setTimeout(() => {
+    switchTab(savedTab);
+  }, 0);
 }
 
 function createTabSection(name, content) {
@@ -969,19 +1057,136 @@ function renderTasks() {
             </div>
           </div>
           <div class="item-actions">
-            <button class="btn btn-small btn-secondary">✓</button>
-            <button class="btn btn-small btn-danger">✕</button>
+            <button class="btn btn-small btn-secondary" title="Edit">✎</button>
+            <button class="btn btn-small btn-secondary" title="Toggle">✓</button>
+            <button class="btn btn-small btn-danger" title="Delete">✕</button>
           </div>
         </div>
       `;
-      const buttons = item.querySelectorAll('button');
+      item.dataset.itemId = task.id;
+      // Edit form
+      const editDiv = document.createElement('div');
+      editDiv.className = 'edit-form';
+      editDiv.style.display = 'none';
+      const nameGrp = document.createElement('div');
+      nameGrp.className = 'form-group';
+      const nameLabel = document.createElement('label');
+      nameLabel.className = 'form-label';
+      nameLabel.textContent = t('tasks.name');
+      const nameInput = document.createElement('input');
+      nameInput.type = 'text';
+      nameInput.className = 'form-input';
+      nameInput.value = task.name;
+      nameGrp.appendChild(nameLabel);
+      nameGrp.appendChild(nameInput);
+      editDiv.appendChild(nameGrp);
+      const roomGrp = document.createElement('div');
+      roomGrp.className = 'form-group';
+      const roomLabel = document.createElement('label');
+      roomLabel.className = 'form-label';
+      roomLabel.textContent = t('tasks.room');
+      const roomSel = document.createElement('select');
+      roomSel.className = 'form-select';
+      HOUSE_ROOMS.forEach(room => {
+        const opt = document.createElement('option');
+        opt.value = room;
+        opt.textContent = room;
+        if (room === task.room) opt.selected = true;
+        roomSel.appendChild(opt);
+      });
+      roomGrp.appendChild(roomLabel);
+      roomGrp.appendChild(roomSel);
+      editDiv.appendChild(roomGrp);
+      const priorityGrp = document.createElement('div');
+      priorityGrp.className = 'form-group';
+      const priorityLabel = document.createElement('label');
+      priorityLabel.className = 'form-label';
+      priorityLabel.textContent = t('tasks.priority');
+      const prioritySel = document.createElement('select');
+      prioritySel.className = 'form-select';
+      ['high', 'medium', 'low'].forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p;
+        opt.textContent = t(`tasks.${p}`);
+        if (p === task.priority) opt.selected = true;
+        prioritySel.appendChild(opt);
+      });
+      priorityGrp.appendChild(priorityLabel);
+      priorityGrp.appendChild(prioritySel);
+      editDiv.appendChild(priorityGrp);
+      const assignGrp = document.createElement('div');
+      assignGrp.className = 'form-group';
+      const assignLabel = document.createElement('label');
+      assignLabel.className = 'form-label';
+      assignLabel.textContent = t('tasks.assigned');
+      const assignSel = document.createElement('select');
+      assignSel.className = 'form-select';
+      Object.keys(USERS).forEach(user => {
+        const opt = document.createElement('option');
+        opt.value = user;
+        opt.textContent = user;
+        if (user === task.assigned) opt.selected = true;
+        assignSel.appendChild(opt);
+      });
+      assignGrp.appendChild(assignLabel);
+      assignGrp.appendChild(assignSel);
+      editDiv.appendChild(assignGrp);
+      const statusGrp = document.createElement('div');
+      statusGrp.className = 'form-group';
+      const statusLabel = document.createElement('label');
+      statusLabel.className = 'form-label';
+      statusLabel.textContent = t('tasks.status');
+      const statusSel = document.createElement('select');
+      statusSel.className = 'form-select';
+      ['todo', 'done'].forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s;
+        opt.textContent = t(`tasks.${s}`);
+        if (s === task.status) opt.selected = true;
+        statusSel.appendChild(opt);
+      });
+      statusGrp.appendChild(statusLabel);
+      statusGrp.appendChild(statusSel);
+      editDiv.appendChild(statusGrp);
+      const btnGroup = document.createElement('div');
+      btnGroup.style.display = 'flex';
+      btnGroup.style.gap = '8px';
+      btnGroup.style.marginTop = '8px';
+      const saveBtn = document.createElement('button');
+      saveBtn.className = 'btn btn-small btn-success';
+      saveBtn.textContent = '✓ Save';
+      const cancelBtn = document.createElement('button');
+      cancelBtn.className = 'btn btn-small btn-secondary';
+      cancelBtn.textContent = '✕ Cancel';
+      btnGroup.appendChild(saveBtn);
+      btnGroup.appendChild(cancelBtn);
+      editDiv.appendChild(btnGroup);
+      item.appendChild(editDiv);
+
+      const buttons = item.querySelector('.item-row').querySelectorAll('button');
       buttons[0].addEventListener('click', () => {
+        editDiv.style.display = editDiv.style.display === 'none' ? 'block' : 'none';
+        item.querySelector('.item-row').style.display = editDiv.style.display === 'none' ? '' : 'none';
+      });
+      buttons[1].addEventListener('click', () => {
         task.status = task.status === 'done' ? 'todo' : 'done';
         renderContent();
       });
-      buttons[1].addEventListener('click', () => {
+      buttons[2].addEventListener('click', () => {
         state.tasks = state.tasks.filter(t => t.id !== task.id);
         renderContent();
+      });
+      saveBtn.addEventListener('click', () => {
+        task.name = nameInput.value;
+        task.room = roomSel.value;
+        task.priority = prioritySel.value;
+        task.assigned = assignSel.value;
+        task.status = statusSel.value;
+        renderContent();
+      });
+      cancelBtn.addEventListener('click', () => {
+        editDiv.style.display = 'none';
+        item.querySelector('.item-row').style.display = '';
       });
       list.appendChild(item);
     });
@@ -1182,37 +1387,124 @@ function renderOrders() {
     state.orders.forEach(order => {
       const item = document.createElement('div');
       item.className = 'item';
-      const statusColors = {
-        pending: 'accent',
-        ordered: 'blue',
-        delivered: 'green'
-      };
-      item.innerHTML = `
-        <div class="item-row">
-          <div class="item-content">
-            <div class="item-title">${order.item}</div>
-            <div class="item-meta">
-              ${order.notes ? `<span>${order.notes}</span>` : ''}
-              <span class="badge badge-status">${t(`orders.${order.status}`)}</span>
-            </div>
-          </div>
-          <div class="item-actions">
-            <button class="btn btn-small btn-secondary">→</button>
-            <button class="btn btn-small btn-danger">✕</button>
+      item.dataset.itemId = order.id;
+      
+      const displayDiv = document.createElement('div');
+      displayDiv.className = 'item-row';
+      displayDiv.innerHTML = `
+        <div class="item-content">
+          <div class="item-title">${order.item}</div>
+          <div class="item-meta">
+            ${order.notes ? `<span>${order.notes}</span>` : ''}
+            <span class="badge badge-status" style="cursor: pointer;" title="Click to cycle status">${t(`orders.${order.status}`)}</span>
           </div>
         </div>
+        <div class="item-actions">
+          <button class="btn btn-small btn-secondary" title="Edit">✎</button>
+          <button class="btn btn-small btn-danger" title="Delete">✕</button>
+        </div>
       `;
-      const buttons = item.querySelectorAll('button');
+      item.appendChild(displayDiv);
+      
+      const editDiv = document.createElement('div');
+      editDiv.className = 'edit-form';
+      editDiv.style.display = 'none';
+      editDiv.style.padding = '12px';
+      editDiv.style.backgroundColor = 'var(--accent-light)';
+      editDiv.style.borderRadius = '3px';
+      
+      const itemEditGrp = document.createElement('div');
+      itemEditGrp.className = 'form-group';
+      const itemEditLabel = document.createElement('label');
+      itemEditLabel.className = 'form-label';
+      itemEditLabel.textContent = t('orders.item');
+      const itemEditInput = document.createElement('input');
+      itemEditInput.type = 'text';
+      itemEditInput.className = 'form-input';
+      itemEditInput.value = order.item;
+      itemEditInput.style.marginBottom = '8px';
+      itemEditGrp.appendChild(itemEditLabel);
+      itemEditGrp.appendChild(itemEditInput);
+      editDiv.appendChild(itemEditGrp);
+      
+      const notesEditGrp = document.createElement('div');
+      notesEditGrp.className = 'form-group';
+      const notesEditLabel = document.createElement('label');
+      notesEditLabel.className = 'form-label';
+      notesEditLabel.textContent = t('orders.notes');
+      const notesEditInput = document.createElement('input');
+      notesEditInput.type = 'text';
+      notesEditInput.className = 'form-input';
+      notesEditInput.value = order.notes;
+      notesEditInput.style.marginBottom = '8px';
+      notesEditGrp.appendChild(notesEditLabel);
+      notesEditGrp.appendChild(notesEditInput);
+      editDiv.appendChild(notesEditGrp);
+      
+      const statusEditGrp = document.createElement('div');
+      statusEditGrp.className = 'form-group';
+      const statusEditLabel = document.createElement('label');
+      statusEditLabel.className = 'form-label';
+      statusEditLabel.textContent = t('orders.status');
+      const statusEditSel = document.createElement('select');
+      statusEditSel.className = 'form-select';
+      statusEditSel.style.marginBottom = '12px';
+      ['pending', 'ordered', 'delivered'].forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s;
+        opt.textContent = t(`orders.${s}`);
+        if (s === order.status) opt.selected = true;
+        statusEditSel.appendChild(opt);
+      });
+      statusEditGrp.appendChild(statusEditLabel);
+      statusEditGrp.appendChild(statusEditSel);
+      editDiv.appendChild(statusEditGrp);
+      
+      const editBtnGrp = document.createElement('div');
+      editBtnGrp.style.display = 'flex';
+      editBtnGrp.style.gap = '8px';
+      const saveBtn = document.createElement('button');
+      saveBtn.className = 'btn btn-small btn-success';
+      saveBtn.textContent = '✓ Save';
+      const cancelBtn = document.createElement('button');
+      cancelBtn.className = 'btn btn-small btn-secondary';
+      cancelBtn.textContent = '✕ Cancel';
+      editBtnGrp.appendChild(saveBtn);
+      editBtnGrp.appendChild(cancelBtn);
+      editDiv.appendChild(editBtnGrp);
+      
+      item.appendChild(editDiv);
+      
+      const buttons = displayDiv.querySelectorAll('button');
       buttons[0].addEventListener('click', () => {
-        const statuses = ['pending', 'ordered', 'delivered'];
-        const idx = statuses.indexOf(order.status);
-        order.status = statuses[(idx + 1) % statuses.length];
-        renderContent();
+        editDiv.style.display = editDiv.style.display === 'none' ? 'block' : 'none';
+        displayDiv.style.display = editDiv.style.display === 'none' ? '' : 'none';
       });
       buttons[1].addEventListener('click', () => {
         state.orders = state.orders.filter(o => o.id !== order.id);
         renderContent();
       });
+      
+      // Click status badge to cycle
+      displayDiv.querySelector('.badge-status').addEventListener('click', () => {
+        const statuses = ['pending', 'ordered', 'delivered'];
+        const idx = statuses.indexOf(order.status);
+        order.status = statuses[(idx + 1) % statuses.length];
+        renderContent();
+      });
+      
+      saveBtn.addEventListener('click', () => {
+        order.item = itemEditInput.value;
+        order.notes = notesEditInput.value;
+        order.status = statusEditSel.value;
+        renderContent();
+      });
+      
+      cancelBtn.addEventListener('click', () => {
+        editDiv.style.display = 'none';
+        displayDiv.style.display = '';
+      });
+      
       list.appendChild(item);
     });
   }
@@ -1262,6 +1554,35 @@ function renderDocuments() {
   catGrp.appendChild(catSel);
   form.appendChild(catGrp);
 
+  const roomGrp = document.createElement('div');
+  roomGrp.className = 'form-group';
+  const roomLabel = document.createElement('label');
+  roomLabel.className = 'form-label';
+  roomLabel.textContent = 'Room';
+  const roomSel = document.createElement('select');
+  roomSel.className = 'form-select';
+  ['--', 'Kitchen', 'Living Room', 'Bedroom', 'Bathroom', 'Garden'].forEach(room => {
+    const opt = document.createElement('option');
+    opt.value = room;
+    opt.textContent = room;
+    roomSel.appendChild(opt);
+  });
+  roomGrp.appendChild(roomLabel);
+  roomGrp.appendChild(roomSel);
+  form.appendChild(roomGrp);
+
+  const amountGrp = document.createElement('div');
+  amountGrp.className = 'form-group';
+  const amountLabel = document.createElement('label');
+  amountLabel.className = 'form-label';
+  amountLabel.textContent = 'Amount';
+  const amountInput = document.createElement('input');
+  amountInput.type = 'text';
+  amountInput.className = 'form-input';
+  amountGrp.appendChild(amountLabel);
+  amountGrp.appendChild(amountInput);
+  form.appendChild(amountGrp);
+
   const contentGrp = document.createElement('div');
   contentGrp.className = 'form-group';
   const contentLabel = document.createElement('label');
@@ -1286,6 +1607,8 @@ function renderDocuments() {
         id: Date.now(),
         title: titleInput.value,
         category: catSel.value,
+        room: roomSel.value,
+        amount: amountInput.value,
         content: contentInput.value,
         date: new Date().toLocaleDateString()
       });
@@ -1306,25 +1629,153 @@ function renderDocuments() {
     state.documents.forEach(doc => {
       const item = document.createElement('div');
       item.className = 'item';
-      item.innerHTML = `
-        <div class="item-row">
-          <div class="item-content">
-            <div class="item-title">${doc.title}</div>
-            <div class="item-meta">
-              <span class="badge badge-category">${doc.category}</span>
-              <span>${doc.date}</span>
-            </div>
-            <div class="item-text">${doc.content.substring(0, 100)}${doc.content.length > 100 ? '...' : ''}</div>
+      item.dataset.itemId = doc.id;
+      
+      const displayDiv = document.createElement('div');
+      displayDiv.className = 'item-row';
+      displayDiv.innerHTML = `
+        <div class="item-content">
+          <div class="item-title">${doc.title}</div>
+          <div class="item-meta">
+            <span class="badge badge-category">${doc.category}</span>
+            ${doc.room ? `<span>${doc.room}</span>` : ''}
+            ${doc.amount ? `<span>${doc.amount}</span>` : ''}
+            <span>${doc.date}</span>
           </div>
-          <div class="item-actions">
-            <button class="btn btn-small btn-danger">✕</button>
-          </div>
+          <div class="item-text">${doc.content.substring(0, 100)}${doc.content.length > 100 ? '...' : ''}</div>
+        </div>
+        <div class="item-actions">
+          <button class="btn btn-small btn-secondary" title="Edit">✎</button>
+          <button class="btn btn-small btn-danger" title="Delete">✕</button>
         </div>
       `;
-      item.querySelector('button').addEventListener('click', () => {
+      item.appendChild(displayDiv);
+      
+      const editDiv = document.createElement('div');
+      editDiv.className = 'edit-form';
+      editDiv.style.display = 'none';
+      editDiv.style.padding = '12px';
+      editDiv.style.backgroundColor = 'var(--accent-light)';
+      editDiv.style.borderRadius = '3px';
+      
+      const titleEditGrp = document.createElement('div');
+      titleEditGrp.className = 'form-group';
+      const titleEditLabel = document.createElement('label');
+      titleEditLabel.className = 'form-label';
+      titleEditLabel.textContent = t('documents.title_label');
+      const titleEditInput = document.createElement('input');
+      titleEditInput.type = 'text';
+      titleEditInput.className = 'form-input';
+      titleEditInput.value = doc.title;
+      titleEditInput.style.marginBottom = '8px';
+      titleEditGrp.appendChild(titleEditLabel);
+      titleEditGrp.appendChild(titleEditInput);
+      editDiv.appendChild(titleEditGrp);
+      
+      const catEditGrp = document.createElement('div');
+      catEditGrp.className = 'form-group';
+      const catEditLabel = document.createElement('label');
+      catEditLabel.className = 'form-label';
+      catEditLabel.textContent = t('documents.category');
+      const catEditSel = document.createElement('select');
+      catEditSel.className = 'form-select';
+      catEditSel.style.marginBottom = '8px';
+      ['Medical', 'Financial', 'Property', 'Legal', 'Other'].forEach(cat => {
+        const opt = document.createElement('option');
+        opt.value = cat;
+        opt.textContent = cat;
+        if (cat === doc.category) opt.selected = true;
+        catEditSel.appendChild(opt);
+      });
+      catEditGrp.appendChild(catEditLabel);
+      catEditGrp.appendChild(catEditSel);
+      editDiv.appendChild(catEditGrp);
+      
+      const roomEditGrp = document.createElement('div');
+      roomEditGrp.className = 'form-group';
+      const roomEditLabel = document.createElement('label');
+      roomEditLabel.className = 'form-label';
+      roomEditLabel.textContent = 'Room';
+      const roomEditSel = document.createElement('select');
+      roomEditSel.className = 'form-select';
+      roomEditSel.style.marginBottom = '8px';
+      ['--', 'Kitchen', 'Living Room', 'Bedroom', 'Bathroom', 'Garden'].forEach(room => {
+        const opt = document.createElement('option');
+        opt.value = room;
+        opt.textContent = room;
+        if (room === doc.room) opt.selected = true;
+        roomEditSel.appendChild(opt);
+      });
+      roomEditGrp.appendChild(roomEditLabel);
+      roomEditGrp.appendChild(roomEditSel);
+      editDiv.appendChild(roomEditGrp);
+
+      const amountEditGrp = document.createElement('div');
+      amountEditGrp.className = 'form-group';
+      const amountEditLabel = document.createElement('label');
+      amountEditLabel.className = 'form-label';
+      amountEditLabel.textContent = 'Amount';
+      const amountEditInput = document.createElement('input');
+      amountEditInput.type = 'text';
+      amountEditInput.className = 'form-input';
+      amountEditInput.value = doc.amount || '';
+      amountEditInput.style.marginBottom = '8px';
+      amountEditGrp.appendChild(amountEditLabel);
+      amountEditGrp.appendChild(amountEditInput);
+      editDiv.appendChild(amountEditGrp);
+
+      const contentEditGrp = document.createElement('div');
+      contentEditGrp.className = 'form-group';
+      const contentEditLabel = document.createElement('label');
+      contentEditLabel.className = 'form-label';
+      contentEditLabel.textContent = t('documents.content');
+      const contentEditInput = document.createElement('textarea');
+      contentEditInput.className = 'form-textarea';
+      contentEditInput.value = doc.content;
+      contentEditInput.style.marginBottom = '12px';
+      contentEditGrp.appendChild(contentEditLabel);
+      contentEditGrp.appendChild(contentEditInput);
+      editDiv.appendChild(contentEditGrp);
+      
+      const editBtnGrp = document.createElement('div');
+      editBtnGrp.style.display = 'flex';
+      editBtnGrp.style.gap = '8px';
+      const saveBtn = document.createElement('button');
+      saveBtn.className = 'btn btn-small btn-success';
+      saveBtn.textContent = '✓ Save';
+      const cancelBtn = document.createElement('button');
+      cancelBtn.className = 'btn btn-small btn-secondary';
+      cancelBtn.textContent = '✕ Cancel';
+      editBtnGrp.appendChild(saveBtn);
+      editBtnGrp.appendChild(cancelBtn);
+      editDiv.appendChild(editBtnGrp);
+      
+      item.appendChild(editDiv);
+      
+      const buttons = displayDiv.querySelectorAll('button');
+      buttons[0].addEventListener('click', () => {
+        editDiv.style.display = editDiv.style.display === 'none' ? 'block' : 'none';
+        displayDiv.style.display = editDiv.style.display === 'none' ? '' : 'none';
+      });
+      buttons[1].addEventListener('click', () => {
         state.documents = state.documents.filter(d => d.id !== doc.id);
         renderContent();
       });
+      
+      saveBtn.addEventListener('click', () => {
+        doc.title = titleEditInput.value;
+        doc.category = catEditSel.value;
+        doc.room = roomEditSel.value;
+        doc.amount = amountEditInput.value;
+        doc.content = contentEditInput.value;
+        renderContent();
+      });
+      
+      cancelBtn.addEventListener('click', () => {
+        editDiv.style.display = 'none';
+        displayDiv.style.display = '';
+      });
+      
       list.appendChild(item);
     });
   }
@@ -1416,7 +1867,8 @@ function renderCalendar() {
         event: eventInput.value,
         date: dateInput.value,
         time: timeInput.value,
-        category: catSel.value
+        category: catSel.value,
+        notes: notesInput.value
       });
       eventInput.value = '';
       dateInput.value = '';
@@ -1436,25 +1888,147 @@ function renderCalendar() {
     state.calendar.forEach(evt => {
       const item = document.createElement('div');
       item.className = 'item';
-      item.innerHTML = `
-        <div class="item-row">
-          <div class="item-content">
-            <div class="item-title">${evt.event}</div>
-            <div class="item-meta">
-              <span>${evt.date}</span>
-              ${evt.time ? `<span>${evt.time}</span>` : ''}
-              <span class="badge badge-category">${evt.category}</span>
-            </div>
+      item.dataset.itemId = evt.id;
+      
+      const displayDiv = document.createElement('div');
+      displayDiv.className = 'item-row';
+      displayDiv.innerHTML = `
+        <div class="item-content">
+          <div class="item-title">${evt.event}</div>
+          <div class="item-meta">
+            <span>${evt.date}</span>
+            ${evt.time ? `<span>${evt.time}</span>` : ''}
+            <span class="badge badge-category">${evt.category}</span>
           </div>
-          <div class="item-actions">
-            <button class="btn btn-small btn-danger">✕</button>
-          </div>
+          ${evt.notes ? `<div class="item-text">${evt.notes}</div>` : ''}
+        </div>
+        <div class="item-actions">
+          <button class="btn btn-small btn-secondary" title="Edit">✎</button>
+          <button class="btn btn-small btn-danger" title="Delete">✕</button>
         </div>
       `;
-      item.querySelector('button').addEventListener('click', () => {
+      item.appendChild(displayDiv);
+      
+      const editDiv = document.createElement('div');
+      editDiv.className = 'edit-form';
+      editDiv.style.display = 'none';
+      editDiv.style.padding = '12px';
+      editDiv.style.backgroundColor = 'var(--accent-light)';
+      editDiv.style.borderRadius = '3px';
+      
+      const eventEditGrp = document.createElement('div');
+      eventEditGrp.className = 'form-group';
+      const eventEditLabel = document.createElement('label');
+      eventEditLabel.className = 'form-label';
+      eventEditLabel.textContent = t('calendar.event');
+      const eventEditInput = document.createElement('input');
+      eventEditInput.type = 'text';
+      eventEditInput.className = 'form-input';
+      eventEditInput.value = evt.event;
+      eventEditInput.style.marginBottom = '8px';
+      eventEditGrp.appendChild(eventEditLabel);
+      eventEditGrp.appendChild(eventEditInput);
+      editDiv.appendChild(eventEditGrp);
+      
+      const dateEditGrp = document.createElement('div');
+      dateEditGrp.className = 'form-group';
+      const dateEditLabel = document.createElement('label');
+      dateEditLabel.className = 'form-label';
+      dateEditLabel.textContent = t('calendar.date');
+      const dateEditInput = document.createElement('input');
+      dateEditInput.type = 'date';
+      dateEditInput.className = 'form-input';
+      dateEditInput.value = evt.date;
+      dateEditInput.style.marginBottom = '8px';
+      dateEditGrp.appendChild(dateEditLabel);
+      dateEditGrp.appendChild(dateEditInput);
+      editDiv.appendChild(dateEditGrp);
+      
+      const timeEditGrp = document.createElement('div');
+      timeEditGrp.className = 'form-group';
+      const timeEditLabel = document.createElement('label');
+      timeEditLabel.className = 'form-label';
+      timeEditLabel.textContent = t('calendar.time');
+      const timeEditInput = document.createElement('input');
+      timeEditInput.type = 'time';
+      timeEditInput.className = 'form-input';
+      timeEditInput.value = evt.time || '';
+      timeEditInput.style.marginBottom = '8px';
+      timeEditGrp.appendChild(timeEditLabel);
+      timeEditGrp.appendChild(timeEditInput);
+      editDiv.appendChild(timeEditGrp);
+      
+      const catEditGrp = document.createElement('div');
+      catEditGrp.className = 'form-group';
+      const catEditLabel = document.createElement('label');
+      catEditLabel.className = 'form-label';
+      catEditLabel.textContent = t('calendar.category');
+      const catEditSel = document.createElement('select');
+      catEditSel.className = 'form-select';
+      catEditSel.style.marginBottom = '8px';
+      ['Maintenance', 'Family', 'Work', 'Social', 'Other'].forEach(cat => {
+        const opt = document.createElement('option');
+        opt.value = cat;
+        opt.textContent = cat;
+        if (cat === evt.category) opt.selected = true;
+        catEditSel.appendChild(opt);
+      });
+      catEditGrp.appendChild(catEditLabel);
+      catEditGrp.appendChild(catEditSel);
+      editDiv.appendChild(catEditGrp);
+
+      const notesEditGrp = document.createElement('div');
+      notesEditGrp.className = 'form-group';
+      const notesEditLabel = document.createElement('label');
+      notesEditLabel.className = 'form-label';
+      notesEditLabel.textContent = 'Notes';
+      const notesEditInput = document.createElement('textarea');
+      notesEditInput.className = 'form-textarea';
+      notesEditInput.value = evt.notes || '';
+      notesEditInput.style.marginBottom = '12px';
+      notesEditGrp.appendChild(notesEditLabel);
+      notesEditGrp.appendChild(notesEditInput);
+      editDiv.appendChild(notesEditGrp);
+      
+      const editBtnGrp = document.createElement('div');
+      editBtnGrp.style.display = 'flex';
+      editBtnGrp.style.gap = '8px';
+      const saveBtn = document.createElement('button');
+      saveBtn.className = 'btn btn-small btn-success';
+      saveBtn.textContent = '✓ Save';
+      const cancelBtn = document.createElement('button');
+      cancelBtn.className = 'btn btn-small btn-secondary';
+      cancelBtn.textContent = '✕ Cancel';
+      editBtnGrp.appendChild(saveBtn);
+      editBtnGrp.appendChild(cancelBtn);
+      editDiv.appendChild(editBtnGrp);
+      
+      item.appendChild(editDiv);
+      
+      const buttons = displayDiv.querySelectorAll('button');
+      buttons[0].addEventListener('click', () => {
+        editDiv.style.display = editDiv.style.display === 'none' ? 'block' : 'none';
+        displayDiv.style.display = editDiv.style.display === 'none' ? '' : 'none';
+      });
+      buttons[1].addEventListener('click', () => {
         state.calendar = state.calendar.filter(c => c.id !== evt.id);
         renderContent();
       });
+      
+      saveBtn.addEventListener('click', () => {
+        evt.event = eventEditInput.value;
+        evt.date = dateEditInput.value;
+        evt.time = timeEditInput.value;
+        evt.category = catEditSel.value;
+        evt.notes = notesEditInput.value;
+        renderContent();
+      });
+      
+      cancelBtn.addEventListener('click', () => {
+        editDiv.style.display = 'none';
+        displayDiv.style.display = '';
+      });
+      
       list.appendChild(item);
     });
   }
@@ -1611,32 +2185,168 @@ function renderInventory() {
     state.inventory.forEach(item => {
       const elem = document.createElement('div');
       elem.className = 'item';
-      elem.innerHTML = `
-        <div class="item-row">
-          <div class="item-content">
-            <div class="item-title">${item.name}</div>
-            <div class="item-meta">
-              <span>${item.location}</span>
-              <span class="badge badge-category">${item.category}</span>
-              <span>Qty: ${item.quantity}</span>
-              <span class="badge ${item.status === 'need' ? 'badge-priority' : 'badge-status'}">${t(`inventory.${item.status}`)}</span>
-            </div>
-          </div>
-          <div class="item-actions">
-            <button class="btn btn-small btn-secondary">→</button>
-            <button class="btn btn-small btn-danger">✕</button>
+      elem.dataset.itemId = item.id;
+      
+      const displayDiv = document.createElement('div');
+      displayDiv.className = 'item-row';
+      displayDiv.innerHTML = `
+        <div class="item-content">
+          <div class="item-title">${item.name}</div>
+          <div class="item-meta">
+            <span>${item.location}</span>
+            <span class="badge badge-category">${item.category}</span>
+            <span>Qty: ${item.quantity}</span>
+            <span class="badge ${item.status === 'need' ? 'badge-priority' : 'badge-status'}" style="cursor: pointer;" title="Click to toggle status">${t(`inventory.${item.status}`)}</span>
           </div>
         </div>
+        <div class="item-actions">
+          <button class="btn btn-small btn-secondary" title="Edit">✎</button>
+          <button class="btn btn-small btn-danger" title="Delete">✕</button>
+        </div>
       `;
-      const buttons = elem.querySelectorAll('button');
+      elem.appendChild(displayDiv);
+      
+      const editDiv = document.createElement('div');
+      editDiv.className = 'edit-form';
+      editDiv.style.display = 'none';
+      editDiv.style.padding = '12px';
+      editDiv.style.backgroundColor = 'var(--accent-light)';
+      editDiv.style.borderRadius = '3px';
+      
+      const nameEditGrp = document.createElement('div');
+      nameEditGrp.className = 'form-group';
+      const nameEditLabel = document.createElement('label');
+      nameEditLabel.className = 'form-label';
+      nameEditLabel.textContent = t('inventory.name');
+      const nameEditInput = document.createElement('input');
+      nameEditInput.type = 'text';
+      nameEditInput.className = 'form-input';
+      nameEditInput.value = item.name;
+      nameEditInput.style.marginBottom = '8px';
+      nameEditGrp.appendChild(nameEditLabel);
+      nameEditGrp.appendChild(nameEditInput);
+      editDiv.appendChild(nameEditGrp);
+      
+      const locEditGrp = document.createElement('div');
+      locEditGrp.className = 'form-group';
+      const locEditLabel = document.createElement('label');
+      locEditLabel.className = 'form-label';
+      locEditLabel.textContent = t('inventory.location');
+      const locEditSel = document.createElement('select');
+      locEditSel.className = 'form-select';
+      locEditSel.style.marginBottom = '8px';
+      const allLocs = [...HOUSE_ROOMS, ...state.customLocations];
+      allLocs.forEach(loc => {
+        const opt = document.createElement('option');
+        opt.value = loc;
+        opt.textContent = loc;
+        if (loc === item.location) opt.selected = true;
+        locEditSel.appendChild(opt);
+      });
+      locEditGrp.appendChild(locEditLabel);
+      locEditGrp.appendChild(locEditSel);
+      editDiv.appendChild(locEditGrp);
+      
+      const catEditGrp = document.createElement('div');
+      catEditGrp.className = 'form-group';
+      const catEditLabel = document.createElement('label');
+      catEditLabel.className = 'form-label';
+      catEditLabel.textContent = t('inventory.category');
+      const catEditSel = document.createElement('select');
+      catEditSel.className = 'form-select';
+      catEditSel.style.marginBottom = '8px';
+      const allCats = [...DEFAULT_CATEGORIES_INVENTORY, ...state.customCategories];
+      allCats.forEach(cat => {
+        const opt = document.createElement('option');
+        opt.value = cat;
+        opt.textContent = cat;
+        if (cat === item.category) opt.selected = true;
+        catEditSel.appendChild(opt);
+      });
+      catEditGrp.appendChild(catEditLabel);
+      catEditGrp.appendChild(catEditSel);
+      editDiv.appendChild(catEditGrp);
+      
+      const qtyEditGrp = document.createElement('div');
+      qtyEditGrp.className = 'form-group';
+      const qtyEditLabel = document.createElement('label');
+      qtyEditLabel.className = 'form-label';
+      qtyEditLabel.textContent = t('inventory.quantity');
+      const qtyEditInput = document.createElement('input');
+      qtyEditInput.type = 'number';
+      qtyEditInput.className = 'form-input';
+      qtyEditInput.value = item.quantity;
+      qtyEditInput.style.marginBottom = '8px';
+      qtyEditGrp.appendChild(qtyEditLabel);
+      qtyEditGrp.appendChild(qtyEditInput);
+      editDiv.appendChild(qtyEditGrp);
+      
+      const statusEditGrp = document.createElement('div');
+      statusEditGrp.className = 'form-group';
+      const statusEditLabel = document.createElement('label');
+      statusEditLabel.className = 'form-label';
+      statusEditLabel.textContent = t('inventory.status');
+      const statusEditSel = document.createElement('select');
+      statusEditSel.className = 'form-select';
+      statusEditSel.style.marginBottom = '12px';
+      ['have', 'low', 'need'].forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s;
+        opt.textContent = s.charAt(0).toUpperCase() + s.slice(1);
+        if (s === item.status) opt.selected = true;
+        statusEditSel.appendChild(opt);
+      });
+      statusEditGrp.appendChild(statusEditLabel);
+      statusEditGrp.appendChild(statusEditSel);
+      editDiv.appendChild(statusEditGrp);
+      
+      const editBtnGrp = document.createElement('div');
+      editBtnGrp.style.display = 'flex';
+      editBtnGrp.style.gap = '8px';
+      const saveBtn = document.createElement('button');
+      saveBtn.className = 'btn btn-small btn-success';
+      saveBtn.textContent = '✓ Save';
+      const cancelBtn = document.createElement('button');
+      cancelBtn.className = 'btn btn-small btn-secondary';
+      cancelBtn.textContent = '✕ Cancel';
+      editBtnGrp.appendChild(saveBtn);
+      editBtnGrp.appendChild(cancelBtn);
+      editDiv.appendChild(editBtnGrp);
+      
+      elem.appendChild(editDiv);
+      
+      const buttons = displayDiv.querySelectorAll('button');
       buttons[0].addEventListener('click', () => {
-        item.status = item.status === 'need' ? 'have' : 'need';
-        renderContent();
+        editDiv.style.display = editDiv.style.display === 'none' ? 'block' : 'none';
+        displayDiv.style.display = editDiv.style.display === 'none' ? '' : 'none';
       });
       buttons[1].addEventListener('click', () => {
         state.inventory = state.inventory.filter(i => i.id !== item.id);
         renderContent();
       });
+      
+      // Click status badge to cycle through states
+      displayDiv.querySelector('.badge').addEventListener('click', () => {
+        const statuses = ['have', 'low', 'need'];
+        const idx = statuses.indexOf(item.status);
+        item.status = statuses[(idx + 1) % statuses.length];
+        renderContent();
+      });
+      
+      saveBtn.addEventListener('click', () => {
+        item.name = nameEditInput.value;
+        item.location = locEditSel.value;
+        item.category = catEditSel.value;
+        item.quantity = parseInt(qtyEditInput.value) || 1;
+        item.status = statusEditSel.value;
+        renderContent();
+      });
+      
+      cancelBtn.addEventListener('click', () => {
+        editDiv.style.display = 'none';
+        displayDiv.style.display = '';
+      });
+      
       list.appendChild(elem);
     });
   }
@@ -1696,6 +2406,42 @@ function renderWorks() {
   notesGrp.appendChild(notesInput);
   form.appendChild(notesGrp);
 
+  const quoteGrp = document.createElement('div');
+  quoteGrp.className = 'form-group';
+  const quoteLabel = document.createElement('label');
+  quoteLabel.className = 'form-label';
+  quoteLabel.textContent = 'Quote';
+  const quoteInput = document.createElement('input');
+  quoteInput.type = 'text';
+  quoteInput.className = 'form-input';
+  quoteGrp.appendChild(quoteLabel);
+  quoteGrp.appendChild(quoteInput);
+  form.appendChild(quoteGrp);
+
+  const contractorGrp = document.createElement('div');
+  contractorGrp.className = 'form-group';
+  const contractorLabel = document.createElement('label');
+  contractorLabel.className = 'form-label';
+  contractorLabel.textContent = 'Contractor';
+  const contractorInput = document.createElement('input');
+  contractorInput.type = 'text';
+  contractorInput.className = 'form-input';
+  contractorGrp.appendChild(contractorLabel);
+  contractorGrp.appendChild(contractorInput);
+  form.appendChild(contractorGrp);
+
+  const dateGrp = document.createElement('div');
+  dateGrp.className = 'form-group';
+  const dateLabel = document.createElement('label');
+  dateLabel.className = 'form-label';
+  dateLabel.textContent = 'Date';
+  const dateInput = document.createElement('input');
+  dateInput.type = 'date';
+  dateInput.className = 'form-input';
+  dateGrp.appendChild(dateLabel);
+  dateGrp.appendChild(dateInput);
+  form.appendChild(dateGrp);
+
   const btnGrp = document.createElement('div');
   btnGrp.className = 'button-group';
   const btn = document.createElement('button');
@@ -1710,6 +2456,9 @@ function renderWorks() {
         name: nameInput.value,
         location: locSel.value,
         notes: notesInput.value,
+        quote: quoteInput.value,
+        contractor: contractorInput.value,
+        date: dateInput.value,
         status: 'todo'
       });
       nameInput.value = '';
@@ -1729,33 +2478,150 @@ function renderWorks() {
     state.repairs.forEach(repair => {
       const item = document.createElement('div');
       item.className = `item ${repair.status === 'todo' ? 'high' : repair.status === 'progress' ? 'medium' : 'low'}`;
-      item.innerHTML = `
-        <div class="item-row">
-          <div class="item-content">
-            <div class="item-title">${repair.name}</div>
-            <div class="item-meta">
-              <span>${repair.location}</span>
-              <span class="badge badge-status">${t(`repairs.${repair.status}`)}</span>
-            </div>
-            ${repair.notes ? `<div class="item-text">${repair.notes}</div>` : ''}
+      item.dataset.itemId = repair.id;
+      
+      const displayDiv = document.createElement('div');
+      displayDiv.className = 'item-row';
+      displayDiv.innerHTML = `
+        <div class="item-content">
+          <div class="item-title">${repair.name}</div>
+          <div class="item-meta">
+            <span>${repair.location}</span>
+            ${repair.contractor ? `<span>${repair.contractor}</span>` : ''}
+            ${repair.quote ? `<span>${repair.quote}</span>` : ''}
+            ${repair.date ? `<span>${repair.date}</span>` : ''}
+            <span class="badge badge-status" style="cursor: pointer;" title="Click to cycle status">${t(`repairs.${repair.status}`)}</span>
           </div>
-          <div class="item-actions">
-            <button class="btn btn-small btn-secondary">→</button>
-            <button class="btn btn-small btn-danger">✕</button>
-          </div>
+          ${repair.notes ? `<div class="item-text">${repair.notes}</div>` : ''}
+        </div>
+        <div class="item-actions">
+          <button class="btn btn-small btn-secondary" title="Edit">✎</button>
+          <button class="btn btn-small btn-danger" title="Delete">✕</button>
         </div>
       `;
-      const buttons = item.querySelectorAll('button');
+      item.appendChild(displayDiv);
+      
+      const editDiv = document.createElement('div');
+      editDiv.className = 'edit-form';
+      editDiv.style.display = 'none';
+      editDiv.style.padding = '12px';
+      editDiv.style.backgroundColor = 'var(--accent-light)';
+      editDiv.style.borderRadius = '3px';
+      
+      const nameEditGrp = document.createElement('div');
+      nameEditGrp.className = 'form-group';
+      const nameEditLabel = document.createElement('label');
+      nameEditLabel.className = 'form-label';
+      nameEditLabel.textContent = t('repairs.name');
+      const nameEditInput = document.createElement('input');
+      nameEditInput.type = 'text';
+      nameEditInput.className = 'form-input';
+      nameEditInput.value = repair.name;
+      nameEditInput.style.marginBottom = '8px';
+      nameEditGrp.appendChild(nameEditLabel);
+      nameEditGrp.appendChild(nameEditInput);
+      editDiv.appendChild(nameEditGrp);
+      
+      const locEditGrp = document.createElement('div');
+      locEditGrp.className = 'form-group';
+      const locEditLabel = document.createElement('label');
+      locEditLabel.className = 'form-label';
+      locEditLabel.textContent = t('repairs.location');
+      const locEditSel = document.createElement('select');
+      locEditSel.className = 'form-select';
+      locEditSel.style.marginBottom = '8px';
+      HOUSE_ROOMS.forEach(room => {
+        const opt = document.createElement('option');
+        opt.value = room;
+        opt.textContent = room;
+        if (room === repair.location) opt.selected = true;
+        locEditSel.appendChild(opt);
+      });
+      locEditGrp.appendChild(locEditLabel);
+      locEditGrp.appendChild(locEditSel);
+      editDiv.appendChild(locEditGrp);
+      
+      const statusEditGrp = document.createElement('div');
+      statusEditGrp.className = 'form-group';
+      const statusEditLabel = document.createElement('label');
+      statusEditLabel.className = 'form-label';
+      statusEditLabel.textContent = t('repairs.status');
+      const statusEditSel = document.createElement('select');
+      statusEditSel.className = 'form-select';
+      statusEditSel.style.marginBottom = '8px';
+      ['todo', 'progress', 'done'].forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s;
+        opt.textContent = t(`repairs.${s}`);
+        if (s === repair.status) opt.selected = true;
+        statusEditSel.appendChild(opt);
+      });
+      statusEditGrp.appendChild(statusEditLabel);
+      statusEditGrp.appendChild(statusEditSel);
+      editDiv.appendChild(statusEditGrp);
+      
+      const notesEditGrp = document.createElement('div');
+      notesEditGrp.className = 'form-group';
+      const notesEditLabel = document.createElement('label');
+      notesEditLabel.className = 'form-label';
+      notesEditLabel.textContent = t('repairs.notes');
+      const notesEditInput = document.createElement('textarea');
+      notesEditInput.className = 'form-textarea';
+      notesEditInput.value = repair.notes;
+      notesEditInput.style.marginBottom = '12px';
+      notesEditGrp.appendChild(notesEditLabel);
+      notesEditGrp.appendChild(notesEditInput);
+      editDiv.appendChild(notesEditGrp);
+      
+      const editBtnGrp = document.createElement('div');
+      editBtnGrp.style.display = 'flex';
+      editBtnGrp.style.gap = '8px';
+      const saveBtn = document.createElement('button');
+      saveBtn.className = 'btn btn-small btn-success';
+      saveBtn.textContent = '✓ Save';
+      const cancelBtn = document.createElement('button');
+      cancelBtn.className = 'btn btn-small btn-secondary';
+      cancelBtn.textContent = '✕ Cancel';
+      editBtnGrp.appendChild(saveBtn);
+      editBtnGrp.appendChild(cancelBtn);
+      editDiv.appendChild(editBtnGrp);
+      
+      item.appendChild(editDiv);
+      
+      const buttons = displayDiv.querySelectorAll('button');
       buttons[0].addEventListener('click', () => {
-        const statuses = ['todo', 'progress', 'done'];
-        const idx = statuses.indexOf(repair.status);
-        repair.status = statuses[(idx + 1) % statuses.length];
-        renderContent();
+        editDiv.style.display = editDiv.style.display === 'none' ? 'block' : 'none';
+        displayDiv.style.display = editDiv.style.display === 'none' ? '' : 'none';
       });
       buttons[1].addEventListener('click', () => {
         state.repairs = state.repairs.filter(r => r.id !== repair.id);
         renderContent();
       });
+      
+      // Click status badge to cycle
+      displayDiv.querySelector('.badge-status').addEventListener('click', () => {
+        const statuses = ['todo', 'progress', 'done'];
+        const idx = statuses.indexOf(repair.status);
+        repair.status = statuses[(idx + 1) % statuses.length];
+        renderContent();
+      });
+      
+      saveBtn.addEventListener('click', () => {
+        repair.name = nameEditInput.value;
+        repair.location = locEditSel.value;
+        repair.status = statusEditSel.value;
+        repair.notes = notesEditInput.value;
+        repair.quote = quoteEditInput.value;
+        repair.contractor = contractorEditInput.value;
+        repair.date = dateEditInput.value;
+        renderContent();
+      });
+      
+      cancelBtn.addEventListener('click', () => {
+        editDiv.style.display = 'none';
+        displayDiv.style.display = '';
+      });
+      
       list.appendChild(item);
     });
   }
@@ -1807,9 +2673,9 @@ function loadDefaultData() {
   }
   if (state.repairs.length === 0) {
     state.repairs = [
-      { id: 1, name: 'Fix leaky tap', location: 'Bathroom', notes: 'Master bathroom sink', status: 'todo' },
-      { id: 2, name: 'Paint hallway', location: 'Living Room', notes: 'Light gray color', status: 'progress' },
-      { id: 3, name: 'Replace door handle', location: 'Kitchen', notes: 'Front door', status: 'done' }
+      { id: 1, name: 'Fix leaky tap', location: 'Bathroom', notes: 'Master bathroom sink', quote: '$50', contractor: 'John Plumber', date: '2026-04-02', status: 'todo' },
+      { id: 2, name: 'Paint hallway', location: 'Living Room', notes: 'Light gray color', quote: '$300', contractor: 'Mary Painters', date: '2026-04-05', status: 'progress' },
+      { id: 3, name: 'Replace door handle', location: 'Kitchen', notes: 'Front door', quote: '$25', contractor: 'Alex Hardware', date: '2026-03-30', status: 'done' }
     ];
   }
 }
