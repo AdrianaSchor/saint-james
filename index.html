@@ -1,0 +1,2300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Saint James - Household Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #F7F4EF;
+      --warm-white: #FDFBF8;
+      --charcoal: #2C2C2C;
+      --soft-gray: #8A8680;
+      --border: #E5E0D8;
+      --accent: #B5916C;
+      --accent-light: #F0E6DA;
+      --green: #6B8F71;
+      --green-light: #EAF0EB;
+      --red: #C0645A;
+      --red-light: #F5ECEA;
+      --blue: #5A7A9F;
+      --blue-light: #EAF0F7;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--charcoal);
+      min-height: 100vh;
+    }
+
+    /* Login Screen */
+    #login-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, var(--accent-light) 0%, var(--cream) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    #login-screen.hidden {
+      display: none;
+    }
+
+    .login-card {
+      background: var(--warm-white);
+      padding: 3rem;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    .login-card h1 {
+      color: var(--accent);
+      margin-bottom: 2rem;
+      font-size: 2rem;
+    }
+
+    .user-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .user-btn {
+      flex: 1;
+      padding: 1rem;
+      border: 2px solid var(--border);
+      background: var(--cream);
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--charcoal);
+      transition: all 0.3s;
+    }
+
+    .user-btn.selected {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    .user-btn:hover {
+      border-color: var(--accent);
+    }
+
+    #pwd-input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+      font-family: inherit;
+    }
+
+    #pwd-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    #login-btn {
+      width: 100%;
+      padding: 0.75rem;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.3s;
+    }
+
+    #login-btn:hover {
+      background: #9a7a5a;
+    }
+
+    #login-error {
+      color: var(--red);
+      margin-top: 1rem;
+      min-height: 1.5rem;
+    }
+
+    /* Main App */
+    #app {
+      display: none;
+    }
+
+    #app.visible {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    header {
+      background: var(--warm-white);
+      border-bottom: 2px solid var(--border);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .user-section {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .user-badge {
+      background: var(--accent-light);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    #logout-btn {
+      padding: 0.5rem 1rem;
+      background: var(--red);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+
+    #logout-btn:hover {
+      background: #a84d45;
+    }
+
+    /* Notice Board */
+    .notice-board {
+      background: var(--accent-light);
+      padding: 1.5rem 2rem;
+      border-bottom: 2px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    #notice-txt {
+      flex: 1;
+      font-style: italic;
+      color: var(--accent);
+      word-break: break-word;
+    }
+
+    #edit-notice-btn {
+      padding: 0.5rem 1rem;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    #notice-edit-form {
+      display: none;
+      flex: 1;
+      gap: 0.5rem;
+    }
+
+    #notice-edit-form.shown {
+      display: flex;
+    }
+
+    #notice-input {
+      flex: 1;
+      padding: 0.5rem;
+      border: 2px solid var(--accent);
+      border-radius: 6px;
+      font-family: inherit;
+    }
+
+    .notice-btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      white-space: nowrap;
+      font-weight: 600;
+    }
+
+    #notice-save-btn {
+      background: var(--green);
+      color: white;
+    }
+
+    #notice-cancel-btn {
+      background: var(--soft-gray);
+      color: white;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* Tabs */
+    .tabs {
+      background: var(--warm-white);
+      border-right: 2px solid var(--border);
+      width: 200px;
+      padding: 1rem 0;
+      overflow-y: auto;
+    }
+
+    .tab-btn {
+      width: 100%;
+      padding: 1rem;
+      border: none;
+      background: transparent;
+      text-align: left;
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--soft-gray);
+      border-left: 4px solid transparent;
+      transition: all 0.3s;
+    }
+
+    .tab-btn.active {
+      background: var(--accent-light);
+      color: var(--accent);
+      border-left-color: var(--accent);
+    }
+
+    .tab-btn:hover {
+      background: var(--cream);
+    }
+
+    /* Tab Content */
+    .tab-content {
+      flex: 1;
+      padding: 2rem;
+      overflow-y: auto;
+      background: var(--cream);
+    }
+
+    .tab-section {
+      display: none;
+    }
+
+    .tab-section.active {
+      display: block;
+    }
+
+    /* Forms */
+    .add-form {
+      background: var(--warm-white);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+      border: 2px solid var(--border);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .form-row.full {
+      grid-template-columns: 1fr;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group label {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--charcoal);
+      font-size: 0.9rem;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    input[type="time"],
+    input[type="number"],
+    select,
+    textarea {
+      padding: 0.75rem;
+      border: 2px solid var(--border);
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      color: var(--charcoal);
+    }
+
+    input[type="text"]:focus,
+    input[type="date"]:focus,
+    input[type="time"]:focus,
+    input[type="number"]:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-light);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 1rem;
+    }
+
+    button {
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      border-radius: 6px;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      font-size: 0.95rem;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #9a7a5a;
+    }
+
+    .btn-secondary {
+      background: var(--soft-gray);
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: #6f5f5a;
+    }
+
+    .btn-success {
+      background: var(--green);
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: #5a7a61;
+    }
+
+    .btn-danger {
+      background: var(--red);
+      color: white;
+      padding: 0.5rem 1rem;
+      font-size: 0.85rem;
+    }
+
+    .btn-danger:hover {
+      background: #a84d45;
+    }
+
+    /* Lists */
+    .item-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .item {
+      background: var(--warm-white);
+      padding: 1.5rem;
+      border-radius: 8px;
+      border-left: 4px solid var(--border);
+      transition: all 0.3s;
+    }
+
+    .item:hover {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 1rem;
+    }
+
+    .item-title {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--charcoal);
+    }
+
+    .item-meta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      font-size: 0.85rem;
+      color: var(--soft-gray);
+      margin-bottom: 1rem;
+    }
+
+    .item-tag {
+      background: var(--accent-light);
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .item-tag.high {
+      background: var(--red-light);
+      color: var(--red);
+    }
+
+    .item-tag.medium {
+      background: var(--accent-light);
+      color: var(--accent);
+    }
+
+    .item-tag.low {
+      background: var(--green-light);
+      color: var(--green);
+    }
+
+    .item-actions {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: flex-end;
+    }
+
+    .item.done {
+      opacity: 0.6;
+      border-left-color: var(--green);
+    }
+
+    .item.done .item-title {
+      text-decoration: line-through;
+    }
+
+    /* Filters */
+    .filters {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 0.5rem 1rem;
+      border: 2px solid var(--border);
+      background: transparent;
+      color: var(--charcoal);
+      border-radius: 20px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .filter-btn.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    .filter-btn:hover {
+      border-color: var(--accent);
+    }
+
+    /* Messages */
+    #chat-msgs {
+      background: var(--warm-white);
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      height: 400px;
+      overflow-y: auto;
+      margin-bottom: 1rem;
+    }
+
+    .message {
+      margin-bottom: 1rem;
+      padding: 1rem;
+      background: var(--accent-light);
+      border-radius: 8px;
+      word-break: break-word;
+    }
+
+    .message.own {
+      background: var(--blue-light);
+      margin-left: 2rem;
+    }
+
+    .msg-who {
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--accent);
+    }
+
+    .message.own .msg-who {
+      color: var(--blue);
+    }
+
+    .msg-text {
+      color: var(--charcoal);
+    }
+
+    .msg-time {
+      font-size: 0.8rem;
+      color: var(--soft-gray);
+      margin-top: 0.5rem;
+    }
+
+    /* Calendar */
+    .calendar-container {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .calendar-grid {
+      flex: 1;
+      background: var(--warm-white);
+      padding: 1.5rem;
+      border-radius: 8px;
+      border: 2px solid var(--border);
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .cal-nav-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .calendar-title {
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: var(--charcoal);
+    }
+
+    .weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .weekday {
+      text-align: center;
+      font-weight: 600;
+      color: var(--soft-gray);
+      padding: 0.5rem;
+      font-size: 0.85rem;
+    }
+
+    .days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 0.5rem;
+    }
+
+    .day {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--border);
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      background: var(--cream);
+      transition: all 0.3s;
+    }
+
+    .day:hover {
+      background: var(--accent-light);
+      border-color: var(--accent);
+    }
+
+    .day.other-month {
+      color: var(--border);
+    }
+
+    .day.today {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    .day.has-event {
+      background: var(--green-light);
+      border-color: var(--green);
+    }
+
+    .calendar-events {
+      flex: 1;
+      background: var(--warm-white);
+      padding: 1.5rem;
+      border-radius: 8px;
+      border: 2px solid var(--border);
+      max-height: 500px;
+      overflow-y: auto;
+    }
+
+    .calendar-events h3 {
+      margin-bottom: 1rem;
+      color: var(--charcoal);
+    }
+
+    /* Documents */
+    .doc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .doc-card {
+      background: var(--warm-white);
+      padding: 1.5rem;
+      border-radius: 8px;
+      border: 2px solid var(--border);
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .doc-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .doc-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .doc-name {
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      word-break: break-word;
+    }
+
+    .doc-size {
+      font-size: 0.85rem;
+      color: var(--soft-gray);
+    }
+
+    /* Inventory */
+    .inventory-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+
+    .inv-item {
+      background: var(--warm-white);
+      padding: 1.5rem;
+      border-radius: 8px;
+      border: 2px solid var(--border);
+      border-left: 4px solid var(--accent);
+    }
+
+    .inv-name {
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .inv-qty {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      padding: 0.75rem;
+      background: var(--accent-light);
+      border-radius: 6px;
+    }
+
+    .inv-qty-label {
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .inv-qty-value {
+      font-weight: 700;
+      color: var(--charcoal);
+    }
+
+    .inv-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .inv-btn {
+      flex: 1;
+      padding: 0.5rem;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .inv-btn:hover {
+      background: #9a7a5a;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .calendar-container {
+        flex-direction: column;
+      }
+
+      .main-content {
+        flex-direction: column;
+      }
+
+      .tabs {
+        width: 100%;
+        display: flex;
+        border-right: none;
+        border-bottom: 2px solid var(--border);
+        overflow-x: auto;
+        padding: 0;
+      }
+
+      .tab-btn {
+        border-left: none;
+        border-bottom: 4px solid transparent;
+        padding: 1rem;
+      }
+
+      .tab-btn.active {
+        border-left: none;
+        border-bottom-color: var(--accent);
+      }
+
+      .doc-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      }
+    }
+
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .tab-content {
+        padding: 1rem;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .notice-board {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .inventory-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Login Screen -->
+  <div id="login-screen">
+    <div class="login-card">
+      <h1>Saint James</h1>
+      <div class="user-buttons">
+        <button class="user-btn selected" data-user="Adriana">Adriana</button>
+        <button class="user-btn" data-user="Veronica">Veronica</button>
+        <button class="user-btn" data-user="Mirella">Mirella</button>
+      </div>
+      <input type="password" id="pwd-input" placeholder="Password">
+      <button id="login-btn" class="btn-primary">Login</button>
+      <div id="login-error"></div>
+    </div>
+  </div>
+
+  <!-- Main App -->
+  <div id="app">
+    <!-- Header -->
+    <header>
+      <div class="logo">Saint James</div>
+      <div class="user-section">
+        <div class="user-badge" id="user-badge">Adriana</div>
+        <button id="logout-btn">Logout</button>
+      </div>
+    </header>
+
+    <!-- Notice Board -->
+    <div class="notice-board">
+      <div id="notice-txt">Bienvenue sur Saint James! / Welcome to Saint James!</div>
+      <button id="edit-notice-btn">Edit</button>
+      <form id="notice-edit-form">
+        <input type="text" id="notice-input" placeholder="Edit notice...">
+        <button type="button" id="notice-save-btn" class="notice-btn">Save</button>
+        <button type="button" id="notice-cancel-btn" class="notice-btn">Cancel</button>
+      </form>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="tasks">Tâches / Tasks</button>
+        <button class="tab-btn" data-tab="messages">Messages</button>
+        <button class="tab-btn" data-tab="orders">Commandes / Orders</button>
+        <button class="tab-btn" data-tab="documents">Documents</button>
+        <button class="tab-btn" data-tab="calendar">Calendrier / Calendar</button>
+        <button class="tab-btn" data-tab="inventory">Inventaire / Inventory</button>
+        <button class="tab-btn" data-tab="repairs">Travaux / Works</button>
+      </div>
+
+      <!-- Tab Content -->
+      <div class="tab-content">
+
+        <!-- Tasks Tab -->
+        <div id="tasks" class="tab-section active">
+          <h2>Tâches / Tasks</h2>
+
+          <div class="add-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Title</label>
+                <input type="text" id="task-title" placeholder="Task title">
+              </div>
+              <div class="form-group">
+                <label>Category / Catégorie</label>
+                <select id="task-cat">
+                  <option value="Courses / Groceries">Courses / Groceries</option>
+                  <option value="Nettoyage / Cleaning">Nettoyage / Cleaning</option>
+                  <option value="Cuisine / Cooking">Cuisine / Cooking</option>
+                  <option value="Lessive / Laundry">Lessive / Laundry</option>
+                  <option value="Autre / Other">Autre / Other</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Assigned to / Assignée à</label>
+                <select id="task-who">
+                  <option value="Adriana">Adriana</option>
+                  <option value="Veronica">Veronica</option>
+                  <option value="Mirella">Mirella</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Priority / Priorité</label>
+                <select id="task-pri">
+                  <option value="low">Low / Basse</option>
+                  <option value="medium">Medium / Moyenne</option>
+                  <option value="high">High / Haute</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row full">
+              <div class="form-group">
+                <label>Notes</label>
+                <textarea id="task-note" placeholder="Additional notes..."></textarea>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Date Due / Date limite</label>
+                <input type="date" id="task-date">
+              </div>
+            </div>
+            <div class="btn-group">
+              <button id="add-task-btn" class="btn-primary">Add Task</button>
+            </div>
+          </div>
+
+          <div class="filters">
+            <button class="filter-btn active" data-filter="all" data-type="task">All</button>
+            <button class="filter-btn" data-filter="Courses / Groceries" data-type="task">Courses</button>
+            <button class="filter-btn" data-filter="Nettoyage / Cleaning" data-type="task">Cleaning</button>
+            <button class="filter-btn" data-filter="Cuisine / Cooking" data-type="task">Cooking</button>
+            <button class="filter-btn" data-filter="Lessive / Laundry" data-type="task">Laundry</button>
+            <button class="filter-btn" data-filter="Autre / Other" data-type="task">Other</button>
+          </div>
+
+          <div id="tasks-list" class="item-list"></div>
+        </div>
+
+        <!-- Messages Tab -->
+        <div id="messages" class="tab-section">
+          <h2>Messages</h2>
+
+          <div id="chat-msgs"></div>
+
+          <div class="add-form">
+            <div class="form-group full">
+              <label>Your Message</label>
+              <textarea id="msg-input" placeholder="Type a message..."></textarea>
+            </div>
+            <div class="btn-group">
+              <button id="send-msg-btn" class="btn-primary">Send</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Orders Tab -->
+        <div id="orders" class="tab-section">
+          <h2>Commandes / Orders</h2>
+
+          <div class="add-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Item</label>
+                <input type="text" id="order-item" placeholder="Item to order">
+              </div>
+              <div class="form-group">
+                <label>Quantity / Quantité</label>
+                <input type="number" id="order-qty" min="1" value="1">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Ordered by / Commandé par</label>
+                <select id="order-who">
+                  <option value="Adriana">Adriana</option>
+                  <option value="Veronica">Veronica</option>
+                  <option value="Mirella">Mirella</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Status</label>
+                <select id="order-status">
+                  <option value="pending">Pending / En attente</option>
+                  <option value="ordered">Ordered / Commandé</option>
+                  <option value="received">Received / Reçu</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row full">
+              <div class="form-group">
+                <label>Notes</label>
+                <textarea id="order-note" placeholder="Additional notes..."></textarea>
+              </div>
+            </div>
+            <div class="btn-group">
+              <button id="add-order-btn" class="btn-primary">Add Order</button>
+            </div>
+          </div>
+
+          <div class="filters">
+            <button class="filter-btn active" data-filter="all" data-type="document">All</button>
+            <button class="filter-btn" data-filter="pending" data-type="document">Pending</button>
+            <button class="filter-btn" data-filter="ordered" data-type="document">Ordered</button>
+            <button class="filter-btn" data-filter="received" data-type="document">Received</button>
+          </div>
+
+          <div id="orders-list" class="item-list"></div>
+        </div>
+
+        <!-- Documents Tab -->
+        <div id="documents" class="tab-section">
+          <h2>Documents</h2>
+
+          <div class="add-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Document Name / Nom du document</label>
+                <input type="text" id="doc-name" placeholder="Document name">
+              </div>
+              <div class="form-group">
+                <label>Category / Catégorie</label>
+                <select id="doc-cat">
+                  <option value="Financial / Financier">Financial / Financier</option>
+                  <option value="Legal / Légal">Legal / Légal</option>
+                  <option value="Medical / Médical">Medical / Médical</option>
+                  <option value="Insurance / Assurance">Insurance / Assurance</option>
+                  <option value="Property / Propriété">Property / Propriété</option>
+                  <option value="Other / Autre">Other / Autre</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row full">
+              <div class="form-group">
+                <label>Notes</label>
+                <textarea id="doc-note" placeholder="Document details..."></textarea>
+              </div>
+            </div>
+            <div class="btn-group">
+              <button id="add-doc-btn" class="btn-primary">Add Document</button>
+            </div>
+          </div>
+
+          <div class="filters">
+            <button class="filter-btn active" data-filter="all" data-type="doc">All</button>
+            <button class="filter-btn" data-filter="Financial / Financier" data-type="doc">Financial</button>
+            <button class="filter-btn" data-filter="Legal / Légal" data-type="doc">Legal</button>
+            <button class="filter-btn" data-filter="Medical / Médical" data-type="doc">Medical</button>
+            <button class="filter-btn" data-filter="Insurance / Assurance" data-type="doc">Insurance</button>
+            <button class="filter-btn" data-filter="Property / Propriété" data-type="doc">Property</button>
+            <button class="filter-btn" data-filter="Other / Autre" data-type="doc">Other</button>
+          </div>
+
+          <div id="docs-list" class="doc-grid"></div>
+        </div>
+
+        <!-- Calendar Tab -->
+        <div id="calendar" class="tab-section">
+          <h2>Calendrier / Calendar</h2>
+
+          <div class="add-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Event Title / Titre de l'événement</label>
+                <input type="text" id="cal-title" placeholder="Event name">
+              </div>
+              <div class="form-group">
+                <label>Date</label>
+                <input type="date" id="cal-date">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Time / Heure</label>
+                <input type="time" id="cal-time">
+              </div>
+              <div class="form-group">
+                <label>Category / Catégorie</label>
+                <select id="cal-cat">
+                  <option value="Family / Famille">Family / Famille</option>
+                  <option value="Personal / Personnel">Personal / Personnel</option>
+                  <option value="Work / Travail">Work / Travail</option>
+                  <option value="Birthday / Anniversaire">Birthday / Anniversaire</option>
+                  <option value="Holiday / Vacances">Holiday / Vacances</option>
+                  <option value="Other / Autre">Other / Autre</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row full">
+              <div class="form-group">
+                <label>Description</label>
+                <textarea id="cal-desc" placeholder="Event details..."></textarea>
+              </div>
+            </div>
+            <div class="btn-group">
+              <button id="add-cal-btn" class="btn-primary">Add Event</button>
+            </div>
+          </div>
+
+          <div class="calendar-container">
+            <div class="calendar-grid">
+              <div class="calendar-header">
+                <button class="cal-nav-btn" id="cal-prev">← Prev</button>
+                <div class="calendar-title" id="cal-title-display">January 2026</div>
+                <button class="cal-nav-btn" id="cal-next">Next →</button>
+              </div>
+              <div class="weekdays">
+                <div class="weekday">Sun</div>
+                <div class="weekday">Mon</div>
+                <div class="weekday">Tue</div>
+                <div class="weekday">Wed</div>
+                <div class="weekday">Thu</div>
+                <div class="weekday">Fri</div>
+                <div class="weekday">Sat</div>
+              </div>
+              <div class="days" id="cal-days"></div>
+            </div>
+            <div class="calendar-events" id="cal-events">
+              <h3>Events</h3>
+              <div id="cal-events-list"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Inventory Tab -->
+        <div id="inventory" class="tab-section">
+          <h2>Inventaire / Inventory</h2>
+
+          <div class="add-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Item / Article</label>
+                <input type="text" id="inv-name" placeholder="Item name">
+              </div>
+              <div class="form-group">
+                <label>Location / Localisation</label>
+                <input type="text" id="inv-loc" placeholder="Where is it stored?">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Quantity / Quantité</label>
+                <input type="number" id="inv-qty" min="0" value="1">
+              </div>
+              <div class="form-group">
+                <label>Category / Catégorie</label>
+                <select id="inv-cat">
+                  <option value="Food / Nourriture">Food / Nourriture</option>
+                  <option value="Cleaning / Nettoyage">Cleaning / Nettoyage</option>
+                  <option value="Tools / Outils">Tools / Outils</option>
+                  <option value="Bedding / Literie">Bedding / Literie</option>
+                  <option value="Kitchen / Cuisine">Kitchen / Cuisine</option>
+                  <option value="Other / Autre">Other / Autre</option>
+                </select>
+              </div>
+            </div>
+            <div class="btn-group">
+              <button id="add-inv-btn" class="btn-primary">Add Item</button>
+            </div>
+          </div>
+
+          <div class="filters">
+            <button class="filter-btn active" data-filter="all" data-type="inv">All</button>
+            <button class="filter-btn" data-filter="Food / Nourriture" data-type="inv">Food</button>
+            <button class="filter-btn" data-filter="Cleaning / Nettoyage" data-type="inv">Cleaning</button>
+            <button class="filter-btn" data-filter="Tools / Outils" data-type="inv">Tools</button>
+            <button class="filter-btn" data-filter="Bedding / Literie" data-type="inv">Bedding</button>
+            <button class="filter-btn" data-filter="Kitchen / Cuisine" data-type="inv">Kitchen</button>
+            <button class="filter-btn" data-filter="Other / Autre" data-type="inv">Other</button>
+          </div>
+
+          <div id="inv-list" class="inventory-grid"></div>
+        </div>
+
+        <!-- Repairs Tab -->
+        <div id="repairs" class="tab-section">
+          <h2>Travaux / Works</h2>
+
+          <div class="add-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Description</label>
+                <input type="text" id="rep-desc" placeholder="What needs to be fixed?">
+              </div>
+              <div class="form-group">
+                <label>Area / Zone</label>
+                <select id="rep-area">
+                  <option value="Kitchen / Cuisine">Kitchen / Cuisine</option>
+                  <option value="Bedroom / Chambre">Bedroom / Chambre</option>
+                  <option value="Bathroom / Salle de bain">Bathroom / Salle de bain</option>
+                  <option value="Living Room / Salon">Living Room / Salon</option>
+                  <option value="Exterior / Extérieur">Exterior / Extérieur</option>
+                  <option value="Other / Autre">Other / Autre</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Priority / Priorité</label>
+                <select id="rep-pri">
+                  <option value="low">Low / Basse</option>
+                  <option value="medium">Medium / Moyenne</option>
+                  <option value="high">High / Haute</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Status</label>
+                <select id="rep-status">
+                  <option value="pending">Pending / En attente</option>
+                  <option value="in-progress">In Progress / En cours</option>
+                  <option value="completed">Completed / Terminé</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row full">
+              <div class="form-group">
+                <label>Notes</label>
+                <textarea id="rep-note" placeholder="Additional details..."></textarea>
+              </div>
+            </div>
+            <div class="btn-group">
+              <button id="add-rep-btn" class="btn-primary">Add Work Item</button>
+            </div>
+          </div>
+
+          <div class="filters">
+            <button class="filter-btn active" data-filter="all" data-type="rep">All</button>
+            <button class="filter-btn" data-filter="pending" data-type="rep">Pending</button>
+            <button class="filter-btn" data-filter="in-progress" data-type="rep">In Progress</button>
+            <button class="filter-btn" data-filter="completed" data-type="rep">Completed</button>
+          </div>
+
+          <div id="repairs-list" class="item-list"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Supabase Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    // ====== SUPABASE SETUP ======
+    const SUPABASE_URL = 'https://iviwnjtbpsdnjxjjqeyq.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml2aXduanRicHNkbmp4ampxZXlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NDI0MzIsImV4cCI6MjA5MDIxODQzMn0.8tE3Y6swCr7HglMUJCooY6oQd-591NERhKUs89vqPrQ';
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // ====== STATE ======
+    const PW = {
+      Adriana: 'Adriana2026',
+      Veronica: 'Veronica2026',
+      Mirella: 'Mirella2026'
+    };
+
+    let CU = 'Adriana'; // Current user
+    let SU = 'Adriana'; // Selected user for login
+    let selFile = null;
+    let calY = new Date().getFullYear();
+    let calM = new Date().getMonth();
+    let tFlt = 'all';
+    let dFlt = 'all';
+    let iFlt = 'all';
+    let rFlt = 'all';
+
+    // Data arrays
+    let tasks = [];
+    let msgs = [];
+    let orders = [];
+    let docs = [];
+    let calEvs = [];
+    let inv = [];
+    let repairs = [];
+    let notice = 'Bienvenue sur Saint James! / Welcome to Saint James!';
+
+    // Row IDs for each table (to know whether to INSERT or UPDATE)
+    let rowIds = {
+      tasks: null,
+      messages: null,
+      orders: null,
+      documents: null,
+      calendar_events: null,
+      inventory: null,
+      repairs: null
+    };
+
+    // ====== DEFAULT DATA ======
+    const defaultTasks = [
+      {id: 1, title: 'Faire les courses / Grocery shopping', cat: 'Courses / Groceries', who: 'Veronica', pri: 'high', note: 'Légumes, fruits, lait', done: false, date: tod()},
+      {id: 2, title: 'Nettoyer la cuisine / Clean kitchen', cat: 'Nettoyage / Cleaning', who: 'Adriana', pri: 'medium', note: 'Plans de travail et sol', done: false, date: tod()},
+      {id: 3, title: 'Faire la lessive / Do laundry', cat: 'Lessive / Laundry', who: 'Mirella', pri: 'medium', note: 'Linge blanc et coloré', done: false, date: tod()},
+      {id: 4, title: 'Préparer le dîner / Prepare dinner', cat: 'Cuisine / Cooking', who: 'Veronica', pri: 'high', note: 'Menu français', done: false, date: tod()}
+    ];
+
+    const defaultMsgs = [
+      {id: 1, who: 'Adriana', txt: 'Bonjour! / Hello!', time: '09:00'},
+      {id: 2, who: 'Veronica', txt: 'Hi there! Comment ça va? / How are you?', time: '09:15'},
+      {id: 3, who: 'Mirella', txt: 'Tout va bien! / All is well!', time: '09:30'}
+    ];
+
+    const defaultOrders = [
+      {id: 1, item: 'Café / Coffee', qty: 2, who: 'Adriana', status: 'pending', note: 'Grains entiers / Whole beans'},
+      {id: 2, item: 'Papier toilette / Toilet paper', qty: 1, who: 'Veronica', status: 'ordered', note: ' '},
+      {id: 3, item: 'Savon de lessive / Laundry soap', qty: 1, who: 'Mirella', status: 'received', note: 'Livré / Delivered'}
+    ];
+
+    const defaultDocs = [
+      {id: 1, name: 'Contrats de location / Lease agreements', cat: 'Legal / Légal', note: 'Documents importants'},
+      {id: 2, name: 'Factures de services / Utility bills', cat: 'Financial / Financier', note: 'Électricité, eau, gaz'},
+      {id: 3, name: 'Polices d\'assurance / Insurance policies', cat: 'Insurance / Assurance', note: 'Habitation et responsabilité civile'},
+      {id: 4, name: 'Carnets de santé / Health records', cat: 'Medical / Médical', note: 'Vaccinations et visites médicales'}
+    ];
+
+    const defaultCalEvs = [
+      {id: 1, title: 'Anniversaire de Mirella / Mirella\'s birthday', date: '2026-04-15', time: '19:00', cat: 'Birthday / Anniversaire', desc: 'Célébration spéciale / Special celebration'},
+      {id: 2, title: 'Visite médicale / Doctor\'s appointment', date: '2026-04-01', time: '14:00', cat: 'Medical / Médical', desc: 'Checkup annuel / Annual checkup'},
+      {id: 3, title: 'Vacances en famille / Family vacation', date: '2026-07-01', time: '08:00', cat: 'Holiday / Vacances', desc: 'Une semaine en Provence / One week in Provence'}
+    ];
+
+    const defaultInv = [
+      {id: 1, name: 'Riz / Rice', loc: 'Garde-manger / Pantry', qty: 5, cat: 'Food / Nourriture'},
+      {id: 2, name: 'Produit nettoyant / Cleaning product', loc: 'Armoire de rangement / Storage', qty: 3, cat: 'Cleaning / Nettoyage'},
+      {id: 3, name: 'Draps / Bedsheets', loc: 'Armoire de chambre / Bedroom closet', qty: 8, cat: 'Bedding / Literie'},
+      {id: 4, name: 'Ustensiles de cuisine / Kitchen utensils', loc: 'Cuisine / Kitchen', qty: 12, cat: 'Kitchen / Cuisine'}
+    ];
+
+    const defaultRepairs = [
+      {id: 1, desc: 'Réparer la serrure / Fix the lock', area: 'Exterior / Extérieur', pri: 'high', status: 'pending', note: 'Porte d\'entrée / Front door'},
+      {id: 2, desc: 'Réparer le robinet / Fix the faucet', area: 'Bathroom / Salle de bain', pri: 'medium', status: 'in-progress', note: 'Fuite d\'eau / Water leak'},
+      {id: 3, desc: 'Peindre le salon / Paint living room', area: 'Living Room / Salon', pri: 'low', status: 'pending', note: 'Couleur: bleu pale / Color: pale blue'}
+    ];
+
+    // ====== HELPER FUNCTIONS ======
+    function tod() {
+      const d = new Date();
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const da = String(d.getDate()).padStart(2, '0');
+      return `${y}-${m}-${da}`;
+    }
+
+    function fmt(d) {
+      if (!d) return '';
+      const parts = d.split('-');
+      if (parts.length !== 3) return d;
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      return `${months[parseInt(parts[1]) - 1]} ${parseInt(parts[2])}, ${parts[0]}`;
+    }
+
+    function getNextId(arr) {
+      if (arr.length === 0) return 1;
+      return Math.max(...arr.map(item => item.id)) + 1;
+    }
+
+    // ====== SUPABASE HELPERS ======
+    async function loadTable(table) {
+      try {
+        const { data, error } = await sb.from(table).select('*').limit(1);
+        if (error) {
+          console.error('Load error:', table, error);
+          return null;
+        }
+        if (data && data.length > 0) {
+          rowIds[table] = data[0].id;
+          return JSON.parse(data[0].data);
+        }
+        return null;
+      } catch (e) {
+        console.error('Exception in loadTable:', table, e);
+        return null;
+      }
+    }
+
+    async function saveTable(table, payload) {
+      try {
+        const jsonStr = JSON.stringify(payload);
+        if (rowIds[table]) {
+          await sb.from(table).update({data: jsonStr}).eq('id', rowIds[table]);
+        } else {
+          const {data, error} = await sb.from(table).insert({data: jsonStr}).select();
+          if (!error && data && data.length > 0) {
+            rowIds[table] = data[0].id;
+          }
+        }
+      } catch (e) {
+        console.error('Exception in saveTable:', table, e);
+      }
+    }
+
+    // ====== INITIALIZE DATA FROM SUPABASE ======
+    async function initData() {
+      // Load tasks (includes notice)
+      const tData = await loadTable('tasks');
+      if (tData) {
+        tasks = tData.items || [];
+        notice = tData.notice || notice;
+      } else {
+        tasks = JSON.parse(JSON.stringify(defaultTasks));
+        await saveTable('tasks', {items: tasks, notice});
+      }
+
+      // Load messages
+      const mData = await loadTable('messages');
+      if (mData) {
+        msgs = mData.items || [];
+      } else {
+        msgs = JSON.parse(JSON.stringify(defaultMsgs));
+        await saveTable('messages', {items: msgs});
+      }
+
+      // Load orders
+      const oData = await loadTable('orders');
+      if (oData) {
+        orders = oData.items || [];
+      } else {
+        orders = JSON.parse(JSON.stringify(defaultOrders));
+        await saveTable('orders', {items: orders});
+      }
+
+      // Load documents
+      const dData = await loadTable('documents');
+      if (dData) {
+        docs = dData.items || [];
+      } else {
+        docs = JSON.parse(JSON.stringify(defaultDocs));
+        await saveTable('documents', {items: docs});
+      }
+
+      // Load calendar events
+      const cData = await loadTable('calendar_events');
+      if (cData) {
+        calEvs = cData.items || [];
+      } else {
+        calEvs = JSON.parse(JSON.stringify(defaultCalEvs));
+        await saveTable('calendar_events', {items: calEvs});
+      }
+
+      // Load inventory
+      const iData = await loadTable('inventory');
+      if (iData) {
+        inv = iData.items || [];
+      } else {
+        inv = JSON.parse(JSON.stringify(defaultInv));
+        await saveTable('inventory', {items: inv});
+      }
+
+      // Load repairs
+      const rData = await loadTable('repairs');
+      if (rData) {
+        repairs = rData.items || [];
+      } else {
+        repairs = JSON.parse(JSON.stringify(defaultRepairs));
+        await saveTable('repairs', {items: repairs});
+      }
+
+      // Update UI
+      document.getElementById('notice-txt').textContent = notice;
+      renderAll();
+
+      // Subscribe to realtime
+      subscribeAll();
+    }
+
+    // ====== REAL-TIME SUBSCRIPTIONS ======
+    function subscribeAll() {
+      const tables = ['tasks', 'messages', 'orders', 'documents', 'calendar_events', 'inventory', 'repairs'];
+
+      tables.forEach(table => {
+        sb.channel(table + '-changes')
+          .on('postgres_changes', {event: '*', schema: 'public', table}, async (payload) => {
+            const d = await loadTable(table);
+            if (d) {
+              if (table === 'tasks') {
+                tasks = d.items || [];
+                notice = d.notice || notice;
+                document.getElementById('notice-txt').textContent = notice;
+                renderTasks();
+              } else if (table === 'messages') {
+                msgs = d.items || [];
+                renderMsgs();
+                const c = document.getElementById('chat-msgs');
+                if (c) c.scrollTop = c.scrollHeight;
+              } else if (table === 'orders') {
+                orders = d.items || [];
+                renderOrders();
+              } else if (table === 'documents') {
+                docs = d.items || [];
+                renderDocs();
+              } else if (table === 'calendar_events') {
+                calEvs = d.items || [];
+                renderCal();
+              } else if (table === 'inventory') {
+                inv = d.items || [];
+                renderInv();
+              } else if (table === 'repairs') {
+                repairs = d.items || [];
+                renderRep();
+              }
+            }
+          })
+          .subscribe();
+      });
+    }
+
+    // ====== SAVE HELPERS ======
+    async function saveTasks() {
+      await saveTable('tasks', {items: tasks, notice});
+    }
+
+    async function saveMsgs() {
+      await saveTable('messages', {items: msgs});
+    }
+
+    async function saveOrders() {
+      await saveTable('orders', {items: orders});
+    }
+
+    async function saveDocs() {
+      await saveTable('documents', {items: docs});
+    }
+
+    async function saveCalEvs() {
+      await saveTable('calendar_events', {items: calEvs});
+    }
+
+    async function saveInv() {
+      await saveTable('inventory', {items: inv});
+    }
+
+    async function saveRepairs() {
+      await saveTable('repairs', {items: repairs});
+    }
+
+    // ====== RENDER FUNCTIONS ======
+    function renderAll() {
+      renderTasks();
+      renderMsgs();
+      renderOrders();
+      renderDocs();
+      renderCal();
+      renderInv();
+      renderRep();
+    }
+
+    function renderTasks() {
+      const list = document.getElementById('tasks-list');
+      list.innerHTML = '';
+
+      let filtered = tasks;
+      if (tFlt !== 'all') {
+        filtered = tasks.filter(t => t.cat === tFlt);
+      }
+
+      filtered.forEach(task => {
+        const div = document.createElement('div');
+        div.className = `item ${task.done ? 'done' : ''}`;
+        div.innerHTML = `
+          <div class="item-header">
+            <div>
+              <div class="item-title">${task.title}</div>
+              <div class="item-meta">
+                <span class="item-tag">${task.cat}</span>
+                <span class="item-tag">${task.who}</span>
+                <span class="item-tag ${task.pri}">${task.pri}</span>
+                <span>${fmt(task.date)}</span>
+              </div>
+              ${task.note ? `<div style="color: var(--soft-gray); margin-top: 0.5rem;">${task.note}</div>` : ''}
+            </div>
+            <div class="item-actions">
+              <button class="btn-success" onclick="togTask(${task.id})">✓</button>
+              <button class="btn-danger" onclick="delTask(${task.id})">×</button>
+            </div>
+          </div>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    function renderMsgs() {
+      const chat = document.getElementById('chat-msgs');
+      chat.innerHTML = '';
+
+      msgs.forEach(msg => {
+        const div = document.createElement('div');
+        div.className = `message ${msg.who === CU ? 'own' : ''}`;
+        div.innerHTML = `
+          <div class="msg-who">${msg.who}</div>
+          <div class="msg-text">${msg.txt}</div>
+          <div class="msg-time">${msg.time}</div>
+        `;
+        chat.appendChild(div);
+      });
+
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function renderOrders() {
+      const list = document.getElementById('orders-list');
+      list.innerHTML = '';
+
+      let filtered = orders;
+      if (dFlt !== 'all') {
+        filtered = orders.filter(o => o.status === dFlt);
+      }
+
+      filtered.forEach(order => {
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.innerHTML = `
+          <div class="item-header">
+            <div>
+              <div class="item-title">${order.item}</div>
+              <div class="item-meta">
+                <span class="item-tag">${order.qty}x</span>
+                <span class="item-tag">${order.who}</span>
+                <span class="item-tag">${order.status}</span>
+              </div>
+              ${order.note ? `<div style="color: var(--soft-gray); margin-top: 0.5rem;">${order.note}</div>` : ''}
+            </div>
+            <div class="item-actions">
+              <button class="btn-danger" onclick="delOrder(${order.id})">×</button>
+            </div>
+          </div>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    function renderDocs() {
+      const grid = document.getElementById('docs-list');
+      grid.innerHTML = '';
+
+      let filtered = docs;
+      if (dFlt !== 'all') {
+        filtered = docs.filter(d => d.cat === dFlt);
+      }
+
+      filtered.forEach(doc => {
+        const card = document.createElement('div');
+        card.className = 'doc-card';
+        card.innerHTML = `
+          <div class="doc-icon">📄</div>
+          <div class="doc-name">${doc.name}</div>
+          <div class="doc-size">${doc.cat}</div>
+          ${doc.note ? `<div style="font-size: 0.75rem; color: var(--soft-gray); margin-top: 0.5rem;">${doc.note}</div>` : ''}
+          <button class="btn-danger" onclick="delDoc(${doc.id})" style="margin-top: 0.75rem; width: 100%;">Delete</button>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function renderCal() {
+      renderCalGrid();
+      renderCalEvents();
+    }
+
+    function renderCalGrid() {
+      const daysDiv = document.getElementById('cal-days');
+      daysDiv.innerHTML = '';
+
+      const firstDay = new Date(calY, calM, 1).getDay();
+      const daysInMonth = new Date(calY, calM + 1, 0).getDate();
+      const daysInPrevMonth = new Date(calY, calM, 0).getDate();
+
+      const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      document.getElementById('cal-title-display').textContent = `${monthNames[calM]} ${calY}`;
+
+      // Previous month days
+      for (let i = firstDay - 1; i >= 0; i--) {
+        const day = document.createElement('div');
+        day.className = 'day other-month';
+        day.textContent = daysInPrevMonth - i;
+        daysDiv.appendChild(day);
+      }
+
+      const today = new Date();
+      const isToday = (d) => d === today.getDate() && calM === today.getMonth() && calY === today.getFullYear();
+
+      // Current month days
+      for (let d = 1; d <= daysInMonth; d++) {
+        const day = document.createElement('div');
+        const dateStr = `${calY}-${String(calM + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        const hasEvent = calEvs.some(ev => ev.date === dateStr);
+
+        day.className = `day ${isToday(d) ? 'today' : ''} ${hasEvent ? 'has-event' : ''}`;
+        day.textContent = d;
+        daysDiv.appendChild(day);
+      }
+
+      // Next month days
+      const totalCells = daysDiv.children.length;
+      const remainingCells = 42 - totalCells;
+      for (let i = 1; i <= remainingCells; i++) {
+        const day = document.createElement('div');
+        day.className = 'day other-month';
+        day.textContent = i;
+        daysDiv.appendChild(day);
+      }
+    }
+
+    function renderCalEvents() {
+      const evList = document.getElementById('cal-events-list');
+      evList.innerHTML = '';
+
+      const filtered = calEvs.filter(ev => {
+        const evDate = new Date(ev.date);
+        return evDate.getMonth() === calM && evDate.getFullYear() === calY;
+      });
+
+      filtered.forEach(ev => {
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.style.marginBottom = '0.75rem';
+        div.innerHTML = `
+          <div style="font-weight: 700;">${ev.title}</div>
+          <div style="font-size: 0.9rem; color: var(--soft-gray);">${fmt(ev.date)} at ${ev.time}</div>
+          <div style="font-size: 0.85rem; margin-top: 0.5rem;">${ev.cat}</div>
+          ${ev.desc ? `<div style="font-size: 0.85rem; color: var(--soft-gray); margin-top: 0.5rem;">${ev.desc}</div>` : ''}
+          <button class="btn-danger" onclick="delCalEv(${ev.id})" style="margin-top: 0.5rem; width: 100%;">Delete</button>
+        `;
+        evList.appendChild(div);
+      });
+    }
+
+    function renderInv() {
+      const grid = document.getElementById('inv-list');
+      grid.innerHTML = '';
+
+      let filtered = inv;
+      if (iFlt !== 'all') {
+        filtered = inv.filter(i => i.cat === iFlt);
+      }
+
+      filtered.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'inv-item';
+        card.innerHTML = `
+          <div class="inv-name">${item.name}</div>
+          <div style="font-size: 0.85rem; color: var(--soft-gray); margin-bottom: 0.75rem;">${item.loc}</div>
+          <div class="inv-qty">
+            <span class="inv-qty-label">Qty:</span>
+            <span class="inv-qty-value">${item.qty}</span>
+          </div>
+          <div class="inv-actions">
+            <button class="inv-btn" onclick="incInv(${item.id})">+</button>
+            <button class="inv-btn" onclick="decInv(${item.id})">-</button>
+            <button class="inv-btn" onclick="delInv(${item.id})" style="background: var(--red);">×</button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function renderRep() {
+      const list = document.getElementById('repairs-list');
+      list.innerHTML = '';
+
+      let filtered = repairs;
+      if (rFlt !== 'all') {
+        filtered = repairs.filter(r => r.status === rFlt);
+      }
+
+      filtered.forEach(rep => {
+        const div = document.createElement('div');
+        div.className = `item ${rep.status === 'completed' ? 'done' : ''}`;
+        div.innerHTML = `
+          <div class="item-header">
+            <div>
+              <div class="item-title">${rep.desc}</div>
+              <div class="item-meta">
+                <span class="item-tag">${rep.area}</span>
+                <span class="item-tag ${rep.pri}">${rep.pri}</span>
+                <span class="item-tag">${rep.status}</span>
+              </div>
+              ${rep.note ? `<div style="color: var(--soft-gray); margin-top: 0.5rem;">${rep.note}</div>` : ''}
+            </div>
+            <div class="item-actions">
+              <button class="btn-success" onclick="togRep(${rep.id})">✓</button>
+              <button class="btn-danger" onclick="delRep(${rep.id})">×</button>
+            </div>
+          </div>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    // ====== TASK FUNCTIONS ======
+    async function addTask() {
+      const title = document.getElementById('task-title').value.trim();
+      const cat = document.getElementById('task-cat').value;
+      const who = document.getElementById('task-who').value;
+      const pri = document.getElementById('task-pri').value;
+      const note = document.getElementById('task-note').value.trim();
+      const date = document.getElementById('task-date').value || tod();
+
+      if (!title) {
+        alert('Please enter a task title');
+        return;
+      }
+
+      tasks.push({
+        id: getNextId(tasks),
+        title,
+        cat,
+        who,
+        pri,
+        note,
+        done: false,
+        date
+      });
+
+      await saveTasks();
+      renderTasks();
+
+      document.getElementById('task-title').value = '';
+      document.getElementById('task-cat').value = 'Courses / Groceries';
+      document.getElementById('task-who').value = 'Adriana';
+      document.getElementById('task-pri').value = 'low';
+      document.getElementById('task-note').value = '';
+      document.getElementById('task-date').value = '';
+    }
+
+    async function togTask(id) {
+      const task = tasks.find(t => t.id === id);
+      if (task) {
+        task.done = !task.done;
+        await saveTasks();
+        renderTasks();
+      }
+    }
+
+    async function delTask(id) {
+      tasks = tasks.filter(t => t.id !== id);
+      await saveTasks();
+      renderTasks();
+    }
+
+    // ====== MESSAGE FUNCTIONS ======
+    async function sendMsg() {
+      const txt = document.getElementById('msg-input').value.trim();
+      if (!txt) {
+        alert('Please enter a message');
+        return;
+      }
+
+      const now = new Date();
+      const time = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+
+      msgs.push({
+        id: getNextId(msgs),
+        who: CU,
+        txt,
+        time
+      });
+
+      await saveMsgs();
+      renderMsgs();
+      document.getElementById('msg-input').value = '';
+    }
+
+    // ====== ORDER FUNCTIONS ======
+    async function addOrder() {
+      const item = document.getElementById('order-item').value.trim();
+      const qty = parseInt(document.getElementById('order-qty').value) || 1;
+      const who = document.getElementById('order-who').value;
+      const status = document.getElementById('order-status').value;
+      const note = document.getElementById('order-note').value.trim();
+
+      if (!item) {
+        alert('Please enter an item');
+        return;
+      }
+
+      orders.push({
+        id: getNextId(orders),
+        item,
+        qty,
+        who,
+        status,
+        note
+      });
+
+      await saveOrders();
+      renderOrders();
+
+      document.getElementById('order-item').value = '';
+      document.getElementById('order-qty').value = '1';
+      document.getElementById('order-who').value = 'Adriana';
+      document.getElementById('order-status').value = 'pending';
+      document.getElementById('order-note').value = '';
+    }
+
+    async function delOrder(id) {
+      orders = orders.filter(o => o.id !== id);
+      await saveOrders();
+      renderOrders();
+    }
+
+    // ====== DOCUMENT FUNCTIONS ======
+    async function addDoc() {
+      const name = document.getElementById('doc-name').value.trim();
+      const cat = document.getElementById('doc-cat').value;
+      const note = document.getElementById('doc-note').value.trim();
+
+      if (!name) {
+        alert('Please enter a document name');
+        return;
+      }
+
+      docs.push({
+        id: getNextId(docs),
+        name,
+        cat,
+        note
+      });
+
+      await saveDocs();
+      renderDocs();
+
+      document.getElementById('doc-name').value = '';
+      document.getElementById('doc-cat').value = 'Financial / Financier';
+      document.getElementById('doc-note').value = '';
+    }
+
+    async function delDoc(id) {
+      docs = docs.filter(d => d.id !== id);
+      await saveDocs();
+      renderDocs();
+    }
+
+    // ====== CALENDAR FUNCTIONS ======
+    async function addCal() {
+      const title = document.getElementById('cal-title').value.trim();
+      const date = document.getElementById('cal-date').value;
+      const time = document.getElementById('cal-time').value || '12:00';
+      const cat = document.getElementById('cal-cat').value;
+      const desc = document.getElementById('cal-desc').value.trim();
+
+      if (!title || !date) {
+        alert('Please enter event title and date');
+        return;
+      }
+
+      calEvs.push({
+        id: getNextId(calEvs),
+        title,
+        date,
+        time,
+        cat,
+        desc
+      });
+
+      await saveCalEvs();
+      renderCal();
+
+      document.getElementById('cal-title').value = '';
+      document.getElementById('cal-date').value = '';
+      document.getElementById('cal-time').value = '';
+      document.getElementById('cal-cat').value = 'Family / Famille';
+      document.getElementById('cal-desc').value = '';
+    }
+
+    async function delCalEv(id) {
+      calEvs = calEvs.filter(ev => ev.id !== id);
+      await saveCalEvs();
+      renderCal();
+    }
+
+    function prevMonth() {
+      if (calM === 0) {
+        calM = 11;
+        calY--;
+      } else {
+        calM--;
+      }
+      renderCal();
+    }
+
+    function nextMonth() {
+      if (calM === 11) {
+        calM = 0;
+        calY++;
+      } else {
+        calM++;
+      }
+      renderCal();
+    }
+
+    // ====== INVENTORY FUNCTIONS ======
+    async function addInv() {
+      const name = document.getElementById('inv-name').value.trim();
+      const loc = document.getElementById('inv-loc').value.trim();
+      const qty = parseInt(document.getElementById('inv-qty').value) || 1;
+      const cat = document.getElementById('inv-cat').value;
+
+      if (!name || !loc) {
+        alert('Please enter item name and location');
+        return;
+      }
+
+      inv.push({
+        id: getNextId(inv),
+        name,
+        loc,
+        qty,
+        cat
+      });
+
+      await saveInv();
+      renderInv();
+
+      document.getElementById('inv-name').value = '';
+      document.getElementById('inv-loc').value = '';
+      document.getElementById('inv-qty').value = '1';
+      document.getElementById('inv-cat').value = 'Food / Nourriture';
+    }
+
+    async function incInv(id) {
+      const item = inv.find(i => i.id === id);
+      if (item) {
+        item.qty++;
+        await saveInv();
+        renderInv();
+      }
+    }
+
+    async function decInv(id) {
+      const item = inv.find(i => i.id === id);
+      if (item && item.qty > 0) {
+        item.qty--;
+        await saveInv();
+        renderInv();
+      }
+    }
+
+    async function delInv(id) {
+      inv = inv.filter(i => i.id !== id);
+      await saveInv();
+      renderInv();
+    }
+
+    // ====== REPAIR FUNCTIONS ======
+    async function addRep() {
+      const desc = document.getElementById('rep-desc').value.trim();
+      const area = document.getElementById('rep-area').value;
+      const pri = document.getElementById('rep-pri').value;
+      const status = document.getElementById('rep-status').value;
+      const note = document.getElementById('rep-note').value.trim();
+
+      if (!desc) {
+        alert('Please enter a description');
+        return;
+      }
+
+      repairs.push({
+        id: getNextId(repairs),
+        desc,
+        area,
+        pri,
+        status,
+        note
+      });
+
+      await saveRepairs();
+      renderRep();
+
+      document.getElementById('rep-desc').value = '';
+      document.getElementById('rep-area').value = 'Kitchen / Cuisine';
+      document.getElementById('rep-pri').value = 'low';
+      document.getElementById('rep-status').value = 'pending';
+      document.getElementById('rep-note').value = '';
+    }
+
+    async function togRep(id) {
+      const rep = repairs.find(r => r.id === id);
+      if (rep) {
+        rep.status = rep.status === 'completed' ? 'pending' : 'completed';
+        await saveRepairs();
+        renderRep();
+      }
+    }
+
+    async function delRep(id) {
+      repairs = repairs.filter(r => r.id !== id);
+      await saveRepairs();
+      renderRep();
+    }
+
+    // ====== NOTICE BOARD FUNCTIONS ======
+    function editNotice() {
+      document.getElementById('notice-txt').style.display = 'none';
+      document.getElementById('edit-notice-btn').style.display = 'none';
+      document.getElementById('notice-edit-form').classList.add('shown');
+      document.getElementById('notice-input').value = notice;
+      document.getElementById('notice-input').focus();
+    }
+
+    async function saveNotice() {
+      notice = document.getElementById('notice-input').value.trim() || notice;
+      document.getElementById('notice-txt').textContent = notice;
+      cancelNoticeEdit();
+      await saveTasks();
+    }
+
+    function cancelNoticeEdit() {
+      document.getElementById('notice-txt').style.display = 'block';
+      document.getElementById('edit-notice-btn').style.display = 'block';
+      document.getElementById('notice-edit-form').classList.remove('shown');
+    }
+
+    // ====== LOGIN FUNCTIONS ======
+    async function doLogin() {
+      const pw = document.getElementById('pwd-input').value;
+      if (PW[SU] === pw) {
+        CU = SU;
+        document.getElementById('login-screen').classList.add('hidden');
+        document.getElementById('app').classList.add('visible');
+        document.getElementById('user-badge').textContent = CU;
+
+        await initData();
+      } else {
+        document.getElementById('login-error').textContent = 'Incorrect password';
+      }
+    }
+
+    function doLogout() {
+      document.getElementById('app').classList.remove('visible');
+      document.getElementById('login-screen').classList.remove('hidden');
+      document.getElementById('pwd-input').value = '';
+      document.getElementById('login-error').textContent = '';
+      SU = 'Adriana';
+      updateUserBtns();
+    }
+
+    function updateUserBtns() {
+      document.querySelectorAll('.user-btn').forEach(btn => {
+        btn.classList.remove('selected');
+        if (btn.dataset.user === SU) {
+          btn.classList.add('selected');
+        }
+      });
+    }
+
+    // ====== EVENT LISTENERS ======
+    document.addEventListener('DOMContentLoaded', () => {
+      // Login
+      document.querySelectorAll('.user-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          SU = btn.dataset.user;
+          updateUserBtns();
+        });
+      });
+
+      document.getElementById('login-btn').addEventListener('click', doLogin);
+      document.getElementById('pwd-input').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') doLogin();
+      });
+
+      document.getElementById('logout-btn').addEventListener('click', doLogout);
+
+      // Tabs
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+          document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+          btn.classList.add('active');
+          document.getElementById(btn.dataset.tab).classList.add('active');
+        });
+      });
+
+      // Notice
+      document.getElementById('edit-notice-btn').addEventListener('click', editNotice);
+      document.getElementById('notice-save-btn').addEventListener('click', saveNotice);
+      document.getElementById('notice-cancel-btn').addEventListener('click', cancelNoticeEdit);
+
+      // Tasks
+      document.getElementById('add-task-btn').addEventListener('click', addTask);
+      document.getElementById('task-title').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') addTask();
+      });
+
+      document.querySelectorAll('[data-filter][data-type="task"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('[data-type="task"]').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          tFlt = btn.dataset.filter;
+          renderTasks();
+        });
+      });
+
+      // Messages
+      document.getElementById('send-msg-btn').addEventListener('click', sendMsg);
+      document.getElementById('msg-input').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          sendMsg();
+        }
+      });
+
+      // Orders
+      document.getElementById('add-order-btn').addEventListener('click', addOrder);
+      document.getElementById('order-item').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') addOrder();
+      });
+
+      document.querySelectorAll('[data-filter][data-type="document"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('[data-type="document"]').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          dFlt = btn.dataset.filter;
+          renderOrders();
+        });
+      });
+
+      // Documents
+      document.getElementById('add-doc-btn').addEventListener('click', addDoc);
+      document.getElementById('doc-name').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') addDoc();
+      });
+
+      document.querySelectorAll('[data-filter][data-type="doc"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('[data-type="doc"]').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          dFlt = btn.dataset.filter;
+          renderDocs();
+        });
+      });
+
+      // Calendar
+      document.getElementById('add-cal-btn').addEventListener('click', addCal);
+      document.getElementById('cal-title').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') addCal();
+      });
+
+      document.getElementById('cal-prev').addEventListener('click', prevMonth);
+      document.getElementById('cal-next').addEventListener('click', nextMonth);
+
+      // Inventory
+      document.getElementById('add-inv-btn').addEventListener('click', addInv);
+      document.getElementById('inv-name').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') addInv();
+      });
+
+      document.querySelectorAll('[data-filter][data-type="inv"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('[data-type="inv"]').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          iFlt = btn.dataset.filter;
+          renderInv();
+        });
+      });
+
+      // Repairs
+      document.getElementById('add-rep-btn').addEventListener('click', addRep);
+      document.getElementById('rep-desc').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') addRep();
+      });
+
+      document.querySelectorAll('[data-filter][data-type="rep"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('[data-type="rep"]').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          rFlt = btn.dataset.filter;
+          renderRep();
+        });
+      });
+    });
+  </script>
+</body>
+</html>
