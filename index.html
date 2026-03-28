@@ -40,20 +40,22 @@
     .header-lang-toggle{display:flex;gap:4px;border-left:1px solid rgba(255,255,255,0.2);padding-left:12px;margin-left:12px;}
     .header-lang-btn{font-size:11px;color:rgba(255,255,255,0.5);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;}
     .header-lang-btn.active{color:white;font-weight:500;}
-    .notice-board{background:var(--accent-light);padding:20px;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:center;justify-content:space-between;}
-    .notice-text{flex:1;font-style:italic;color:var(--accent);font-size:13px;}
-    .notice-input{flex:1;padding:10px 12px;border:1px solid var(--accent);border-radius:3px;font-family:'DM Sans',sans-serif;font-size:13px;}
+    .notice-board{background:#232323;border-top:1px solid rgba(255,255,255,0.08);padding:9px 20px;display:flex;align-items:center;gap:12px;min-height:40px;}
+    .notice-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);white-space:nowrap;font-weight:500;}
+    .notice-text{font-size:13px;color:rgba(255,255,255,0.8);flex:1;font-style:italic;}
+    .notice-input{flex:1;padding:5px 10px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:3px;font-family:'DM Sans',sans-serif;font-size:13px;color:white;outline:none;}
     .notice-buttons{display:flex;gap:8px;}
-    .notice-btn{padding:6px 12px;border:none;border-radius:3px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;}
-    .notice-save{background:var(--green);color:white;}
-    .notice-cancel{background:var(--soft-gray);color:white;}
-    .notice-edit{background:var(--accent);color:white;}
-    .main-container{display:flex;flex:1;overflow:hidden;}
-    .tabs{background:var(--warm-white);border-right:1px solid var(--border);width:180px;padding:12px 0;overflow-y:auto;flex-shrink:0;}
-    .tab-btn{width:100%;padding:12px 16px;border:none;background:transparent;text-align:left;cursor:pointer;font-size:13px;color:var(--soft-gray);border-left:3px solid transparent;transition:all 0.2s;font-family:'DM Sans',sans-serif;}
-    .tab-btn.active{background:var(--accent-light);color:var(--accent);border-left-color:var(--accent);}
-    .tab-btn:hover{background:var(--cream);}
-    .content{flex:1;padding:20px;overflow-y:auto;background:var(--cream);}
+    .notice-btn{padding:3px 8px;border:none;border-radius:3px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;}
+    .notice-save{background:var(--accent);color:white;}
+    .notice-cancel{background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.7);}
+    .notice-edit{background:none;color:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.15);font-size:11px;}
+    .notice-edit:hover{color:white;}
+    .tabs{background:var(--warm-white);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;padding:0 16px;scrollbar-width:none;}
+    .tabs::-webkit-scrollbar{display:none;}
+    .tab-btn{padding:13px 15px;font-size:12px;font-weight:500;color:var(--soft-gray);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;transition:all 0.2s;white-space:nowrap;font-family:'DM Sans',sans-serif;}
+    .tab-btn.active{color:var(--charcoal);border-bottom-color:var(--accent);}
+    .tab-btn:hover{color:var(--charcoal);}
+    .main{max-width:920px;margin:0 auto;padding:22px 18px;}
     .tab-section{display:none;}
     .tab-section.active{display:block;}
     h2{font-family:'Playfair Display',serif;font-size:24px;margin-bottom:20px;color:var(--charcoal);}
@@ -147,6 +149,7 @@
   </div>
 
   <div class="notice-board">
+    <div class="notice-label">📌 Notice</div>
     <div class="notice-text" id="notice-text">Welcome to Saint James</div>
     <div class="notice-input" style="display:none;" id="notice-input-container">
       <input type="text" class="notice-input" id="notice-input" placeholder="Edit notice">
@@ -157,11 +160,8 @@
       <button class="notice-btn notice-cancel" id="notice-cancel-btn" style="display:none;">Cancel</button>
     </div>
   </div>
-
-  <div class="main-container">
-    <div class="tabs" id="tabs"></div>
-    <div class="content" id="content"></div>
-  </div>
+  <div class="tabs" id="tabs"></div>
+  <div class="main" id="content"></div>
 </div>
 
 <script>
@@ -614,8 +614,15 @@ function switchTab(tabName) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
 
-  event.target.classList.add('active');
-  document.getElementById(`tab-${tabName}`).classList.add('active');
+  const tabs = ['dashboard', 'tasks', 'messages', 'orders', 'documents', 'calendar', 'inventory', 'works'];
+  const idx = tabs.indexOf(tabName);
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  if (tabBtns[idx]) tabBtns[idx].classList.add('active');
+  const section = document.getElementById(`tab-${tabName}`);
+  if (section) section.classList.add('active');
+  if (tabName === 'messages') {
+    setTimeout(() => { const c = document.getElementById('chat-msgs'); if (c) c.scrollTop = c.scrollHeight; }, 50);
+  }
 }
 
 function renderContent() {
@@ -623,7 +630,7 @@ function renderContent() {
   content.innerHTML = '';
 
   // Dashboard
-  content.appendChild(renderDashboard());
+  content.appendChild(createTabSection('dashboard', renderDashboard()));
 
   // Tasks
   content.appendChild(createTabSection('tasks', renderTasks()));
