@@ -117,6 +117,10 @@
     .edit-form button{font-size:11px;padding:6px 10px;}
     .btn-success{background:var(--green);color:white;}
     .btn-success:hover{background:#5a7a61;}
+    .toast{position:fixed;top:20px;right:20px;background:var(--green);color:white;padding:14px 20px;border-radius:4px;box-shadow:0 4px 12px rgba(0,0,0,0.15);font-size:14px;z-index:2000;animation:slideIn 0.3s ease-out;}
+    @keyframes slideIn{from{transform:translateX(400px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+    .toast.hide{animation:slideOut 0.3s ease-out forwards;}
+    @keyframes slideOut{from{transform:translateX(0);opacity:1;}to{transform:translateX(400px);opacity:0;}}
   </style>
 </head>
 <body>
@@ -232,12 +236,14 @@ const T = {
     'orders.bulk_add': 'Bulk Add Orders',
     'orders.item': 'Item',
     'orders.notes': 'Notes',
+    'orders.assigned': 'Assigned To',
     'orders.status': 'Status',
     'orders.pending': 'Pending',
     'orders.ordered': 'Ordered',
     'orders.delivered': 'Delivered',
     'orders.add': 'Add Order',
     'orders.add_all': 'Add All',
+    'orders.cancel': 'Cancel',
     'orders.format': 'One item per line. Format: "item name" or "item name - notes"',
     'orders.delete': 'Delete',
     'orders.mark_status': 'Mark as',
@@ -352,12 +358,14 @@ const T = {
     'orders.bulk_add': 'Ajouter en masse',
     'orders.item': 'Article',
     'orders.notes': 'Notes',
+    'orders.assigned': 'Assigné à',
     'orders.status': 'Statut',
     'orders.pending': 'En attente',
     'orders.ordered': 'Commandé',
     'orders.delivered': 'Livré',
     'orders.add': 'Ajouter une commande',
     'orders.add_all': 'Ajouter tous',
+    'orders.cancel': 'Annuler',
     'orders.format': 'Un article par ligne. Format: "nom de l\'article" ou "nom de l\'article - notes"',
     'orders.delete': 'Supprimer',
     'orders.mark_status': 'Marquer comme',
@@ -446,6 +454,31 @@ let state = {
 
 function t(key) {
   return T[state.lang][key] || key;
+}
+
+// Show toast notification
+function showToast(message, duration = 3000) {
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  setTimeout(() => {
+    toast.classList.add('hide');
+    setTimeout(() => toast.remove(), 300);
+  }, duration);
+}
+
+// Notify Mirella when assigned to her
+function notifyMirella(itemType, itemName) {
+  // TODO: Replace with EmailJS or server-side email for automatic sending
+  // For now, show a toast notification
+  showToast(`Notification sent to Mirella - New ${itemType} assigned: ${itemName}`);
+
+  // Optional: Open mailto link (requires user interaction)
+  // const subject = `Saint James - New ${itemType} assigned to you`;
+  // const body = `Hi Mirella, a new ${itemType} has been assigned to you in Saint James: ${itemName}. Please check the app.`;
+  // const mailto = `mailto:Mirella@guibor.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  // window.open(mailto);
 }
 
 // ===== INITIALIZATION =====
@@ -1029,6 +1062,9 @@ function renderTasks() {
     };
     if (newTask.name) {
       state.tasks.push(newTask);
+      if (assignSel.value === 'Mirella') {
+        notifyMirella('task', newTask.name);
+      }
       nameInput.value = '';
       renderContent();
     }
@@ -1177,11 +1213,15 @@ function renderTasks() {
         renderContent();
       });
       saveBtn.addEventListener('click', () => {
+        const prevAssigned = task.assigned;
         task.name = nameInput.value;
         task.room = roomSel.value;
         task.priority = prioritySel.value;
         task.assigned = assignSel.value;
         task.status = statusSel.value;
+        if (assignSel.value === 'Mirella' && prevAssigned !== 'Mirella') {
+          notifyMirella('task', task.name);
+        }
         renderContent();
       });
       cancelBtn.addEventListener('click', () => {
@@ -1327,6 +1367,24 @@ function renderOrders() {
   notesGrp.appendChild(notesInput);
   form.appendChild(notesGrp);
 
+  const assignGrp = document.createElement('div');
+  assignGrp.className = 'form-group';
+  const assignLabel = document.createElement('label');
+  assignLabel.className = 'form-label';
+  assignLabel.textContent = t('orders.assigned');
+  const assignSel = document.createElement('select');
+  assignSel.className = 'form-select';
+  const users = Object.keys(USERS);
+  [''].concat(users).forEach(user => {
+    const opt = document.createElement('option');
+    opt.value = user;
+    opt.textContent = user || '—';
+    assignSel.appendChild(opt);
+  });
+  assignGrp.appendChild(assignLabel);
+  assignGrp.appendChild(assignSel);
+  form.appendChild(assignGrp);
+
   const btnGrp = document.createElement('div');
   btnGrp.className = 'button-group';
   const btn = document.createElement('button');
@@ -1340,10 +1398,15 @@ function renderOrders() {
         id: Date.now(),
         item: itemInput.value,
         notes: notesInput.value,
+        assigned: assignSel.value,
         status: 'pending'
       });
+      if (assignSel.value === 'Mirella') {
+        notifyMirella('order', itemInput.value);
+      }
       itemInput.value = '';
       notesInput.value = '';
+      assignSel.value = '';
       renderContent();
     }
   });
@@ -1353,11 +1416,41 @@ function renderOrders() {
   bulkBtn.type = 'button';
   bulkBtn.className = 'btn btn-secondary';
   bulkBtn.textContent = t('orders.add_list');
-  bulkBtn.addEventListener('click', (e) => {
+
+  // Bulk add textarea container (hidden initially)
+  const bulkContainer = document.createElement('div');
+  bulkContainer.style.display = 'none';
+  bulkContainer.style.marginTop = '16px';
+  bulkContainer.style.padding = '16px';
+  bulkContainer.style.backgroundColor = 'var(--accent-light)';
+  bulkContainer.style.borderRadius = '4px';
+
+  const bulkLabel = document.createElement('label');
+  bulkLabel.className = 'form-label';
+  bulkLabel.textContent = t('orders.bulk_add');
+  bulkContainer.appendChild(bulkLabel);
+
+  const bulkTextarea = document.createElement('textarea');
+  bulkTextarea.className = 'bulk-textarea';
+  bulkTextarea.placeholder = 'One item per line\nItem name\nItem name - notes';
+  bulkTextarea.style.marginTop = '8px';
+  bulkContainer.appendChild(bulkTextarea);
+
+  const bulkBtnGrp = document.createElement('div');
+  bulkBtnGrp.style.display = 'flex';
+  bulkBtnGrp.style.gap = '8px';
+  bulkBtnGrp.style.marginTop = '12px';
+
+  const addAllBtn = document.createElement('button');
+  addAllBtn.type = 'button';
+  addAllBtn.className = 'btn btn-success';
+  addAllBtn.textContent = t('orders.add_all');
+  addAllBtn.addEventListener('click', (e) => {
     e.preventDefault();
-    const text = prompt(t('orders.format'));
-    if (text) {
+    const text = bulkTextarea.value;
+    if (text.trim()) {
       const lines = text.split('\n');
+      let count = 0;
       lines.forEach(line => {
         const trimmed = line.trim();
         if (trimmed) {
@@ -1368,15 +1461,38 @@ function renderOrders() {
             id: Date.now() + Math.random(),
             item: item,
             notes: notes,
+            assigned: '',
             status: 'pending'
           });
+          count++;
         }
       });
+      bulkTextarea.value = '';
+      bulkContainer.style.display = 'none';
       renderContent();
     }
   });
+  bulkBtnGrp.appendChild(addAllBtn);
+
+  const cancelBulkBtn = document.createElement('button');
+  cancelBulkBtn.type = 'button';
+  cancelBulkBtn.className = 'btn btn-secondary';
+  cancelBulkBtn.textContent = t('orders.cancel');
+  cancelBulkBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    bulkTextarea.value = '';
+    bulkContainer.style.display = 'none';
+  });
+  bulkBtnGrp.appendChild(cancelBulkBtn);
+  bulkContainer.appendChild(bulkBtnGrp);
+
+  bulkBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    bulkContainer.style.display = bulkContainer.style.display === 'none' ? 'block' : 'none';
+  });
   btnGrp.appendChild(bulkBtn);
   form.appendChild(btnGrp);
+  form.appendChild(bulkContainer);
   div.appendChild(form);
 
   const list = document.createElement('div');
@@ -1396,6 +1512,7 @@ function renderOrders() {
           <div class="item-title">${order.item}</div>
           <div class="item-meta">
             ${order.notes ? `<span>${order.notes}</span>` : ''}
+            ${order.assigned ? `<span>${order.assigned}</span>` : ''}
             <span class="badge badge-status" style="cursor: pointer;" title="Click to cycle status">${t(`orders.${order.status}`)}</span>
           </div>
         </div>
@@ -1440,7 +1557,26 @@ function renderOrders() {
       notesEditGrp.appendChild(notesEditLabel);
       notesEditGrp.appendChild(notesEditInput);
       editDiv.appendChild(notesEditGrp);
-      
+
+      const assignEditGrp = document.createElement('div');
+      assignEditGrp.className = 'form-group';
+      const assignEditLabel = document.createElement('label');
+      assignEditLabel.className = 'form-label';
+      assignEditLabel.textContent = t('orders.assigned');
+      const assignEditSel = document.createElement('select');
+      assignEditSel.className = 'form-select';
+      assignEditSel.style.marginBottom = '12px';
+      [''].concat(Object.keys(USERS)).forEach(user => {
+        const opt = document.createElement('option');
+        opt.value = user;
+        opt.textContent = user || '—';
+        if (user === order.assigned) opt.selected = true;
+        assignEditSel.appendChild(opt);
+      });
+      assignEditGrp.appendChild(assignEditLabel);
+      assignEditGrp.appendChild(assignEditSel);
+      editDiv.appendChild(assignEditGrp);
+
       const statusEditGrp = document.createElement('div');
       statusEditGrp.className = 'form-group';
       const statusEditLabel = document.createElement('label');
@@ -1494,9 +1630,14 @@ function renderOrders() {
       });
       
       saveBtn.addEventListener('click', () => {
+        const prevAssigned = order.assigned;
         order.item = itemEditInput.value;
         order.notes = notesEditInput.value;
+        order.assigned = assignEditSel.value;
         order.status = statusEditSel.value;
+        if (assignEditSel.value === 'Mirella' && prevAssigned !== 'Mirella') {
+          notifyMirella('order', order.item);
+        }
         renderContent();
       });
       
