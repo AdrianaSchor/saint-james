@@ -6,7 +6,7 @@
   <title>Saint James - Household Management</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Georgia:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --cream: #F7F4EF;
@@ -31,7 +31,7 @@
     }
 
     body {
-      font-family: 'DM Sans', sans-serif;
+      font-family: Georgia, Cambria, 'Times New Roman', Times, serif;
       background: var(--cream);
       color: var(--charcoal);
       min-height: 100vh;
@@ -842,8 +842,164 @@
         grid-template-columns: 1fr;
       }
     }
+  
+    /* Dashboard */
+    .dashboard-container {
+      padding: 2rem;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .dashboard-card {
+      background: var(--warm-white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+    }
+
+    .dashboard-welcome {
+      grid-column: 1 / -1;
+      background: linear-gradient(135deg, var(--accent-light), var(--warm-white));
+      padding: 2rem;
+    }
+
+    .dashboard-welcome h2 {
+      color: var(--accent);
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .dashboard-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1rem;
+    }
+
+    .dashboard-card h3 {
+      font-size: 1.1rem;
+      color: var(--charcoal);
+      margin: 0;
+    }
+
+    .dashboard-link {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: color 0.3s;
+    }
+
+    .dashboard-link:hover {
+      color: #9a7a5a;
+    }
+
+    .dashboard-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .dashboard-item {
+      padding: 0.75rem;
+      background: var(--cream);
+      border-left: 3px solid var(--accent);
+      border-radius: 4px;
+      font-size: 0.95rem;
+    }
+
+    .dashboard-item-title {
+      font-weight: 600;
+      color: var(--charcoal);
+    }
+
+    .dashboard-item-meta {
+      font-size: 0.85rem;
+      color: var(--soft-gray);
+      margin-top: 0.25rem;
+    }
+
+    .btn-icon {
+      padding: 0.5rem 0.75rem;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: background 0.3s;
+    }
+
+    .btn-icon:hover {
+      background: #9a7a5a;
+    }
+
+    .group-toggle-btn {
+      padding: 0.5rem 1rem;
+      background: var(--cream);
+      color: var(--charcoal);
+      border: 2px solid var(--border);
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .group-toggle-btn.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    .group-toggle-btn:hover {
+      border-color: var(--accent);
+    }
+
   </style>
-</head>
+
+    /* Language Toggle */
+    .lang-toggle {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .lang-btn {
+      padding: 0.4rem 0.8rem;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      color: var(--soft-gray);
+      transition: all 0.3s;
+      border-bottom: 2px solid transparent;
+    }
+
+    .lang-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .lang-btn:hover {
+      color: var(--accent);
+    }
+
+  </head>
 <body>
   <!-- Login Screen -->
   <div id="login-screen">
@@ -869,6 +1025,13 @@
         <div class="user-badge" id="user-badge">Adriana</div>
         <button id="logout-btn">Logout</button>
       </div>
+    
+        <div class="lang-toggle">
+          <button class="lang-btn active" data-lang="fr">FR</button>
+          <span>|</span>
+          <button class="lang-btn" data-lang="en">EN</button>
+        </div>
+      
     </header>
 
     <!-- Notice Board -->
@@ -886,7 +1049,8 @@
     <div class="main-content">
       <!-- Tabs -->
       <div class="tabs">
-        <button class="tab-btn active" data-tab="tasks">Tâches / Tasks</button>
+        <button class="tab-btn active" data-tab="dashboard">Tableau de bord / Dashboard</button>
+        <button class="tab-btn" data-tab="tasks">Tâches / Tasks</button>
         <button class="tab-btn" data-tab="messages">Messages</button>
         <button class="tab-btn" data-tab="orders">Commandes / Orders</button>
         <button class="tab-btn" data-tab="documents">Documents</button>
@@ -1270,6 +1434,205 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script>
+  // Translations object
+  const translations = {
+    fr: {
+      dashboard: 'Tableau de bord',
+      tasks: 'Tâches',
+      messages: 'Messages',
+      orders: 'Commandes',
+      documents: 'Documents',
+      calendar: 'Calendrier',
+      inventory: 'Inventaire',
+      repairs: 'Travaux',
+      
+      // Dashboard
+      'welcome-heading': 'Bienvenue',
+      'dashboard-deliveries-title': 'Livraisons à venir',
+      'dashboard-shopping-title': "Liste d'achat",
+      'dashboard-events-title': 'Événements à venir',
+      'dashboard-urgent-title': 'Tâches urgentes',
+      'dashboard-tobuy-title': 'Articles à acheter',
+      'dashboard-repairs-title': 'Réparations en cours',
+      
+      // Common buttons
+      add: 'Ajouter',
+      save: 'Sauvegarder',
+      cancel: 'Annuler',
+      delete: 'Supprimer',
+      edit: 'Modifier',
+      close: 'Fermer',
+      logout: 'Déconnexion',
+      
+      // Orders
+      'add-order': 'Ajouter une commande',
+      'toggle-bulk-orders': 'Ajouter une liste',
+      'add-all-orders': 'Ajouter tout',
+      'cancel-bulk-orders': 'Annuler',
+      'order-status-pending': 'En attente',
+      'order-status-ordered': 'Commandé',
+      'order-status-received': 'Reçu',
+      
+      // Inventory
+      location: 'Lieu',
+      category: 'Catégorie',
+      cleaning: 'Ménage',
+      kitchen: 'Cuisine',
+      bathroom: 'Salle de bain',
+      garden: 'Jardin',
+      office: 'Bureau',
+      general: 'Général',
+      quantity: 'Quantité',
+      status: 'Statut',
+      
+      // Status values
+      'status-need': 'À acheter',
+      'status-have': 'En stock',
+      'status-todo': 'À faire',
+      'status-progress': 'En cours',
+      'status-done': 'Terminé',
+      
+      // Priority
+      high: 'Haute',
+      medium: 'Moyenne',
+      low: 'Basse',
+      
+      // Forms
+      'placeholder-name': 'Nom',
+      'placeholder-notes': 'Notes',
+      'placeholder-search': 'Rechercher...',
+      'no-items': 'Aucun article',
+    },
+    en: {
+      dashboard: 'Dashboard',
+      tasks: 'Tasks',
+      messages: 'Messages',
+      orders: 'Orders',
+      documents: 'Documents',
+      calendar: 'Calendar',
+      inventory: 'Inventory',
+      repairs: 'Works',
+      
+      // Dashboard
+      'welcome-heading': 'Welcome',
+      'dashboard-deliveries-title': 'Upcoming Deliveries',
+      'dashboard-shopping-title': 'Shopping List',
+      'dashboard-events-title': 'Upcoming Events',
+      'dashboard-urgent-title': 'Urgent Tasks',
+      'dashboard-tobuy-title': 'Items to Buy',
+      'dashboard-repairs-title': 'Active Repairs',
+      
+      // Common buttons
+      add: 'Add',
+      save: 'Save',
+      cancel: 'Cancel',
+      delete: 'Delete',
+      edit: 'Edit',
+      close: 'Close',
+      logout: 'Logout',
+      
+      // Orders
+      'add-order': 'Add Order',
+      'toggle-bulk-orders': 'Add List',
+      'add-all-orders': 'Add All',
+      'cancel-bulk-orders': 'Cancel',
+      'order-status-pending': 'Pending',
+      'order-status-ordered': 'Ordered',
+      'order-status-received': 'Received',
+      
+      // Inventory
+      location: 'Location',
+      category: 'Category',
+      cleaning: 'Cleaning',
+      kitchen: 'Kitchen',
+      bathroom: 'Bathroom',
+      garden: 'Garden',
+      office: 'Office',
+      general: 'General',
+      quantity: 'Quantity',
+      status: 'Status',
+      
+      // Status values
+      'status-need': 'Need',
+      'status-have': 'Have',
+      'status-todo': 'Todo',
+      'status-progress': 'Progress',
+      'status-done': 'Done',
+      
+      // Priority
+      high: 'High',
+      medium: 'Medium',
+      low: 'Low',
+      
+      // Forms
+      'placeholder-name': 'Name',
+      'placeholder-notes': 'Notes',
+      'placeholder-search': 'Search...',
+      'no-items': 'No items',
+    }
+  };
+
+  // Current language state
+  let currentLanguage = localStorage.getItem('appLanguage') || 'fr';
+
+  // Function to translate text
+  function t(key) {
+    return translations[currentLanguage][key] || translations.en[key] || key;
+  }
+
+  // Function to set language and update UI
+  function setLanguage(lang) {
+    currentLanguage = lang;
+    localStorage.setItem('appLanguage', lang);
+    
+    // Update language toggle buttons
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.getAttribute('data-lang') === lang) {
+        btn.classList.add('active');
+      }
+    });
+    
+    // Update all translatable elements
+    updateUITranslations();
+  }
+
+  // Function to update UI with translations
+  function updateUITranslations() {
+    // Update tab labels
+    const tabLabels = {
+      'dashboard': currentLanguage === 'fr' ? 'Tableau de bord' : 'Dashboard',
+      'tasks': currentLanguage === 'fr' ? 'Tâches' : 'Tasks',
+      'messages': 'Messages',
+      'orders': currentLanguage === 'fr' ? 'Commandes' : 'Orders',
+      'documents': 'Documents',
+      'calendar': currentLanguage === 'fr' ? 'Calendrier' : 'Calendar',
+      'inventory': currentLanguage === 'fr' ? 'Inventaire' : 'Inventory',
+      'repairs': currentLanguage === 'fr' ? 'Travaux' : 'Works'
+    };
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      const tabName = btn.getAttribute('data-tab');
+      if (tabLabels[tabName]) {
+        btn.textContent = tabLabels[tabName];
+      }
+    });
+
+    // Update dashboard headings
+    const welcomeHeading = document.getElementById('welcome-heading');
+    if (welcomeHeading) {
+      welcomeHeading.textContent = t('welcome-heading');
+    }
+
+    // Update dashboard card titles
+    document.getElementById('dashboard-deliveries-title').textContent = t('dashboard-deliveries-title');
+    document.getElementById('dashboard-shopping-title').textContent = t('dashboard-shopping-title');
+    document.getElementById('dashboard-events-title').textContent = t('dashboard-events-title');
+    document.getElementById('dashboard-urgent-title').textContent = t('dashboard-urgent-title');
+    document.getElementById('dashboard-tobuy-title').textContent = t('dashboard-tobuy-title');
+    document.getElementById('dashboard-repairs-title').textContent = t('dashboard-repairs-title');
+  }
+
     // ====== SUPABASE SETUP ======
     const SUPABASE_URL = 'https://iviwnjtbpsdnjxjjqeyq.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml2aXduanRicHNkbmp4ampxZXlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NDI0MzIsImV4cCI6MjA5MDIxODQzMn0.8tE3Y6swCr7HglMUJCooY6oQd-591NERhKUs89vqPrQ';
@@ -2294,7 +2657,177 @@
           renderRep();
         });
       });
+    
+
+  // Language toggle listeners
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const lang = e.target.getAttribute('data-lang');
+      setLanguage(lang);
     });
+  })
+
+  // Bulk orders functionality
+  const toggleBulkBtn = document.getElementById('toggle-bulk-orders');
+  const bulkOrdersForm = document.getElementById('bulk-orders-form');
+  const bulkOrdersInput = document.getElementById('bulk-orders-input');
+  const addAllOrdersBtn = document.getElementById('add-all-orders');
+  const cancelBulkOrdersBtn = document.getElementById('cancel-bulk-orders');
+
+  if (toggleBulkBtn) {
+    toggleBulkBtn.addEventListener('click', () => {
+      bulkOrdersForm.style.display = bulkOrdersForm.style.display === 'none' ? 'block' : 'none';
+    });
+
+    cancelBulkOrdersBtn.addEventListener('click', () => {
+      bulkOrdersForm.style.display = 'none';
+      bulkOrdersInput.value = '';
+    });
+
+    addAllOrdersBtn.addEventListener('click', async () => {
+      const items = bulkOrdersInput.value.trim().split('\n').filter(line => line.trim());
+      if (items.length === 0) return;
+
+      for (const item of items) {
+        const [name, notes = ''] = item.split('-').map(s => s.trim());
+        const order = {
+          id: Date.now().toString() + Math.random(),
+          name: name,
+          notes: notes,
+          status: 'pending',
+          date: new Date().toISOString().split('T')[0],
+          user: currentUser
+        };
+        
+        orders.push(order);
+        await saveOrders();
+      }
+
+      bulkOrdersForm.style.display = 'none';
+      bulkOrdersInput.value = '';
+      renderOrders();
+    });
+  }
+
+  // Dashboard update function
+  function updateDashboard() {
+    const now = new Date();
+    const userName = currentUser || 'User';
+
+    // Welcome message with date
+    const welcomeDate = document.getElementById('welcome-date');
+    if (welcomeDate) {
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      welcomeDate.textContent = now.toLocaleDateString(currentLanguage === 'fr' ? 'fr-FR' : 'en-US', options);
+    }
+
+    // Upcoming deliveries (orders with status "ordered")
+    const upcomingDeliveries = orders.filter(o => o.status === 'ordered').slice(0, 5);
+    const deliveriesHtml = upcomingDeliveries.length > 0
+      ? upcomingDeliveries.map(o => `<div class="dashboard-item"><div class="dashboard-item-title">${o.name}</div><div class="dashboard-item-meta">${o.notes || ''}</div></div>`).join('')
+      : `<p style="color: var(--soft-gray);">${t('no-items')}</p>`;
+    document.getElementById('dashboard-deliveries').innerHTML = deliveriesHtml;
+
+    // Shopping list (orders with status "pending")
+    const shoppingItems = orders.filter(o => o.status === 'pending').length;
+    const shoppingHtml = shoppingItems > 0
+      ? `<div class="dashboard-item"><div class="dashboard-item-title">${shoppingItems} ${currentLanguage === 'fr' ? 'articles en attente' : 'items pending'}</div></div>`
+      : `<p style="color: var(--soft-gray);">${t('no-items')}</p>`;
+    document.getElementById('dashboard-shopping').innerHTML = shoppingHtml;
+
+    // Upcoming events (next 5)
+    const upcomingEvents = events.filter(e => new Date(e.date) >= now).sort((a, b) => new Date(a.date) - new Date(b.date)).slice(0, 5);
+    const eventsHtml = upcomingEvents.length > 0
+      ? upcomingEvents.map(e => `<div class="dashboard-item"><div class="dashboard-item-title">${e.title}</div><div class="dashboard-item-meta">${e.date} ${e.time || ''}</div></div>`).join('')
+      : `<p style="color: var(--soft-gray);">${t('no-items')}</p>`;
+    document.getElementById('dashboard-events').innerHTML = eventsHtml;
+
+    // Urgent tasks (high priority, not done)
+    const urgentTasks = tasks.filter(t => t.priority === 'high' && t.status !== 'done').slice(0, 5);
+    const urgentHtml = urgentTasks.length > 0
+      ? urgentTasks.map(t => `<div class="dashboard-item"><div class="dashboard-item-title">${t.title}</div><div class="dashboard-item-meta">${t.assignedTo || 'Unassigned'}</div></div>`).join('')
+      : `<p style="color: var(--soft-gray);">${t('no-items')}</p>`;
+    document.getElementById('dashboard-urgent').innerHTML = urgentHtml;
+
+    // Items to buy (inventory with status "need")
+    const itemsToBuy = inventory.filter(i => i.status === 'need').slice(0, 5);
+    const tobuyHtml = itemsToBuy.length > 0
+      ? itemsToBuy.map(i => `<div class="dashboard-item"><div class="dashboard-item-title">${i.name}</div><div class="dashboard-item-meta">${i.location || i.room || ''}</div></div>`).join('')
+      : `<p style="color: var(--soft-gray);">${t('no-items')}</p>`;
+    document.getElementById('dashboard-tobuy').innerHTML = tobuyHtml;
+
+    // Active repairs (status todo or progress)
+    const activeRepairs = repairs.filter(r => r.status === 'todo' || r.status === 'progress').slice(0, 5);
+    const repairsHtml = activeRepairs.length > 0
+      ? activeRepairs.map(r => `<div class="dashboard-item"><div class="dashboard-item-title">${r.title}</div><div class="dashboard-item-meta">${r.room || ''}</div></div>`).join('')
+      : `<p style="color: var(--soft-gray);">${t('no-items')}</p>`;
+    document.getElementById('dashboard-repairs').innerHTML = repairsHtml;
+  }
+;
+
+  // Set initial language
+  setLanguage(currentLanguage);
+
+  // Inventory location and category management
+  const addLocationBtn = document.getElementById('add-location-btn');
+  const addCategoryBtn = document.getElementById('add-category-btn');
+  const locationSelect = document.getElementById('inventory-room');
+  const categorySelect = document.getElementById('inventory-category');
+
+  if (addLocationBtn && locationSelect) {
+    addLocationBtn.addEventListener('click', async () => {
+      const newLocation = prompt(currentLanguage === 'fr' ? 'Nouveau lieu:' : 'New location:');
+      if (newLocation && newLocation.trim()) {
+        const option = document.createElement('option');
+        option.value = newLocation.toLowerCase().replace(/\s+/g, '-');
+        option.textContent = newLocation;
+        locationSelect.appendChild(option);
+        locationSelect.value = option.value;
+        
+        // Store in localStorage as custom locations
+        let customLocations = JSON.parse(localStorage.getItem('customLocations') || '[]');
+        if (!customLocations.includes(newLocation)) {
+          customLocations.push(newLocation);
+          localStorage.setItem('customLocations', JSON.stringify(customLocations));
+        }
+      }
+    });
+  }
+
+  if (addCategoryBtn && categorySelect) {
+    addCategoryBtn.addEventListener('click', async () => {
+      const newCategory = prompt(currentLanguage === 'fr' ? 'Nouvelle catégorie:' : 'New category:');
+      if (newCategory && newCategory.trim()) {
+        const option = document.createElement('option');
+        option.value = newCategory.toLowerCase().replace(/\s+/g, '-');
+        option.textContent = newCategory;
+        categorySelect.appendChild(option);
+        categorySelect.value = option.value;
+        
+        // Store in localStorage as custom categories
+        let customCategories = JSON.parse(localStorage.getItem('customCategories') || '[]');
+        if (!customCategories.includes(newCategory)) {
+          customCategories.push(newCategory);
+          localStorage.setItem('customCategories', JSON.stringify(customCategories));
+        }
+      }
+    });
+  }
+
+  // Group by toggle functionality
+  let groupByMode = 'location';
+  const groupToggleBtns = document.querySelectorAll('.group-toggle-btn');
+  groupToggleBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      groupToggleBtns.forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      groupByMode = e.target.getAttribute('data-group');
+      renderInventory();
+    });
+  });
+
+  
+  });
   </script>
 </body>
 </html>
